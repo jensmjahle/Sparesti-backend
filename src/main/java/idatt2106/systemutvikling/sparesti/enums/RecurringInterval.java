@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum RecurringInterval {
+  NONE(0),
   DAILY(24 * 60 * 60),
   WEEKLY(7 * 24 * 60 * 60),
   MONTHLY(30 * 24 * 60 * 60);
