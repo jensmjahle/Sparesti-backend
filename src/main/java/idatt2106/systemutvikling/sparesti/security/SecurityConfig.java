@@ -1,32 +1,28 @@
 package idatt2106.systemutvikling.sparesti.security;
 
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Configuration class for the security settings.
- */
-@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-  //placeholder for the filter chain
-
-  /*
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
-            .csrf().disable()
-            .cors().and()
-            .authorizeHttpRequests()
-            .requestMatchers(
-            ............
-            ).permitAll()
-            .anyRequest().authenticated().and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(request -> new org.springframework.web.cors.CorsConfiguration().applyPermitDefaultValues()))
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers("placeholder").permitAll()
+                    .anyRequest().authenticated()
+            )
+            .addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     return http.build();
-  }*/
-
+  }
 }
