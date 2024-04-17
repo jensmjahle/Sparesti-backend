@@ -6,9 +6,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class UserDAO {
-@Id
+  @Id
   private String username;
   private String password;
   private String email;
@@ -34,9 +36,9 @@ public class UserDAO {
   private Long savingsAccount;
   @ManyToMany
   @JoinTable(
-      name = "user_achievements",
-      joinColumns = @JoinColumn(name = "username"),
-      inverseJoinColumns = @JoinColumn(name = "achievementId")
+          name = "user_achievements",
+          joinColumns = @JoinColumn(name = "username"),
+          inverseJoinColumns = @JoinColumn(name = "achievement_id")
   )
   private List<AchievementDAO> achievements = new ArrayList<>();
 
