@@ -25,7 +25,7 @@ public class ConditionDAO {
   @SequenceGenerator(name = "conditionIdGenerator", sequenceName = "condition_sequence", allocationSize = 1)
   private Long conditionId;
 @ManyToOne (cascade = CascadeType.ALL)
-@JoinColumn(name = "conditionId", referencedColumnName = "achievementId")
+@JoinColumn(name = "achievementId", referencedColumnName = "achievementId")
 private AchievementDAO achievementDAO;
 private Long quantity;
   @Enumerated(EnumType.STRING)
