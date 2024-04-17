@@ -21,8 +21,7 @@ import lombok.Setter;
 @Entity
 public class ConditionDAO {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "conditionIdGenerator")
-  @SequenceGenerator(name = "conditionIdGenerator", sequenceName = "condition_sequence", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long conditionId;
 @ManyToOne (cascade = CascadeType.ALL)
 @JoinColumn(name = "achievementId", referencedColumnName = "achievementId")
