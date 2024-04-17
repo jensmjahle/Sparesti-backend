@@ -20,8 +20,7 @@ import lombok.Setter;
 @Entity
 public class MilestoneDAO {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "milestoneIdGenerator")
-  @SequenceGenerator(name = "milestoneIdGenerator", sequenceName = "milestone_sequence", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long milestoneId;
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "username", referencedColumnName = "username")
