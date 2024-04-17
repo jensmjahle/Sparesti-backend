@@ -1,4 +1,4 @@
-package idatt2106.systemutvikling.sparesti.Security;
+package idatt2106.systemutvikling.sparesti.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
