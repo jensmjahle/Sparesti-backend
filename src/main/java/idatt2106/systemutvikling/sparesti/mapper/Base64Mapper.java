@@ -9,7 +9,10 @@ public class Base64Mapper {
   public static String toBase64String(byte[] image) {
     logger.info("Converting image to base64 string");
     if (image != null) {
-      return Base64.getEncoder().encodeToString(image);
+      logger.info("Image length: " + image.length);
+      String base64String = Base64.getEncoder().encodeToString(image);
+      logger.info("Base64 string length: " + base64String.length());
+      return base64String;
     }
     return null;
   }
@@ -28,9 +31,10 @@ public class Base64Mapper {
          // Remove the image type from the base64 string
           base64String = base64String.substring(commaIndex + 1);
           logger.info("Converting base64 string to image");
-          logger.info("Base64 string: " + base64String);
-          return Base64.getDecoder().decode(base64String);
+        return Base64.getDecoder().decode(base64String);
         }
+      } else {
+        return Base64.getDecoder().decode(base64String);
       }
     }
     logger.severe("Base64 string is null");
