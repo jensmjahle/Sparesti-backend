@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -19,6 +20,10 @@ public class AccountService {
     this.customerService = customerService;
   }
 
+  public AccountDAO findAccountByAccountNr(Long accountNumber) {
+    Optional<AccountDAO> accountDAOOptional = accountRepository.findAccountDAOByAccountNr(accountNumber);
+    return accountDAOOptional.orElseThrow(() -> new RuntimeException(accountNumber+" was not found"));
+  }
   public List<AccountDAO> findAccountsByUsername(String username) {
     CustomerDAO customer = customerService.findCustomerByUsername(username);
     return accountRepository.findAccountDAOSByCustomerDAO(customer);
