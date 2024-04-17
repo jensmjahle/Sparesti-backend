@@ -16,8 +16,7 @@ import lombok.Setter;
 @Entity
 public class AchievementDAO {
 @Id
-@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "achievementIdGenerator")
-@SequenceGenerator(name = "achievementIdGenerator", sequenceName = "achievement_sequence", allocationSize = 1)
+@GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long achievementId;
 private String achievementTitle;
 private String achievementDescription;
