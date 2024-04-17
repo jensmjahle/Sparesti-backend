@@ -33,7 +33,8 @@ private Long goalSum;
 private Long currentSum;
 private LocalDateTime startDate;
 private LocalDateTime expirationDate;
-  @Enumerated(EnumType.STRING)
+@Enumerated(EnumType.STRING)
 private RecurringInterval recurringInterval;
+private boolean isActive;
 
 }
