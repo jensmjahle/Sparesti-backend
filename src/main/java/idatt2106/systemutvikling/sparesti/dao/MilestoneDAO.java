@@ -24,7 +24,7 @@ public class MilestoneDAO {
   @SequenceGenerator(name = "milestoneIdGenerator", sequenceName = "milestone_sequence", allocationSize = 1)
   private Long milestoneId;
   @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "username", referencedColumnName = "userDAO")
+  @JoinColumn(name = "username", referencedColumnName = "username")
   private UserDAO userDAO;
   private String milestoneTitle;
   private String milestoneDescription;
