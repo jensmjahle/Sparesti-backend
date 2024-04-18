@@ -3,6 +3,7 @@ package idatt2106.systemutvikling.sparesti.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
+import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
 import idatt2106.systemutvikling.sparesti.service.PasswordService;
@@ -24,17 +25,17 @@ public class TokenController {
   Logger logger = Logger.getLogger(TokenController.class.getName());
   PasswordService passwordService;
 
-  private final CustomerServiceInterface customerService;
+  private final SecretsConfig secretsConfig;
 
-  //todo get new secret key from environment variable and switch the funnySecrets out
-  private static String secretKey = null;
+  private final CustomerServiceInterface customerService;
 
   private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(6);
 
   @Autowired
-  public TokenController(PasswordService passwordService, CustomerServiceInterface customerService) {
+  public TokenController(PasswordService passwordService, SecretsConfig secretsConfig, CustomerServiceInterface customerService) {
     this.passwordService = passwordService;
-      this.customerService = customerService;
+    this.secretsConfig = secretsConfig;
+    this.customerService = customerService;
   }
 
   /**
@@ -62,13 +63,12 @@ public class TokenController {
   public void deleteToken() {
 
     logger.info("Received request to delete token.");
-    secretKey = null;
   }
 
   private String generateToken(final String username) {
     logger.info("Generating token for user: " + username + ".");
     final Instant now = Instant.now();
-    final Algorithm hmac512 = Algorithm.HMAC512("funnySecret");
+    final Algorithm hmac512 = Algorithm.HMAC512(secretsConfig.getJwt());
 
     boolean isCompleteUser = true;
     isCompleteUser &= customerService.customerExists(username);
