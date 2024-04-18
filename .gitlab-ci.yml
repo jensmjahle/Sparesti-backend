@@ -39,7 +39,6 @@ test:
   stage: test
   script:
     - mvn clean test jacoco:prepare-agent jacoco:report
-    - mvn verify
   dependencies:
     - build
   artifacts:
@@ -48,7 +47,8 @@ test:
       junit:
         - target/surefire-reports/TEST-*.xml
         - target/failsafe-reports/TEST-*.xml
-
+    paths:
+      - target/site/jacoco/index.html
 
 
 
