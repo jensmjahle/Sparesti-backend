@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
@@ -26,9 +30,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
   @Value("${jwt.secret}")
   private String SECRET;
-  public static final String USER = "USER";
-  public static final String ROLE_USER = "ROLE_" + USER;
-
 
   @Override
   protected void doFilterInternal(
@@ -43,18 +44,25 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     }
 
     String token = header.substring(7);
-    final String username = validateTokenAndGetUserId(token);
-    if (username == null) {
+    DecodedJWT jwt = validateTokenAndGetJwt(token);
+    if (jwt == null) {
       // validation failed or token expired
       filterChain.doFilter(request, response);
       return;
     }
 
+    final String username = jwt.getSubject();
+    final List<String> roles = jwt.getClaim("roles").asList(String.class);
+
     // if token is valid, add user details to the authentication context
+    List<SimpleGrantedAuthority> authorities = roles.stream()
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+
     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
             username,
             null,
-            Collections.singletonList(new SimpleGrantedAuthority(ROLE_USER)));
+            authorities);
     SecurityContextHolder.getContext().setAuthentication(auth);
 
     // then, continue with authenticated user context
@@ -62,13 +70,13 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
   }
 
 
-  public String validateTokenAndGetUserId(final String token) {
+  public DecodedJWT validateTokenAndGetJwt(final String token) {
     // remove quotes from token as it breaks the verification
     String tokenWithoutQuotes = token.replace("\"", "");
     try {
       final Algorithm hmac512 = Algorithm.HMAC512(SECRET);
       final JWTVerifier verifier = JWT.require(hmac512).build();
-      return verifier.verify(tokenWithoutQuotes).getSubject();
+      return verifier.verify(tokenWithoutQuotes);
     } catch (final JWTVerificationException verificationEx) {
       LOGGER.warn("token is invalid: {}", verificationEx.getMessage());
       return null;
