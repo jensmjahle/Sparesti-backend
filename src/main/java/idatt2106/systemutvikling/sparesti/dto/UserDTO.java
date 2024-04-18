@@ -22,7 +22,7 @@ public class UserDTO {
   @Nullable
   private String lastName;
   @Nullable
-  private String birthDate;
+  private LocalDate birthDate;
   @Nullable
   private String profilePictureBase64;
   @Nullable
