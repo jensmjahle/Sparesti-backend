@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,12 +25,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+@AllArgsConstructor
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
   private static final Logger LOGGER = LogManager.getLogger(JWTAuthorizationFilter.class);
 
-  @Value("${jwt.secret}")
-  private String SECRET;
+  public static final String USER = "USER";
+  public static final String ROLE_USER = "ROLE_" + USER;
+
+  private SecretsConfig secrets;
 
   @Override
   protected void doFilterInternal(
@@ -74,7 +79,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     // remove quotes from token as it breaks the verification
     String tokenWithoutQuotes = token.replace("\"", "");
     try {
-      final Algorithm hmac512 = Algorithm.HMAC512(SECRET);
+      final Algorithm hmac512 = Algorithm.HMAC512(secrets.getJwt());
       final JWTVerifier verifier = JWT.require(hmac512).build();
       return verifier.verify(tokenWithoutQuotes);
     } catch (final JWTVerificationException verificationEx) {
@@ -82,5 +87,4 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
       return null;
     }
   }
-
 }
