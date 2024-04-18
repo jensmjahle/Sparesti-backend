@@ -21,8 +21,7 @@ import lombok.Setter;
 @Entity
 public class ChallengeDAO {
 @Id
-@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "challengeIdGenerator")
-@SequenceGenerator(name = "challengeIdGenerator", sequenceName = "challenge_sequence", allocationSize = 1)
+@GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long challengeId;
 @ManyToOne
 @JoinColumn(name = "username", referencedColumnName = "username")
@@ -35,6 +34,6 @@ private LocalDateTime startDate;
 private LocalDateTime expirationDate;
 @Enumerated(EnumType.STRING)
 private RecurringInterval recurringInterval;
-private boolean isActive;
+private boolean active;
 
 }

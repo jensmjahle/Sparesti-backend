@@ -73,10 +73,10 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
   /**
    * Method to find all challenges that are active
    *
-   * @param isActive boolean value that indicates if the challenge is active
+   * @param active boolean value that indicates if the challenge is active
    * @return a list of challenges that are active
    */
-  List<ChallengeDAO> findChallengeDAOSByActive(boolean isActive);
+  List<ChallengeDAO> findAllByActive(boolean active);
 
 
   //@Query(value = "SELECT * FROM challengedao cd WHERE cd.challenge_id = :id AND username = :username", nativeQuery = true)
