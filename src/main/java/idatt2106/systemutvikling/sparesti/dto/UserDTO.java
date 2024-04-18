@@ -19,5 +19,6 @@ public class UserDTO {
   private Long monthlyFixedExpenses;
   private Long currentAccount;
   private Long savingsAccount;
+  private Boolean isConnectedToBank;
 
 }
