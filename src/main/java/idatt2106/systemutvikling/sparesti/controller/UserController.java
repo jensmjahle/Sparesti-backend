@@ -34,6 +34,11 @@ public class UserController {
     return userService.deleteUserDTO(username);
   }
 
+@RequestMapping("/update/{username}")
+  public ResponseEntity<String> updateUserDTO(@PathVariable String username, @RequestBody UserDTO updatedUserDTO) {
+    logger.info("Received request to update user information.");
+    return userService.updateUserDTO(username, updatedUserDTO);
+  }
 
 
 
