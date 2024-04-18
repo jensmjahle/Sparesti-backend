@@ -1,29 +1,23 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
-
-import java.util.List;
-import java.util.logging.Logger;
-
-import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
+import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
+import idatt2106.systemutvikling.sparesti.service.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import idatt2106.systemutvikling.sparesti.security.JWTAuthorizationFilter;
-import idatt2106.systemutvikling.sparesti.service.PasswordService;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.logging.Logger;
 
 @RestController
-@RequestMapping(value = "/placeholder")
+@RequestMapping(value = "/auth")
 @EnableAutoConfiguration
 @CrossOrigin(origins = "*") //todo change to frontend url
 public class TokenController {
@@ -43,20 +37,27 @@ public class TokenController {
       this.customerService = customerService;
   }
 
-  @PostMapping(value = "/2Placeholder")
+  /**
+   * Endpoint for letting the user login. If login is successful, returns a JWT for use with secured endpoints.
+   * The user can login by providing the correct login credentials.
+   * A user is considered as logged in when it has a token.
+   * @param loginRequest A DTO containing a correct username and password combination. Only the fields "username" and "password" is required.
+   * @return A JWT to use with secured endpoints.
+   */
+  @PostMapping
   @ResponseStatus(value = HttpStatus.CREATED)
-  public String generateToken(final @RequestBody LoginRequestModel loginRequest) {
-    logger.info("Received request to generate token for user: " + loginRequest.getUsername() + ".");
-    if (passwordService.correctPassword(loginRequest.getUsername(), loginRequest.getPassword())) {
-      String generatedToken = generateToken(loginRequest.getUsername());
-      return generatedToken;
-    }
-    logger.warning("Access denied, wrong credentials....");
+  public ResponseEntity<String> login(final @RequestBody UserCredentialsDTO loginRequest) {
+    boolean success = passwordService.correctPassword(loginRequest.getUsername(), loginRequest.getPassword());
 
-    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied, wrong credentials....");
+    if (!success)
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access denied, wrong credentials");
+
+    String token = generateToken(loginRequest.getUsername());
+
+    return ResponseEntity.ok().body(token);
   }
 
-  @PostMapping(value = "/3Placeholder")
+  @DeleteMapping
   @ResponseStatus(value = HttpStatus.OK)
   public void deleteToken() {
 
