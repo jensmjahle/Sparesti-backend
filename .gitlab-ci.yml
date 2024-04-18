@@ -32,10 +32,6 @@ build:
     - mvn compile
   artifacts:
     when: always
-    reports:
-        junit:
-            - target/surefire-reports/TEST-*.xml
-            - target/failsafe-reports/TEST-*.xml
     paths:
       - target/
 
@@ -43,10 +39,15 @@ test:
   stage: test
   script:
     - mvn clean test jacoco:prepare-agent jacoco:report
+    - mvn verify
   dependencies:
     - build
   artifacts:
     when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - target/failsafe-reports/TEST-*.xml
 
 
 
