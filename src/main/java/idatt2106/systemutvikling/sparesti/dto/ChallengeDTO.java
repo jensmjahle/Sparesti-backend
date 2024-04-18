@@ -28,7 +28,7 @@ public class ChallengeDTO {
 
   private LocalDateTime expirationDate;
 
-  private Long recurring;
+  private int recurring;
 
   private boolean isActive;
 }
