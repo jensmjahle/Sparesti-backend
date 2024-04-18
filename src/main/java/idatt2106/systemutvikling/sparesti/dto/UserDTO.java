@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 /**
  * Data transfer object for User
  */
@@ -15,7 +17,7 @@ public class UserDTO {
   private String email;
   private String firstName;
   private String lastName;
-  private String birthDate;
+  private LocalDate birthDate;
   private String profilePictureBase64;
   private Long monthlyIncome;
   private Long monthlySavings;

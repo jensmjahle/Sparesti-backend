@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
+import java.time.LocalDate;
+
 /**
  * Data transfer object for UserCredentials
  */
@@ -21,5 +23,5 @@ public class UserCredentialsDTO {
   @ Nullable
   private String lastName;
   @ Nullable
-  private String birthDate;
+  private LocalDate birthDate;
 }
