@@ -38,7 +38,7 @@ build:
 test:
   stage: test
   script:
-    - mvn clean test jacoco:prepare-agent jacoco:report
+    - mvn clean test
   dependencies:
     - build
   artifacts:
