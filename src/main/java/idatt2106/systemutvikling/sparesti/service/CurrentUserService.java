@@ -21,7 +21,7 @@ public class CurrentUserService {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
             return null;
 
-        Map<String, Object> userDetails = (Map<String, Object>) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Map<String, Object> userDetails = (Map<String, Object>) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         return (String) userDetails.get(KEY_USERNAME);
     }

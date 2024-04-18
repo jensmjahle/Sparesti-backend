@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,9 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -57,17 +56,17 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     }
 
     final String username = jwt.getSubject();
-    final List<String> roles = jwt.getClaim("roles").asList(String.class);
-
-    // if token is valid, add user details to the authentication context
-    List<SimpleGrantedAuthority> authorities = roles.stream()
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
+    final String role = jwt.getClaim("role").asString();
 
     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
             username,
             null,
-            authorities);
+            Collections.singletonList(new SimpleGrantedAuthority(role)));
+
+    Map<String, Object> userDetails = new HashMap<>();
+    userDetails.put(CurrentUserService.KEY_USERNAME, username);
+    auth.setDetails(userDetails);
+
     SecurityContextHolder.getContext().setAuthentication(auth);
 
     // then, continue with authenticated user context

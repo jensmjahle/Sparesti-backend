@@ -7,6 +7,10 @@ import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
 
 import java.util.List;
 import java.util.logging.Logger;
+
+import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
+import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
+import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -26,14 +30,17 @@ public class TokenController {
   Logger logger = Logger.getLogger(TokenController.class.getName());
   PasswordService passwordService;
 
+  private final CustomerServiceInterface customerService;
+
   //todo get new secret key from environment variable and switch the funnySecrets out
   private static String secretKey = null;
 
   private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(6);
 
   @Autowired
-  public TokenController(PasswordService passwordService) {
+  public TokenController(PasswordService passwordService, CustomerServiceInterface customerService) {
     this.passwordService = passwordService;
+      this.customerService = customerService;
   }
 
   @PostMapping(value = "/2Placeholder")
@@ -57,22 +64,24 @@ public class TokenController {
     secretKey = null;
   }
 
-  private String generateToken(final String userId) {
-    logger.info("Generating token for user: " + userId + ".");
+  private String generateToken(final String username) {
+    logger.info("Generating token for user: " + username + ".");
     final Instant now = Instant.now();
     final Algorithm hmac512 = Algorithm.HMAC512("funnySecret");
 
-    // Fetch the roles of the user
-    String role = userService.getRole(userId);
+    boolean isCompleteUser = true;
+    isCompleteUser &= customerService.customerExists(username);
+    isCompleteUser &= customerService.hasTwoAccounts(username);
+
+    String role = isCompleteUser ? SecurityConfig.ROLE_COMPLETE : SecurityConfig.ROLE_BASIC;
 
     return JWT.create()
-            .withSubject(userId)
+            .withSubject(username)
             .withIssuer("SparestiTokenIssuerApp")
             .withIssuedAt(now)
             .withExpiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toMillis()))
             .withClaim("role", role)
             .sign(hmac512);
   }
-
 }
 
