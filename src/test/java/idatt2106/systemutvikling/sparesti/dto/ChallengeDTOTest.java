@@ -20,7 +20,7 @@ public class ChallengeDTOTest {
 
   private final static boolean isActive = true;
 
-  private final static Long recurring = 10L;
+  private final static int recurring = 60*60*24;
   private final LocalDateTime deadlineDate = LocalDateTime.of(2024, 5, 15, 0, 0);
   private final LocalDateTime startDate = LocalDateTime.of(2024, 4, 1, 0, 0);
 

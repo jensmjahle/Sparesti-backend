@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
+import java.time.LocalDate;
+
 /**
  * Data transfer object for User
  */

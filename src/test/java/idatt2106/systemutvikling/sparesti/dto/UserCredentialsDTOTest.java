@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 public class UserCredentialsDTOTest {
 
   @Test
@@ -18,7 +20,7 @@ public class UserCredentialsDTOTest {
     userCredentialsDTO.setEmail("test@example.com");
     userCredentialsDTO.setFirstName("John");
     userCredentialsDTO.setLastName("Doe");
-    userCredentialsDTO.setBirthDate("1990-01-01");
+    userCredentialsDTO.setBirthDate(LocalDate.parse("1990-01-01"));
 
     // Test getters
     assertEquals("testUser", userCredentialsDTO.getUsername());
@@ -26,7 +28,7 @@ public class UserCredentialsDTOTest {
     assertEquals("test@example.com", userCredentialsDTO.getEmail());
     assertEquals("John", userCredentialsDTO.getFirstName());
     assertEquals("Doe", userCredentialsDTO.getLastName());
-    assertEquals("1990-01-01", userCredentialsDTO.getBirthDate());
+    assertEquals(LocalDate.parse("1990-01-01"), userCredentialsDTO.getBirthDate());
 
     // Test setters
     userCredentialsDTO.setUsername("newUser");
@@ -34,14 +36,14 @@ public class UserCredentialsDTOTest {
     userCredentialsDTO.setEmail("new@example.com");
     userCredentialsDTO.setFirstName("Jane");
     userCredentialsDTO.setLastName("Doe");
-    userCredentialsDTO.setBirthDate("1995-01-01");
+    userCredentialsDTO.setBirthDate(LocalDate.parse("1995-01-01"));
 
     assertEquals("newUser", userCredentialsDTO.getUsername());
     assertEquals("newPassword", userCredentialsDTO.getPassword());
     assertEquals("new@example.com", userCredentialsDTO.getEmail());
     assertEquals("Jane", userCredentialsDTO.getFirstName());
     assertEquals("Doe", userCredentialsDTO.getLastName());
-    assertEquals("1995-01-01", userCredentialsDTO.getBirthDate());
+    assertEquals(LocalDate.parse("1995-01-01"), userCredentialsDTO.getBirthDate());
   }
 
   @Test
