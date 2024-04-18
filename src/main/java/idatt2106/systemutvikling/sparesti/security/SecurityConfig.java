@@ -24,7 +24,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(request -> new org.springframework.web.cors.CorsConfiguration().applyPermitDefaultValues()))
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("placeholder").permitAll()
+                    .requestMatchers("/auth").permitAll()
                     .anyRequest().authenticated()
             )
             .addFilterBefore(new JWTAuthorizationFilter(secrets), UsernamePasswordAuthenticationFilter.class)
