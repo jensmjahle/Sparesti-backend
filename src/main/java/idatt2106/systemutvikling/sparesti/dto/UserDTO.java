@@ -3,25 +3,27 @@ package idatt2106.systemutvikling.sparesti.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
 
 /**
- * Data transfer object for UserCredentials
+ * Data transfer object for User
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserCredentialsDTO {
+public class UserDTO {
   private String username;
-  private String password;
-  @ Nullable
   private String email;
-  @ Nullable
   private String firstName;
-  @ Nullable
   private String lastName;
-  @ Nullable
   private LocalDate birthDate;
+  private String profilePictureBase64;
+  private Long monthlyIncome;
+  private Long monthlySavings;
+  private Long monthlyFixedExpenses;
+  private Long currentAccount;
+  private Long savingsAccount;
+  private Boolean isConnectedToBank;
+
 }
