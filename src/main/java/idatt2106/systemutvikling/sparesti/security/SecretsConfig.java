@@ -3,6 +3,7 @@ package idatt2106.systemutvikling.sparesti.security;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * This class is responsible for holding the secrets that are used in the application.
@@ -15,6 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "security.secret")
 @Getter
 @Setter
+@Component
 public class SecretsConfig {
 
     /**
