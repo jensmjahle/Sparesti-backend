@@ -35,6 +35,12 @@ public class UserMapper {
     return userDTO;
   }
 
+  /**
+   * Converts a UserCredentialsDTO object to a UserDAO object.
+   *
+   * @param userCredentialsDTO The UserCredentialsDTO instance to be mapped.
+   * @return A new UserDAO containing the relevant data from the UserCredentialsDTO.
+   */
   public static UserDAO userCredentialsDTOToUserDAO(UserCredentialsDTO userCredentialsDTO) {
     UserDAO userDAO = new UserDAO();
 
@@ -48,6 +54,12 @@ public class UserMapper {
     return userDAO;
   }
 
+  /**
+   * Converts a UserDTO object to a UserDAO object.
+   *
+   * @param userDTO The UserDTO instance to be mapped.
+   * @return A new UserDAO containing the relevant data from the UserDTO.
+   */
   public static UserDAO userDTOToUserDAO(UserDTO userDTO) {
     UserDAO userDAO = new UserDAO();
 
