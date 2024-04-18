@@ -25,6 +25,8 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(request -> new org.springframework.web.cors.CorsConfiguration().applyPermitDefaultValues()))
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/auth").permitAll()
+                    .requestMatchers("/auth").permitAll()
+                    .requestMatchers("/user/**").hasAnyRole(ROLE_BASIC, ROLE_COMPLETE)
                     .anyRequest().authenticated()
             )
             .addFilterBefore(new JWTAuthorizationFilter(secrets), UsernamePasswordAuthenticationFilter.class)
