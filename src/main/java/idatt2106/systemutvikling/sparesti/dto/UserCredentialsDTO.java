@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
+
+/**
+ * Data transfer object for UserCredentials
+ */
 @Getter
 @Setter
 @NoArgsConstructor
