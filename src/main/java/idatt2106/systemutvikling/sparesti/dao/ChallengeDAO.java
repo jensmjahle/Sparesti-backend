@@ -34,6 +34,6 @@ private LocalDateTime startDate;
 private LocalDateTime expirationDate;
 @Enumerated(EnumType.STRING)
 private RecurringInterval recurringInterval;
-private boolean isActive;
+private boolean active;
 
 }
