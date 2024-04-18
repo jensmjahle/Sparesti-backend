@@ -13,6 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfig {
 
+  public static final String ROLE_BASIC = "ROLE_BASIC";
+  public static final String ROLE_COMPLETE = "ROLE_COMPLETE";
+
   private SecretsConfig secrets;
 
   @Bean
@@ -21,7 +24,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(request -> new org.springframework.web.cors.CorsConfiguration().applyPermitDefaultValues()))
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("placeholder").permitAll()
+                    .requestMatchers("/auth").permitAll()
                     .anyRequest().authenticated()
             )
             .addFilterBefore(new JWTAuthorizationFilter(secrets), UsernamePasswordAuthenticationFilter.class)
