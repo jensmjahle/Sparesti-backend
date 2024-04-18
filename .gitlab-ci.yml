@@ -42,9 +42,14 @@ build:
 test:
   stage: test
   script:
-    - mvn test
+    - mvn clean test jacoco:prepare-agent jacoco:report
   dependencies:
     - build
+  artifacts:
+    when: always
+
+
+
 
 package:
     stage: package
