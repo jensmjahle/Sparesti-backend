@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class TransactionService implements TransactionServiceInterface {
+public class BankTransactionService implements TransactionServiceInterface {
 
   private final TransactionRepository transactionRepository;
   private final AccountService accountService;
