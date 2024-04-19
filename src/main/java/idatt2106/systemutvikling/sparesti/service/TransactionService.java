@@ -15,7 +15,6 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionServiceInterface transactionSocket;
-    private final AccountService accountService;
     private final UserRepository dbUser;
 
     public List<TransactionDTO> getLatestExpensesForUser(String username, int page, int pageSize) {
