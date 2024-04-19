@@ -21,6 +21,7 @@ image: maven:latest
 stages:
   - build
   - test
+  - package
 
 before_script:
   - mvn clean
@@ -30,12 +31,33 @@ build:
   script:
     - mvn compile
   artifacts:
+    when: always
     paths:
       - target/
 
 test:
   stage: test
   script:
-    - mvn test
+    - mvn clean test
   dependencies:
     - build
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - target/failsafe-reports/TEST-*.xml
+    paths:
+      - target/site/jacoco/
+
+
+
+package:
+    stage: package
+    script:
+        - mvn clean package
+    dependencies:
+        - test
+    artifacts:
+        paths:
+        - target/*.jar
