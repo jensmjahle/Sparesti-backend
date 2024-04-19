@@ -14,9 +14,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   public static final String BASIC = "BASIC";
-  public static final String ROLE_BASIC = "ROLE_BASIC";
+  public static final String ROLE_BASIC = "ROLE_" + BASIC;
   public static final String COMPLETE = "COMPLETE";
-  public static final String ROLE_COMPLETE = "ROLE_COMPLETE";
+  public static final String ROLE_COMPLETE = "ROLE_" + COMPLETE;
 
   private SecretsConfig secrets;
 
