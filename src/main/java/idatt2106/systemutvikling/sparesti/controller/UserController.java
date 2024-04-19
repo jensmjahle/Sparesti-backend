@@ -3,6 +3,8 @@ package idatt2106.systemutvikling.sparesti.controller;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import java.util.logging.Logger;
 
+import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
+import idatt2106.systemutvikling.sparesti.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,22 +21,22 @@ public class UserController {
     this.userService = userService;
   }
 
-  @RequestMapping("/get/{username}")
-  public ResponseEntity<UserDTO> getUserDTO(@PathVariable String username) {
+  @PostMapping("/get")
+  public ResponseEntity<UserDTO> getUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to get user information.");
-    return userService.getUserDTO(username);
+    return userService.getUserDTO(token);
   }
 
-  @RequestMapping("/delete/{username}")
-  public ResponseEntity<UserDTO> deleteUserDTO(@PathVariable String username) {
+  @DeleteMapping("/delete")
+  public ResponseEntity<UserDTO> deleteUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to delete user information.");
-    return userService.deleteUserDTO(username);
+    return userService.deleteUserDTO(token);
   }
 
-@RequestMapping("/update/{username}")
-  public ResponseEntity<String> updateUserDTO(@PathVariable String username, @RequestBody UserDTO updatedUserDTO) {
+  @PutMapping("/update")
+  public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token, @RequestBody UserDTO updatedUserDTO) {
     logger.info("Received request to update user information.");
-    return userService.updateUserDTO(username, updatedUserDTO);
+    return userService.updateUserDTO(token, updatedUserDTO);
   }
 
 }
