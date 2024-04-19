@@ -6,11 +6,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GenerateChallengeTask {
-private Logger logger = Logger.getLogger(GenerateChallengeTask.class.getName());
+private final Logger logger = Logger.getLogger(GenerateChallengeTask.class.getName());
 
-@Scheduled(fixedRateString = "${generate.challenges.rate.in.milliseconds:6000}")
-public void generateChallenges() {
+@Scheduled(cron = "${generate.daily.challenges.cron.expression:0 0 0 1 * *}")
+public void dailyChallenges() {
   logger.info("Generating challenges...");
-  // Generate challenges
 }
+
+@Scheduled(cron = "${generate.weekly.challenges.cron.expression:0 0 0 * * 1}")
+public void weeklyChallenges() {
+  logger.info("Generating challenges...");
+}
+
+@Scheduled(cron = "${generate.monthly.challenges.cron.expression:0 0 0 1 * *}")
+public void monthlyChallenges() {
+  logger.info("Generating challenges...");
+}
+
+  @Scheduled(fixedRateString = "${generate.random.challenges.rate.in.milliseconds:60000}")
+  public void randomChallenges() {
+    logger.info("Generating challenges...");
+  }
+
 }
