@@ -3,11 +3,13 @@ package idatt2106.systemutvikling.sparesti.mapper;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper class for UserDAO and UserDTO
  */
 
+@Component
 public class UserMapper {
 
   /**

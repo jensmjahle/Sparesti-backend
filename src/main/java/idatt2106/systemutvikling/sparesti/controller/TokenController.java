@@ -58,6 +58,9 @@ public class TokenController {
     return ResponseEntity.ok().body(token);
   }
 
+  /**
+   * Delete the token for the user.
+   */
   @DeleteMapping
   @ResponseStatus(value = HttpStatus.OK)
   public void deleteToken() {
@@ -65,6 +68,11 @@ public class TokenController {
     logger.info("Received request to delete token.");
   }
 
+  /**
+   * Generate a JWT token for the given user.
+   * @param username the username of the user
+   * @return the generated token
+   */
   private String generateToken(final String username) {
     logger.info("Generating token for user: " + username + ".");
     final Instant now = Instant.now();
@@ -84,5 +92,6 @@ public class TokenController {
             .withClaim("role", role)
             .sign(hmac512);
   }
+
 }
 

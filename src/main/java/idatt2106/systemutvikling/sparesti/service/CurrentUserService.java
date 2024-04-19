@@ -1,5 +1,7 @@
 package idatt2106.systemutvikling.sparesti.service;
 
+import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +26,13 @@ public class CurrentUserService {
         Map<String, Object> userDetails = (Map<String, Object>) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         return (String) userDetails.get(KEY_USERNAME);
+    }
+
+    public static boolean isCompleteUser() {
+        return SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .contains(new SimpleGrantedAuthority(SecurityConfig.ROLE_COMPLETE));
     }
 }

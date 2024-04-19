@@ -3,6 +3,9 @@ package idatt2106.systemutvikling.sparesti.mapper;
 import idatt2106.systemutvikling.sparesti.dao.AchievementDAO;
 import idatt2106.systemutvikling.sparesti.dto.AchievementDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Mapper class for AchievementDAO and AchievementDTO
  */
@@ -39,4 +42,17 @@ public class AchievementMapper {
 
     return dto;
   }
+
+  public static List<AchievementDAO> toDAOList(List<AchievementDTO> dtos) {
+    List<AchievementDAO> daos = new ArrayList<>();
+    for (AchievementDTO dto : dtos) daos.add(toDAO(dto));
+    return daos;
+  }
+
+  public static List<AchievementDTO> toDTOList(List<AchievementDAO> daos) {
+    List<AchievementDTO> dtos = new ArrayList<>();
+    for (AchievementDAO dao : daos) dtos.add(toDTO(dao));
+    return dtos;
+  }
+
 }
