@@ -1,6 +1,5 @@
 package idatt2106.systemutvikling.sparesti.service;
 
-import idatt2106.systemutvikling.sparesti.security.JWTAuthorizationFilter;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

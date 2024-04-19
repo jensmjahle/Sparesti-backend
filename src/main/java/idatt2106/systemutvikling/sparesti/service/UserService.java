@@ -3,8 +3,6 @@ package idatt2106.systemutvikling.sparesti.service;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
-import idatt2106.systemutvikling.sparesti.mapper.Base64Mapper;
-import idatt2106.systemutvikling.sparesti.mockBank.service.AccountService;
 import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +20,25 @@ public class UserService {
   @Autowired
   private PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
-  private final AccountService accountService;
+  private final CustomerServiceInterface customerService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
 
   @Autowired
-  public UserService(UserRepository userRepository, UserMapper userMapper, AccountService accountService) {
+  public UserService(UserRepository userRepository, CustomerServiceInterface customerService) {
     this.userRepository = userRepository;
-    this.accountService = accountService;
+    this.customerService = customerService;
   }
 
-  //TODO: Implement methods
+  /**
+   * Method to get a user by username from the database.
+   * @param username The username of the user to get.
+   * @return ResponseEntity with the User object and status code.
+   */
   public ResponseEntity<UserDTO> getUserDTO(String username) {
-    //TODO: Return entire userDTO from database
     UserDAO userDAO = userRepository.findByUsername(username);
     UserDTO userDTO = UserMapper.toUserDTO(userDAO);
 
-    if (accountService.findAccountsByUsername(username).contains(userDTO.getSavingsAccount()) && accountService.findAccountsByUsername(username).contains(userDTO.getCurrentAccount())) {
+    if (customerService.hasTwoAccounts(username)){
       userDTO.setIsConnectedToBank(true);
     } else {
       userDTO.setIsConnectedToBank(false);
@@ -46,6 +47,12 @@ public class UserService {
     return new ResponseEntity<>(userDTO, HttpStatus.OK);
   }
 
+  /**
+   * Method to update a user in the database.
+   * @param username The username of the user to update.
+   * @param updatedUserDTO The updated UserDTO object with all fields.
+   * @return ResponseEntity with the status code.
+   */
   public ResponseEntity<String> updateUserDTO(String username, UserDTO updatedUserDTO) {
     //TODO: Update userDTO in database
 
@@ -114,10 +121,12 @@ public class UserService {
     return null;
   }
 
+  /**
+   * Method to create a user from a UserCredentialsDTO object.
+   * @param user The UserCredentialsDTO object to create the user from.
+   * @return ResponseEntity with the UserDTO object and status code.
+   */
   public ResponseEntity<UserDTO> createUser(UserCredentialsDTO user) {
-    //TODO: Check if user already exists in database
-    //TODO: Create userDTO in database
-    //TODO: Return only username and isConnectedToBank if register is successful
     try {
       UserDAO userDAO = UserMapper.userCredentialsDTOToUserDAO(user);
 
@@ -139,46 +148,5 @@ public class UserService {
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  public ResponseEntity<UserDTO> createCompleteUser(UserDTO user) {
-    try {
-      // Retrieve the existing user from the database
-      UserDAO existingUser = userRepository.findByUsername(user.getUsername());
-
-      // If the user does not exist, return an error response
-      if (existingUser == null) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      }
-
-      existingUser.setMonthlyIncome(user.getMonthlyIncome());
-      existingUser.setMonthlySavings(user.getMonthlySavings());
-      existingUser.setMonthlyFixedExpenses(user.getMonthlyFixedExpenses());
-      existingUser.setCurrentAccount(user.getCurrentAccount());
-      existingUser.setSavingsAccount(user.getSavingsAccount());
-
-      // Save the updated user back to the database
-      userRepository.save(existingUser);
-
-      // Return the updated UserDTO
-      UserDTO createdUser = new UserDTO();
-      createdUser.setUsername(existingUser.getUsername());
-      createdUser.setIsConnectedToBank(UserMapper.toUserDTO(existingUser).getIsConnectedToBank());
-      return new ResponseEntity<>(createdUser, HttpStatus.OK);
-    } catch (Exception e) {
-      // If an error occurs, return an error response
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  public ResponseEntity<UserDTO> getNecessaryUserDTO(String username) {
-    //only get username, profile picture and isConnectedToBank
-    UserDAO userDAO = userRepository.findByUsername(username);
-    UserDTO userDTO = UserMapper.toUserDTO(userDAO);
-    UserDTO necessaryUserDTO = new UserDTO();
-    necessaryUserDTO.setUsername(userDTO.getUsername());
-    necessaryUserDTO.setProfilePictureBase64(userDTO.getProfilePictureBase64());
-    necessaryUserDTO.setIsConnectedToBank(userDTO.getIsConnectedToBank());
-    return new ResponseEntity<>(necessaryUserDTO, HttpStatus.OK);
   }
 }

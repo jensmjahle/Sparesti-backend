@@ -3,7 +3,6 @@ package idatt2106.systemutvikling.sparesti.controller;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import java.util.logging.Logger;
 
-import idatt2106.systemutvikling.sparesti.mockBank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

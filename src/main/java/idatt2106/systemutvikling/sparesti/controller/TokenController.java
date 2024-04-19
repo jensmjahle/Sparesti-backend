@@ -3,12 +3,10 @@ package idatt2106.systemutvikling.sparesti.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
-import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
 import idatt2106.systemutvikling.sparesti.service.PasswordService;
-import idatt2106.systemutvikling.sparesti.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
@@ -62,7 +58,9 @@ public class TokenController {
     return ResponseEntity.ok().body(token);
   }
 
-
+  /**
+   * Delete the token for the user.
+   */
   @DeleteMapping
   @ResponseStatus(value = HttpStatus.OK)
   public void deleteToken() {
@@ -70,6 +68,11 @@ public class TokenController {
     logger.info("Received request to delete token.");
   }
 
+  /**
+   * Generate a JWT token for the given user.
+   * @param username the username of the user
+   * @return the generated token
+   */
   private String generateToken(final String username) {
     logger.info("Generating token for user: " + username + ".");
     final Instant now = Instant.now();
