@@ -5,6 +5,7 @@ import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,20 +22,26 @@ public class UserService {
   private PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final CustomerServiceInterface customerService;
+  private final JWTService jwtService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
 
   @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService) {
+  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService) {
     this.userRepository = userRepository;
     this.customerService = customerService;
+    this.jwtService = jwtService;
   }
 
   /**
    * Method to get a user by username from the database.
-   * @param username The username of the user to get.
+   * @param token The token of the user to get.
    * @return ResponseEntity with the User object and status code.
    */
-  public ResponseEntity<UserDTO> getUserDTO(String username) {
+  public ResponseEntity<UserDTO> getUserDTO(String token) {
+
+    String username = jwtService.extractUsernameFromToken(token);
+
+    try {
     UserDAO userDAO = userRepository.findByUsername(username);
     UserDTO userDTO = UserMapper.toUserDTO(userDAO);
 
@@ -45,19 +52,24 @@ public class UserService {
     }
 
     return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   /**
    * Method to update a user in the database.
-   * @param username The username of the user to update.
+   * @param token The token of the user to update.
    * @param updatedUserDTO The updated UserDTO object with all fields.
    * @return ResponseEntity with the status code.
    */
-  public ResponseEntity<String> updateUserDTO(String username, UserDTO updatedUserDTO) {
+  public ResponseEntity<String> updateUserDTO(String token, UserDTO updatedUserDTO) {
     //TODO: Update userDTO in database
 
     // Find the user in the database based on the username, and then update the fields given in the updatedUserDTO
     // if they are not null and not equal to the existing values.
+
+    String username = jwtService.extractUsernameFromToken(token);
 
     UserDAO existingUser = userRepository.findByUsername(username);
     if (existingUser == null) {
@@ -109,8 +121,10 @@ public class UserService {
     return null;
   }
 
-  public ResponseEntity<UserDTO> deleteUserDTO(String username) {
+  public ResponseEntity<UserDTO> deleteUserDTO(String token) {
     //TODO: Delete userDTO from database
+    String username = jwtService.extractUsernameFromToken(token);
+
     return null;
   }
 
