@@ -1,6 +1,7 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.dao.AchievementDAO;
+import idatt2106.systemutvikling.sparesti.dao.ConditionDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.AchievementDTO;
 import idatt2106.systemutvikling.sparesti.repository.AchievementRepository;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,7 @@ class AchievementServiceTest {
   void getLockedAchievements_ReturnsLockedAchievements() {
     // Arrange
     UserDAO user = new UserDAO();
+    user.setUsername("johndoe");
     AchievementDAO achievement1 = new AchievementDAO();
     achievement1.setAchievementId(1L);
     AchievementDAO achievement2 = new AchievementDAO();
@@ -65,9 +68,9 @@ class AchievementServiceTest {
     allAchievements.add(achievement4);
 
     when(achievementRepository.findAll()).thenReturn(allAchievements);
-
+    when(userRepository.findByUsername(any(String.class))).thenReturn(user);
     // Act
-    List<AchievementDAO> lockedAchievements = achievementService.getLockedAchievements(user);
+    List<AchievementDAO> lockedAchievements = achievementService.getLockedAchievements(user.getUsername());
 
     // Assert
     assertEquals(2, lockedAchievements.size());
@@ -92,10 +95,12 @@ class AchievementServiceTest {
     // Mock the behavior of the repositories
     when(achievementRepository.findAll()).thenReturn(List.of(achievement));
     when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenReturn(new ArrayList<>());
-    when(conditionService.isConditionMet(null)).thenReturn(true); // Mock condition always being met
+    when(userRepository.findByUsername(any(String.class))).thenReturn(user);
+    // Mock conditionService.isConditionMet() with a valid ConditionDAO argument
+    when(conditionService.isConditionMet(any(ConditionDAO.class))).thenReturn(true); // Mock condition always being met
 
     // Call the method to test
-    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(user);
+    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(user.getUsername()).getBody();
 
     // Verify the result
     assertEquals(1, unlockedAchievements.size());
