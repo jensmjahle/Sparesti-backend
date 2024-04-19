@@ -26,7 +26,7 @@ public class AchievementService {
   private final ConditionRepository conditionRepository;
   private final ConditionService conditionService;
   private final UserRepository userRepository;
-  
+
   /**
    * Constructor for AchievementService.
    *
@@ -34,17 +34,15 @@ public class AchievementService {
    * @param conditionRepository   The repository for conditions.
    * @param conditionService      The service for condition management.
    * @param userRepository        The repository for users.
-   * @param achievementMapper     The mapper for achievements
    */
   public AchievementService(AchievementRepository achievementRepository,
                             ConditionRepository conditionRepository,
                             ConditionService conditionService,
-                            UserRepository userRepository, AchievementMapper achievementMapper) {
+                            UserRepository userRepository) {
     this.achievementRepository = achievementRepository;
     this.conditionRepository = conditionRepository;
     this.conditionService = conditionService;
     this.userRepository = userRepository;
-    this.achievementMapper = achievementMapper;
   }
 
   /**
