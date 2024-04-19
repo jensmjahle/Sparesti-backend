@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class TransactionMapper {
 
-    public static TransactionDTO toDTO(TransactionDAO t) {
+    public static TransactionDTO toDTO(Transaction t) {
         TransactionDTO dto = new TransactionDTO();
 
         dto.setTransactionId(t.getTransactionId());
