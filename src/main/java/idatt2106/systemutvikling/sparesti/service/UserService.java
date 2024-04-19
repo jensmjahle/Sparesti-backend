@@ -59,7 +59,7 @@ public class UserService {
 
   /**
    * Method to update a user in the database.
-   * @param username The username of the user to update.
+   * @param token The token of the user to update.
    * @param updatedUserDTO The updated UserDTO object with all fields.
    * @return ResponseEntity with the status code.
    */
