@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TransactionService {
-  Logger logger = Logger.getLogger(TransactionService.class.getName());
+public class TransactionServiceTemp {
+  Logger logger = Logger.getLogger(TransactionServiceTemp.class.getName());
   OpenAIService openAIService;
 
   @Autowired
-  public TransactionService(OpenAIService openAIService) {
+  public TransactionServiceTemp(OpenAIService openAIService) {
     this.openAIService = openAIService;
   }
 
