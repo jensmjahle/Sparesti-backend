@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,10 +96,10 @@ class AchievementServiceTest {
     when(conditionService.isConditionMet(null)).thenReturn(true); // Mock condition always being met
 
     // Call the method to test
-    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(user.getUsername());
+    ResponseEntity<List<AchievementDTO>> unlockedAchievementsResponse = achievementService.checkForUnlockedAchievements(user.getUsername());
 
     // Verify the result
-    assertEquals(1, unlockedAchievements.size());
+    assertEquals(1, unlockedAchievementsResponse.getBody().size());
     assertEquals(1, user.getAchievements().size());
   }
 }
