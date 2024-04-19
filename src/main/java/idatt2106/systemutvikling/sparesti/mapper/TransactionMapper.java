@@ -2,6 +2,9 @@ package idatt2106.systemutvikling.sparesti.mapper;
 
 import idatt2106.systemutvikling.sparesti.dto.TransactionDTO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
+import idatt2106.systemutvikling.sparesti.model.Transaction;
+
+import java.util.Date;
 
 public class TransactionMapper {
 
