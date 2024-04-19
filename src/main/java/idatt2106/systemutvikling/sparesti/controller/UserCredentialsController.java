@@ -2,6 +2,7 @@ package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
+import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public UserCredentialsController(UserService userService) {
     this.userService = userService;
 }
 @RequestMapping("/login")
-public ResponseEntity<UserDTO> loginRequest(@RequestBody UserCredentialsDTO user) {
+public ResponseEntity<UserDTO> loginRequest(@RequestBody LoginRequestModel user) {
     logger.info("Received request to login user with username: " + user.getUsername() + ".");
     return userService.login(user);
 }
