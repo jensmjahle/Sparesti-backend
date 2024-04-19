@@ -11,7 +11,8 @@ public enum TransactionCategory {
   ENTERTAINMENT("Entertainment"),
   INCOME("Income"),
   LOAN_DONATIONS("Loan and Donations"),
-  OTHER("Other");
+  OTHER("Other"),
+  NOT_CATEGORIZED("Not categorized");
 
   private final String category;
 

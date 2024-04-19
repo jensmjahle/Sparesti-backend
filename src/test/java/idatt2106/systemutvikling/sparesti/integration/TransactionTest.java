@@ -3,6 +3,7 @@ package idatt2106.systemutvikling.sparesti.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import idatt2106.systemutvikling.sparesti.configuration.OpenAIRestTemplateConfig;
 import idatt2106.systemutvikling.sparesti.controller.TransactionController;
 import idatt2106.systemutvikling.sparesti.dto.PaginatedRequestDTO;
 import idatt2106.systemutvikling.sparesti.mockBank.service.AccountService;
@@ -10,6 +11,7 @@ import idatt2106.systemutvikling.sparesti.mockBank.service.BankTransactionServic
 import idatt2106.systemutvikling.sparesti.mockBank.service.CustomerService;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
+import idatt2106.systemutvikling.sparesti.service.OpenAIService;
 import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import idatt2106.systemutvikling.sparesti.service.TransactionServiceInterface;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TransactionController.class)
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 @AutoConfigureDataJpa
-@Import({ SecurityConfig.class, TransactionService.class, BankTransactionService.class, AccountService.class, CustomerService.class, SecretsConfig.class })
+@Import({ SecurityConfig.class, TransactionService.class, BankTransactionService.class,
+          AccountService.class, CustomerService.class, SecretsConfig.class, OpenAIService.class,
+          OpenAIRestTemplateConfig.class })
 public class TransactionTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
