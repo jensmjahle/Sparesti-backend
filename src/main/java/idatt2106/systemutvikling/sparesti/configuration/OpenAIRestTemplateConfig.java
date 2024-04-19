@@ -1,6 +1,5 @@
 package idatt2106.systemutvikling.sparesti.configuration;
 
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

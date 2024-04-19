@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TransactionService {
+public class BankTransactionService {
 
   private final TransactionRepository transactionRepository;
   private final AccountService accountService;
 
   @Autowired
-  public TransactionService(TransactionRepository transactionRepository, AccountService accountService) {
+  public BankTransactionService(TransactionRepository transactionRepository, AccountService accountService) {
     this.transactionRepository = transactionRepository;
     this.accountService = accountService;
   }
