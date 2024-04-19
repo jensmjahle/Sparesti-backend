@@ -1,12 +1,14 @@
-package idatt2106.systemutvikling.sparesti.model;
+package idatt2106.systemutvikling.sparesti.model.openAI;
 
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ChatRequest {
 
   private String model;
@@ -18,7 +20,7 @@ public class ChatRequest {
     this.model = model;
 
     this.messages = new ArrayList<>();
-    this.messages.add(new Message("system", prompt));
+    this.messages.add(new Message("user", prompt));
   }
 
 }
