@@ -67,7 +67,7 @@ class AchievementServiceTest {
     when(achievementRepository.findAll()).thenReturn(allAchievements);
 
     // Act
-    List<AchievementDAO> lockedAchievements = achievementService.getLockedAchievements(user);
+    List<AchievementDAO> lockedAchievements = achievementService.getLockedAchievements(user.getUsername());
 
     // Assert
     assertEquals(2, lockedAchievements.size());
@@ -95,7 +95,7 @@ class AchievementServiceTest {
     when(conditionService.isConditionMet(null)).thenReturn(true); // Mock condition always being met
 
     // Call the method to test
-    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(user);
+    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(user.getUsername());
 
     // Verify the result
     assertEquals(1, unlockedAchievements.size());

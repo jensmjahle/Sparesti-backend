@@ -45,11 +45,11 @@ public class AchievementService {
   /**
    * Retrieves the list of locked achievements for a given user.
    *
-   * @param user The user for whom to retrieve locked achievements.
+   * @param username The user for whom to retrieve locked achievements.
    * @return The list of locked achievements.
    */
-  public List<AchievementDAO> getLockedAchievements(UserDAO user) {
-    List<AchievementDAO> achieved = user.getAchievements();
+  public List<AchievementDAO> getLockedAchievements(String username) {
+    List<AchievementDAO> achieved = userRepository.findByUsername(username).getAchievements();
     List<AchievementDAO> lockedAchievements = new ArrayList<>(achievementRepository.findAll());
     lockedAchievements.removeAll(achieved);
     return lockedAchievements;
@@ -58,12 +58,13 @@ public class AchievementService {
   /**
    * Checks for unlocked achievements for a given user and adds them to the user's achievements if unlocked.
    *
-   * @param user The user for whom to check and unlock achievements.
+   * @param username The user for whom to check and unlock achievements.
    * @return The list of newly unlocked achievements.
    */
-  public List<AchievementDTO> checkForUnlockedAchievements(UserDAO user) {
+  public List<AchievementDTO> checkForUnlockedAchievements(String username) {
+    UserDAO user = userRepository.findByUsername(username);
     List<AchievementDTO> newAchievements = new ArrayList<>();
-    List<AchievementDAO> lockedAchievement = getLockedAchievements(user);
+    List<AchievementDAO> lockedAchievement = getLockedAchievements(user.getUsername());
     List<ConditionDAO> conditions;
     boolean achievementUnlocked;
     for (AchievementDAO achievement : lockedAchievement) {
