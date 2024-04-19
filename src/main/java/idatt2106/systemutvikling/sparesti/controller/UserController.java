@@ -2,12 +2,11 @@ package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import java.util.logging.Logger;
+
+import idatt2106.systemutvikling.sparesti.mockBank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 
 @RestController
@@ -27,7 +26,6 @@ public class UserController {
     return userService.getUserDTO(username);
   }
 
-
   @RequestMapping("/delete/{username}")
   public ResponseEntity<UserDTO> deleteUserDTO(@PathVariable String username) {
     logger.info("Received request to delete user information.");
@@ -39,7 +37,5 @@ public class UserController {
     logger.info("Received request to update user information.");
     return userService.updateUserDTO(username, updatedUserDTO);
   }
-
-
 
 }
