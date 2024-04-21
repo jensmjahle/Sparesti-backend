@@ -19,7 +19,8 @@ public class GenerateChallengeService {
   }
 
   /**
-   * Generates one daily challenges for all users in the database.
+   * Generates one daily challenge for all users in the database.
+   * This method is called once a day by GenerateChallengeTask.
    */
   public void generateDailyChallenges() {
     try {
@@ -33,7 +34,8 @@ public class GenerateChallengeService {
   }
 
   /**
-   * Generates one weekly challenges for all users in the database.
+   * Generates one weekly challenge for all users in the database.
+   * This method is called once a week by GenerateChallengeTask.
    */
   public void generateWeeklyChallenges() {
     try {
@@ -47,7 +49,8 @@ public class GenerateChallengeService {
   }
 
   /**
-   * Generates one monthly challenges for all users in the database.
+   * Generates one monthly challenge for all users in the database.
+   * This method is called once a month by GenerateChallengeTask.
    */
   public void generateMonthlyChallenges() {
     try {
@@ -62,6 +65,7 @@ public class GenerateChallengeService {
 
   /**
    * Generates random challenges for all users in the database.
+   *
    */
   public void generateRandomChallenges() {
     try {

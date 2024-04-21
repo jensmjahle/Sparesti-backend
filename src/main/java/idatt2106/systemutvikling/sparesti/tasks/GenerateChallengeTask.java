@@ -47,7 +47,6 @@ public void monthlyChallenges() {
   @Scheduled(fixedRateString = "${generate.random.challenges.rate.in.milliseconds:60000}")
   public void randomChallenges() {
     logger.info("Generating random challenges...");
-    smsService.sendSms("004790368966", "Generating random challenges...");
     generateChallengeService.generateRandomChallenges();
   }
 
