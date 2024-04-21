@@ -1,6 +1,6 @@
 package idatt2106.systemutvikling.sparesti.tasks;
 
-import idatt2106.systemutvikling.sparesti.service.GenerateChallengeService;
+import idatt2106.systemutvikling.sparesti.service.challengeGeneration.GenerateChallengeService;
 import idatt2106.systemutvikling.sparesti.service.SmsService;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
