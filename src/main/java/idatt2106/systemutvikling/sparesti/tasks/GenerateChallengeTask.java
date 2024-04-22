@@ -1,7 +1,6 @@
 package idatt2106.systemutvikling.sparesti.tasks;
 
 import idatt2106.systemutvikling.sparesti.service.challengeGeneration.GenerateChallengeService;
-import idatt2106.systemutvikling.sparesti.service.SmsService;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,7 +12,6 @@ public class GenerateChallengeTask {
 
   private final Logger logger = Logger.getLogger(GenerateChallengeTask.class.getName());
   private final GenerateChallengeService generateChallengeService;
-  private final SmsService smsService;
 
   /**
    * Task to generate daily challenges. Runs every day at 06.00.
