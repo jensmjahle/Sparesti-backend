@@ -4,6 +4,7 @@ import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.repository.TransactionRepository;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
+import idatt2106.systemutvikling.sparesti.service.AchievementService;
 import idatt2106.systemutvikling.sparesti.service.TransactionServiceInterface;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -15,11 +16,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
 public class BankTransactionService implements TransactionServiceInterface {
 
+  private final Logger logger = Logger.getLogger(BankTransactionService.class.getName());
   private final TransactionRepository transactionRepository;
   private final AccountService accountService;
 
@@ -46,20 +49,26 @@ public class BankTransactionService implements TransactionServiceInterface {
    * @param currency The currency of the transaction.
    * @return TransactionDAO The saved transaction DAO.
    */
-  public TransactionDAO createTransaction(String debtorName, String creditorName, String transactionTitle, Long debtorAccount, Long creditorAccount, Long amount, String currency) {
-    TransactionDAO transactionDAO = new TransactionDAO();
+  public Boolean createTransaction(String debtorName, String creditorName, String transactionTitle, Long debtorAccount, Long creditorAccount, Long amount, String currency) {
+    try {
+      TransactionDAO transactionDAO = new TransactionDAO();
 
-    transactionDAO.setAccountDAO(accountService.findAccountByAccountNr(debtorAccount));
-    transactionDAO.setTransactionTitle(transactionTitle);
-    transactionDAO.setTime(new Date());
-    transactionDAO.setDebtorAccount(debtorAccount);
-    transactionDAO.setDebtorName(debtorName);
-    transactionDAO.setCreditorAccount(creditorAccount);
-    transactionDAO.setCreditorName(creditorName);
-    transactionDAO.setAmount(amount);
-    transactionDAO.setCurrency(currency);
+      transactionDAO.setAccountDAO(accountService.findAccountByAccountNr(debtorAccount));
+      transactionDAO.setTransactionTitle(transactionTitle);
+      transactionDAO.setTime(new Date());
+      transactionDAO.setDebtorAccount(debtorAccount);
+      transactionDAO.setDebtorName(debtorName);
+      transactionDAO.setCreditorAccount(creditorAccount);
+      transactionDAO.setCreditorName(creditorName);
+      transactionDAO.setAmount(amount);
+      transactionDAO.setCurrency(currency);
 
-    return transactionRepository.save(transactionDAO);
+      transactionRepository.save(transactionDAO);
+      return true;
+    } catch (Exception e) {
+      logger.severe("Something went wrong when making transaction");
+      return false;
+    }
   }
 
   public List<TransactionDAO> findTransactionsByAccountNr(Long accountNr) {

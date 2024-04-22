@@ -28,5 +28,5 @@ public interface TransactionServiceInterface {
      * @param currency The currency of the transaction.
      * @return TransactionDAO The transaction DAO representing the created transaction.
      */
-    TransactionDAO createTransaction(String debtorName, String creditorName, String transactionTitle, Long debtorAccount, Long creditorAccount, Long amount, String currency);
+    Boolean createTransaction(String debtorName, String creditorName, String transactionTitle, Long debtorAccount, Long creditorAccount, Long amount, String currency);
 }

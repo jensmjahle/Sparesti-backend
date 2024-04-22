@@ -57,10 +57,10 @@ class TransactionServiceTest {
 
     when(UserRepository.findByUsername(username)).thenReturn(user);
     when(transactionSocket.createTransaction(username, username, "Savings transfer", checkingAccountId, savingsAccountId, amount, "NOK"))
-        .thenReturn(transactionDAO); // Assuming you have a TransactionDAO object returned by transactionSocket.createTransaction
+        .thenReturn(true);
 
     // Act
-    ResponseEntity<TransactionDTO> response = transactionService.createSavingsTransferForUser(amount, username);
+    ResponseEntity<Boolean> response = transactionService.createSavingsTransferForUser(amount, username);
 
     // Assert
     assertEquals(200, response.getStatusCodeValue()); // Assuming successful response code is 200
