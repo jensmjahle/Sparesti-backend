@@ -33,7 +33,7 @@ public interface ChallengeLogRepository extends JpaRepository<ChallengeLogDAO, L
    * @param username the username of the user
    * @return a list of challenge logs that belong to the user with the given username
    */
-  List<ChallengeLogDAO> findChallengeLogDAOByUserDAO_Username(String username);
+  List<ChallengeLogDAO> findChallengeLogDAOSByUserDAO_Username(String username);
 
   /**
    * Method to find all challenge logs that have a completion date after the given completion date
