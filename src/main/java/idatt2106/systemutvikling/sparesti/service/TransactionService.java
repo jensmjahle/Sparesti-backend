@@ -1,39 +1,84 @@
 package idatt2106.systemutvikling.sparesti.service;
 
-import idatt2106.systemutvikling.sparesti.dto.TransactionDTO;
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.mapper.KeywordMapper;
-import idatt2106.systemutvikling.sparesti.mapper.TransactionMapper;
-import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
-import idatt2106.systemutvikling.sparesti.mockBank.service.AccountService;
+import idatt2106.systemutvikling.sparesti.mapper.TransactionCategoryMapper;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
 public class TransactionService {
 
+    private static final boolean DISABLE_OPENAI_PROMPTS = true;
+
     private final TransactionServiceInterface transactionSocket;
+    private final TransactionCategoryCacheService cacheService;
     private final UserRepository dbUser;
     private final OpenAIService openAIService;
     private final Logger logger = Logger.getLogger(TransactionService.class.getName());
 
-    public List<TransactionDTO> getLatestExpensesForUser(String username, int page, int pageSize) {
-        Long checkingAccount = dbUser
-                .findByUsername(username)
-                .getCurrentAccount();
+    public List<Transaction> getLatestExpensesForUser(String username, int page, int pageSize) {
+        UserDAO user = dbUser.findByUsername(username);
 
-        return transactionSocket
-                .getLatestExpensesForAccountNumber(checkingAccount, page, pageSize)
-                .stream()
-                .map(TransactionMapper::toDTO)
-                .toList();
+        if (user == null)
+            return null;
+
+        Long checkingAccount = user.getCurrentAccount();
+
+        if (checkingAccount == null)
+            return null;
+
+        return transactionSocket.getLatestExpensesForAccountNumber(checkingAccount, page, pageSize);
     }
+
+    /**
+     * Retrieves the latest outgoing transactions for a given user, and makes sure to categorize them before
+     * returning them.
+     * @param username The username of the user, serving as the userId.
+     * @param page
+     * @param pageSize
+     * @return A list of the latest outgoing transactions.
+     */
+    public List<Transaction> getLatestExpensesForUserCategorized(String username, int page, int pageSize) {
+        List<Transaction> transactions = getLatestExpensesForUser(username, page, pageSize);
+
+        if (transactions == null)
+            return null;
+
+        return categorizeTransactions(transactions);
+    }
+
+    /**
+     * Sets the category field of all transactions in the given list of transactions. This function writes directly
+     * on the objects and does copy the objects. The returned object is just a reference to the parameter object.
+     * The categorization first checks the categorization cache, and uses the registered category if it finds an
+     * entry for the transaction. If none is found, the transaction runs through the full categorization process,
+     * and the result is stored in the cache.
+     * @param transactions The List-object containing the transactions to be categorized.
+     * @return A reference to the parameter object.
+     */
+    public List<Transaction> categorizeTransactions(@NonNull List<Transaction> transactions) {
+        for (Transaction t : transactions) {
+            TransactionCategory category = TransactionCategoryMapper
+                    .toModel(cacheService.getCategoryFromCache(t.getTransactionId()));
+
+            if (category == null)
+                category = categorizeTransaction(t);
+
+            t.setCategory(category);
+        }
+
+        return transactions;
+    }
+
     public TransactionCategory categorizeTransaction(Transaction transaction) {
         try {
             logger.info("Categorizing transaction with title: " + transaction.getTransactionTitle() + ".");
@@ -44,6 +89,9 @@ public class TransactionService {
                 logger.info("Transaction with title: " + transaction.getTransactionTitle() + " was categorized as: " + categoryKeyword + " using keywords.");
                 return categoryKeyword;
             }
+
+            if (DISABLE_OPENAI_PROMPTS)
+                return TransactionCategory.OTHER;
 
             // CATEGORIZE TRANSACTION USING OPENAI
             String prompt = "Categorize this transaction into one of the following categories: "

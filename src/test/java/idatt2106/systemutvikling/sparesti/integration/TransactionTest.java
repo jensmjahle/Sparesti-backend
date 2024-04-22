@@ -12,6 +12,7 @@ import idatt2106.systemutvikling.sparesti.mockBank.service.CustomerService;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import idatt2106.systemutvikling.sparesti.service.OpenAIService;
+import idatt2106.systemutvikling.sparesti.service.TransactionCategoryCacheService;
 import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import idatt2106.systemutvikling.sparesti.service.TransactionServiceInterface;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureDataJpa
 @Import({ SecurityConfig.class, TransactionService.class, BankTransactionService.class,
           AccountService.class, CustomerService.class, SecretsConfig.class, OpenAIService.class,
-          OpenAIRestTemplateConfig.class })
+          OpenAIRestTemplateConfig.class, TransactionCategoryCacheService.class })
 public class TransactionTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
