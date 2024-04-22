@@ -1,17 +1,19 @@
 package idatt2106.systemutvikling.sparesti.service;
 
+
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.mapper.KeywordMapper;
 import idatt2106.systemutvikling.sparesti.mapper.TransactionCategoryMapper;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +26,38 @@ public class TransactionService {
     private final UserRepository dbUser;
     private final OpenAIService openAIService;
     private final Logger logger = Logger.getLogger(TransactionService.class.getName());
+
+    /**
+     * Creates a savings transfer for a user.
+     *
+     * @param amount The amount to transfer.
+     * @param username The username of the user.
+     * @return ResponseEntity<TransactionDTO> The ResponseEntity containing the created transaction DTO.
+     */
+    public ResponseEntity<Boolean> createSavingsTransferForUser(Long amount, String username) {
+        try {
+            Long checkingAccount = dbUser
+                .findByUsername(username)
+                .getCurrentAccount();
+
+            Long savingsAccount = dbUser
+                .findByUsername(username)
+                .getSavingsAccount();
+
+            transactionSocket.createTransaction(
+                username,
+                username,
+                "Savings transfer",
+                checkingAccount,
+                savingsAccount,
+                amount,
+                "NOK");
+            return ResponseEntity.ok(true);
+        } catch (Exception e) {
+            logger.severe("An error occurred while making savings transfer username " + username + ": " + e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
 
     public List<Transaction> getLatestExpensesForUser(String username, int page, int pageSize) {
         UserDAO user = dbUser.findByUsername(username);
