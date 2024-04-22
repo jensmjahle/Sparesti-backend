@@ -10,8 +10,8 @@ import java.util.List;
 public interface TransactionServiceInterface {
 
     /**
-     * Retrieves all transactions with outgoing funds.
-     * @param accountNumber The number id of the selected account.
+     * Retrieves all outgoing transactions for a specific account.
+     * @param accountNumber The account number of the account.
      * @param page The page number in the pagination scheme.
      * @param pageSize The size of each page in the pagination scheme.
      * @return A List of a page of outgoing transactions from the specified account.
