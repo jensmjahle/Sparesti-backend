@@ -48,7 +48,7 @@ public class BankTransactionService implements TransactionServiceInterface {
             .toList();
 
     // The predicate filtering out all accounts where the creditor is not equal
-    Predicate creditorAccountNotOwn = creditorNotEqualOwnAccountList.getFirst();
+    Predicate creditorAccountNotOwn = creditorNotEqualOwnAccountList.get(0);
     for (Predicate p : creditorNotEqualOwnAccountList)
       creditorAccountNotOwn = criteriaBuilder.and(creditorAccountNotOwn, p);
 
