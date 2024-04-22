@@ -22,12 +22,6 @@ public UserCredentialsController(UserService userService) {
     this.userService = userService;
 }
 
-@RequestMapping("/login")
-public ResponseEntity<UserDTO> loginRequest(@RequestBody LoginRequestModel user) {
-    logger.info("Received request to login user with username: " + user.getUsername() + ".");
-    return userService.login(user);
-}
-
 @RequestMapping("/create")
 public ResponseEntity<String> createUser(@RequestBody UserCredentialsDTO user) {
     logger.info("Received request to create user with username: " + user.getUsername() + ".");

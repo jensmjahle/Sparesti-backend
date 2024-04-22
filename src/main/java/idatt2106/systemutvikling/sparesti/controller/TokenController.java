@@ -82,29 +82,6 @@ public class TokenController {
   }
 
   /**
-   * Generate a JWT token for the given user.
-   * @param username the username of the user
-   * @return the generated token
-   *//*
-  private String generateToken(final String username) {
-    logger.info("Generating token for user: " + username + ".");
-    final Instant now = Instant.now();
-    final Algorithm hmac512 = Algorithm.HMAC512(secretsConfig.getJwt());
-    boolean isCompleteUser = true;
-    isCompleteUser &= customerService.customerExists(username);
-    isCompleteUser &= customerService.hasTwoAccounts(username);
-    String role = isCompleteUser ? SecurityConfig.ROLE_COMPLETE : SecurityConfig.ROLE_BASIC;
-
-    return JWT.create()
-            .withSubject(username)
-            .withIssuer("SparestiTokenIssuerApp")
-            .withIssuedAt(now)
-            .withExpiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toMillis()))
-            .withClaim("role", role)
-            .sign(hmac512);
-  }*/
-
-  /**
    * Refresh the JWT token.
    * @param token the token to be exchanged for a new token to be given to the user
    * @return the refreshed token
