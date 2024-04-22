@@ -48,4 +48,11 @@ public class MilestoneController {
     milestoneService.completeMilestone(token, milestoneId);
   }
 
+  @PostMapping ("/update")
+  public ResponseEntity<MilestoneDTO> updateMilestone(@RequestHeader("Authorization") String token, @RequestBody MilestoneDTO milestoneDTO) {
+    logger.info("Received request to update milestone.");
+    milestoneService.updateMilestoneDTO(token, milestoneDTO);
+    return ResponseEntity.ok(milestoneDTO);
+  }
+
 }

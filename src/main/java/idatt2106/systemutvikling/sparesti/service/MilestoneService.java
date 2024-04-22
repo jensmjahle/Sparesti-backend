@@ -66,7 +66,7 @@ public class MilestoneService {
   /**
    * Method to complete a milestone.
    *
-   * @param token token of the user to complete the milestone
+   * @param token       token of the user to complete the milestone
    * @param milestoneId the id of the milestone to complete
    */
   public void completeMilestone(String token, Long milestoneId) {
@@ -85,7 +85,7 @@ public class MilestoneService {
   /**
    * Method to create a milestone.
    *
-   * @param token token of the user to create the milestone
+   * @param token        token of the user to create the milestone
    * @param milestoneDTO the milestone to create
    * @return the created milestone
    */
@@ -105,7 +105,7 @@ public class MilestoneService {
   /**
    * Method to get a milestone by its id.
    *
-   * @param token token of the user to get the milestone
+   * @param token       token of the user to get the milestone
    * @param milestoneID the id of the milestone
    * @return the milestone
    */
@@ -120,4 +120,23 @@ public class MilestoneService {
     }
   }
 
+  public MilestoneDTO updateMilestoneDTO(String token, MilestoneDTO milestoneDTO) {
+    String username = jwtService.extractUsernameFromToken(token);
+    try {
+      MilestoneDAO updatingMilestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneIdAndUserDAO_Username(milestoneDTO.getMilestoneId(), username);
+      updatingMilestoneDAO.setMilestoneCurrentSum(milestoneDTO.getMilestoneCurrentSum());
+
+      if (updatingMilestoneDAO.getMilestoneCurrentSum() >= updatingMilestoneDAO.getMilestoneGoalSum()) {
+        completeMilestone(token, updatingMilestoneDAO.getMilestoneId());
+      } else {
+        milestoneRepository.save(updatingMilestoneDAO);
+      }
+
+      return MilestoneMapper.toDTO(updatingMilestoneDAO);
+
+    } catch (Exception e) {
+      logger.severe("Error when updating milestone: " + e.getMessage());
+      return null;
+    }
+  }
 }
