@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class TransactionService {
 
+    private static final boolean DISABLE_OPENAI_PROMPTS = true;
+
     private final TransactionServiceInterface transactionSocket;
     private final TransactionCategoryCacheService cacheService;
     private final UserRepository dbUser;
@@ -87,6 +89,9 @@ public class TransactionService {
                 logger.info("Transaction with title: " + transaction.getTransactionTitle() + " was categorized as: " + categoryKeyword + " using keywords.");
                 return categoryKeyword;
             }
+
+            if (DISABLE_OPENAI_PROMPTS)
+                return TransactionCategory.OTHER;
 
             // CATEGORIZE TRANSACTION USING OPENAI
             String prompt = "Categorize this transaction into one of the following categories: "
