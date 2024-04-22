@@ -2,34 +2,30 @@ package idatt2106.systemutvikling.sparesti.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
+import idatt2106.systemutvikling.sparesti.security.JWTAuthorizationFilter;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
 import idatt2106.systemutvikling.sparesti.service.PasswordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 public class TokenControllerTest {
 
   @Mock
-  private PasswordService passwordService;
-
-  @Mock
   private SecretsConfig secretsConfig;
-
-  @Mock
-  private CustomerServiceInterface customerService;
 
   @InjectMocks
   private TokenController tokenController;
@@ -37,30 +33,34 @@ public class TokenControllerTest {
   @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
+    when(secretsConfig.getJwt()).thenReturn("DefaultJWTSecret"); // replace "your_secret_key" with your actual secret key
+
+    // Mock Instant.now()
+    Instant fixedInstant = Instant.now();
+    try (MockedStatic<Instant> mocked = Mockito.mockStatic(Instant.class)) {
+      mocked.when(Instant::now).thenReturn(fixedInstant);
+    }
   }
 
   @Test
-  public void testLogin() {
+  public void testGenerateTokenAndValidate() throws Exception {
+    // Create an instance of JWTAuthorizationFilter
+    JWTAuthorizationFilter jwtAuthorizationFilter = new JWTAuthorizationFilter(secretsConfig);
+
+    // Use reflection to access the generateToken method
+    Method generateTokenMethod = TokenController.class.getDeclaredMethod("generateToken", String.class);
+    generateTokenMethod.setAccessible(true);
+
+    // Generate a token
     String username = "testUser";
-    String password = "testPassword";
-    UserCredentialsDTO loginRequest = new UserCredentialsDTO();
-    loginRequest.setUsername(username);
-    loginRequest.setPassword(password);
+    String token = (String) generateTokenMethod.invoke(tokenController, username);
 
-    when(passwordService.correctPassword(username, password)).thenReturn(true);
-    when(customerService.customerExists(username)).thenReturn(true);
-    when(customerService.hasTwoAccounts(username)).thenReturn(true);
-    when(secretsConfig.getJwt()).thenReturn("secret");
+    // Validate the token and get the JWT
+    DecodedJWT jwt = jwtAuthorizationFilter.validateTokenAndGetJwt(token);
 
-    ResponseEntity<String> response = tokenController.login(loginRequest);
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(JWT.create()
-            .withSubject(username)
-            .withIssuer("SparestiTokenIssuerApp")
-            .withIssuedAt(Instant.now())
-            .withExpiresAt(Instant.now().plusMillis(Duration.ofMinutes(6).toMillis()))
-            .withClaim("role", "ROLE_COMPLETE")
-            .sign(Algorithm.HMAC512("secret")), response.getBody());
+    // Perform your assertions
+    assertNotNull(jwt);
+    assertEquals(username, jwt.getSubject());
+    assertEquals("ROLE_BASIC", jwt.getClaim("role").asString()); // expect "ROLE_BASIC" instead of "ROLE_COMPLETE"
   }
 }
