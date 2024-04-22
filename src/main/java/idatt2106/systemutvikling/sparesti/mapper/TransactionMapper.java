@@ -20,6 +20,7 @@ public class TransactionMapper {
         dto.setCreditorName(t.getCreditorName());
         dto.setDebtorAccount(t.getDebtorAccount());
         dto.setDebtorName(t.getDebtorName());
+        dto.setTransactionCategory(t.getCategory());
 
         return dto;
     }
