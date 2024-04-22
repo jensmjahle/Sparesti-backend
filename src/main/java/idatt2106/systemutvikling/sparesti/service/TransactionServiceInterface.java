@@ -15,4 +15,18 @@ public interface TransactionServiceInterface {
      * @return A List of a page of outgoing transactions from the specified account.
      */
     List<TransactionDAO> getLatestExpensesForAccountNumber(Long accountNumber, int page, int pageSize);
+
+    /**
+     * Creates a transaction with the given details and returns the created transaction DAO.
+     *
+     * @param debtorName The name of the debtor.
+     * @param creditorName The name of the creditor.
+     * @param transactionTitle The title of the transaction.
+     * @param debtorAccount The account number of the debtor.
+     * @param creditorAccount The account number of the creditor.
+     * @param amount The amount of the transaction.
+     * @param currency The currency of the transaction.
+     * @return TransactionDAO The transaction DAO representing the created transaction.
+     */
+    TransactionDAO createTransaction(String debtorName, String creditorName, String transactionTitle, Long debtorAccount, Long creditorAccount, Long amount, String currency);
 }
