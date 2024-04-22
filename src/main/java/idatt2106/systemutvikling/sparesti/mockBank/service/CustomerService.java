@@ -39,7 +39,7 @@ public class CustomerService implements CustomerServiceInterface {
 
   public CustomerDAO findCustomerByUsername(String username) {
     Optional<CustomerDAO> customerDAOOptional = customerRepository.findByUsername(username);
-    return customerDAOOptional.orElseThrow(() -> new RuntimeException(username+" was not found"));
+    return customerDAOOptional.orElse(null);
   }
 
 

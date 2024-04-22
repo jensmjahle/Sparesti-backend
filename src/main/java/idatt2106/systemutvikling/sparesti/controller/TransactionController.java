@@ -2,6 +2,8 @@ package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.PaginatedRequestDTO;
 import idatt2106.systemutvikling.sparesti.dto.TransactionDTO;
+import idatt2106.systemutvikling.sparesti.mapper.TransactionMapper;
+import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,20 +22,26 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping("/latest/expense")
-    public ResponseEntity<?> getLatestExpenses(final @RequestBody PaginatedRequestDTO pagination) {
+    public ResponseEntity<?> getLatestExpensesCategorized(final @RequestBody PaginatedRequestDTO pagination) {
         String username = CurrentUserService.getCurrentUsername();
 
-        List<TransactionDTO> dtos = transactionService
-                .getLatestExpensesForUser(
+        List<Transaction> transactions = transactionService
+                .getLatestExpensesForUserCategorized(
                         username,
                         pagination.getPageNum(),
                         pagination.getPageSize()
                 );
 
-        if (dtos == null)
+        if (transactions == null)
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No expenses found for the selected checkings account");
+                    .body("No expenses found for the selected checking account");
+
+        // Convert transactions to their DTO counterpart.
+        List<TransactionDTO> dtos = transactions
+                .stream()
+                .map(TransactionMapper::toDTO)
+                .toList();
 
         return ResponseEntity.ok().body(dtos);
     }

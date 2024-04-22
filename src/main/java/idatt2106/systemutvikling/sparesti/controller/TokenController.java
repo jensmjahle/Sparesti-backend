@@ -6,6 +6,7 @@ import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
+import idatt2106.systemutvikling.sparesti.service.JWTService;
 import idatt2106.systemutvikling.sparesti.service.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -29,13 +30,16 @@ public class TokenController {
 
   private final CustomerServiceInterface customerService;
 
+  private JWTService jwtService;
+
   private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(6);
 
   @Autowired
-  public TokenController(PasswordService passwordService, SecretsConfig secretsConfig, CustomerServiceInterface customerService) {
+  public TokenController(PasswordService passwordService, SecretsConfig secretsConfig, CustomerServiceInterface customerService, JWTService jwtService) {
     this.passwordService = passwordService;
     this.secretsConfig = secretsConfig;
     this.customerService = customerService;
+    this.jwtService = jwtService;
   }
 
   /**
@@ -45,15 +49,24 @@ public class TokenController {
    * @param loginRequest A DTO containing a correct username and password combination. Only the fields "username" and "password" is required.
    * @return A JWT to use with secured endpoints.
    */
-  @PostMapping
+  @PostMapping(value = "/login")
   @ResponseStatus(value = HttpStatus.CREATED)
   public ResponseEntity<String> login(final @RequestBody UserCredentialsDTO loginRequest) {
-    boolean success = passwordService.correctPassword(loginRequest.getUsername(), loginRequest.getPassword());
+
+    boolean success = false;
+
+    try {
+      success = passwordService.correctPassword(loginRequest.getUsername(), loginRequest.getPassword());
+    }
+    catch (Exception e) {
+      logger.warning("Access denied, wrong credentials: " + e.getMessage());
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access denied, wrong credentials");
+    }
 
     if (!success)
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access denied, wrong credentials");
 
-    String token = generateToken(loginRequest.getUsername());
+    String token = jwtService.generateToken(loginRequest.getUsername());
 
     return ResponseEntity.ok().body(token);
   }
@@ -69,28 +82,25 @@ public class TokenController {
   }
 
   /**
-   * Generate a JWT token for the given user.
-   * @param username the username of the user
-   * @return the generated token
+   * Refresh the JWT token.
+   * @param token the token to be exchanged for a new token to be given to the user
+   * @return the refreshed token
    */
-  private String generateToken(final String username) {
-    logger.info("Generating token for user: " + username + ".");
-    final Instant now = Instant.now();
-    final Algorithm hmac512 = Algorithm.HMAC512(secretsConfig.getJwt());
+  @GetMapping(value = "/refresh")
+  @ResponseStatus(value = HttpStatus.CREATED)
+  public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String token) {
+    logger.info("Received request to refresh token.");
 
-    boolean isCompleteUser = true;
-    isCompleteUser &= customerService.customerExists(username);
-    isCompleteUser &= customerService.hasTwoAccounts(username);
+    try {
+      final Algorithm hmac512 = Algorithm.HMAC512(secretsConfig.getJwt());
+      String userid = jwtService.extractUsernameFromToken(token);
 
-    String role = isCompleteUser ? SecurityConfig.ROLE_COMPLETE : SecurityConfig.ROLE_BASIC;
+      return ResponseEntity.ok().body(jwtService.generateToken(userid));
 
-    return JWT.create()
-            .withSubject(username)
-            .withIssuer("SparestiTokenIssuerApp")
-            .withIssuedAt(now)
-            .withExpiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toMillis()))
-            .withClaim("role", role)
-            .sign(hmac512);
+    } catch (Exception e) {
+      logger.warning("Access denied, wrong credentials: " + e.getMessage());
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access denied, wrong credentials");
+    }
   }
 
 }

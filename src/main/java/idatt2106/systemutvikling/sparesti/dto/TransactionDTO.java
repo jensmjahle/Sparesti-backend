@@ -1,5 +1,6 @@
 package idatt2106.systemutvikling.sparesti.dto;
 
+import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -34,4 +35,6 @@ public class TransactionDTO {
     private Long amount;
 
     private String currency;
+
+    private TransactionCategory transactionCategory;
 }

@@ -45,10 +45,16 @@ public class UserService {
     UserDAO userDAO = userRepository.findByUsername(username);
     UserDTO userDTO = UserMapper.toUserDTO(userDAO);
 
-    if (customerService.hasTwoAccounts(username)){
-      userDTO.setIsConnectedToBank(true);
-    } else {
-      userDTO.setIsConnectedToBank(false);
+    try {
+
+      if (customerService.hasTwoAccounts(username)) {
+        userDTO.setIsConnectedToBank(true);
+      } else {
+        userDTO.setIsConnectedToBank(false);
+      }
+    } catch (Exception e) {
+      logger.severe("Error when checking if user has two accounts: " + e.getMessage());
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(userDTO, HttpStatus.OK);
@@ -140,7 +146,7 @@ public class UserService {
    * @param user The UserCredentialsDTO object to create the user from.
    * @return ResponseEntity with the UserDTO object and status code.
    */
-  public ResponseEntity<UserDTO> createUser(UserCredentialsDTO user) {
+  public ResponseEntity<String> createUser(UserCredentialsDTO user) {
     try {
       UserDAO userDAO = UserMapper.userCredentialsDTOToUserDAO(user);
 
@@ -154,7 +160,7 @@ public class UserService {
           UserDTO userDTO = new UserDTO();
           userDTO.setUsername(userDAO.getUsername());
           userDTO.setIsConnectedToBank(UserMapper.toUserDTO(userDAO).getIsConnectedToBank());
-          return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+          return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
           return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
