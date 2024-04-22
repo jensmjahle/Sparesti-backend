@@ -1,5 +1,6 @@
 package idatt2106.systemutvikling.sparesti.dao;
 
+import idatt2106.systemutvikling.sparesti.enums.ChallengeTheme;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,15 +16,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class ChallengeLogDAO {
-@Id
+
+  @Id
   private Long challengeId;
-@ManyToOne (cascade = CascadeType.ALL)
-@JoinColumn(name = "username", referencedColumnName = "username")
-private UserDAO userDAO;
-private String challengeTitle;
-private String challengeDescription;
-private Long goalSum;
-private Long challengeAchievedSum;
-private LocalDateTime completionDate;
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "username", referencedColumnName = "username")
+  private UserDAO userDAO;
+  private String challengeTitle;
+  private String challengeDescription;
+  private Long goalSum;
+  private Long challengeAchievedSum;
+  private LocalDateTime completionDate;
+  private ChallengeTheme theme;
 
 }

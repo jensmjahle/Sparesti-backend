@@ -64,7 +64,7 @@ public enum ChallengeTheme {
     return allThemes;
   }
 
-  public List<ChallengeTheme> getAllThemesFromCategory(TransactionCategory category) {
+  public static List<ChallengeTheme> getAllThemesFromCategory(TransactionCategory category) {
     List<ChallengeTheme> allThemes = new ArrayList<>();
     for (ChallengeTheme theme : ChallengeTheme.values()) {
       if (theme.getExpenseCategory().equals(category)) {
@@ -74,7 +74,7 @@ public enum ChallengeTheme {
     return allThemes;
   }
 
-  public ChallengeTheme getBaseTheme(TransactionCategory category) {
+  public static ChallengeTheme getBaseTheme(TransactionCategory category) {
     switch (category) {
       case GROCERIES -> {
         return BASE_GROCERIES;
