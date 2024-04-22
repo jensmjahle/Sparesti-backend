@@ -32,8 +32,6 @@ public class TokenController {
 
   private JWTService jwtService;
 
-  private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(6);
-
   @Autowired
   public TokenController(PasswordService passwordService, SecretsConfig secretsConfig, CustomerServiceInterface customerService, JWTService jwtService) {
     this.passwordService = passwordService;

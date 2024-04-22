@@ -19,7 +19,7 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping("/get")
+  @GetMapping("/get")
   public ResponseEntity<UserDTO> getUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to get user information.");
     return userService.getUserDTO(token);

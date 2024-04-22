@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
+import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import org.junit.jupiter.api.DisplayName;
@@ -50,5 +51,47 @@ public class MilestoneMapperTest {
     assertEquals(dao.getMilestoneId(), dto.getMilestoneId());
     assertEquals(dao.getUserDAO().getUsername(), dto.getUsername());
     assertEquals(dao.getMilestoneTitle(), dto.getMilestoneTitle());
+  }
+
+  @Test
+  @DisplayName("Test MilestoneDAO to MilestoneLogDAO mapping")
+  public void testToLogDAOMapping() {
+    // Create a sample MilestoneDAO object
+    MilestoneDAO dao = new MilestoneDAO();
+    dao.setMilestoneId(1L);
+    dao.setUserDAO(new UserDAO());
+    dao.getUserDAO().setUsername("testUser");
+    dao.setMilestoneTitle("Test Milestone");
+    // Set other properties as needed...
+
+    // Map MilestoneDAO to MilestoneLogDAO
+    MilestoneLogDAO logDAO = MilestoneMapper.toLogDAO(dao);
+
+    // Assert that the mapping is correct
+    assertNotNull(logDAO);
+    assertEquals(dao.getMilestoneId(), logDAO.getMilestoneId());
+    assertEquals(dao.getUserDAO().getUsername(), logDAO.getUserDAO().getUsername());
+    assertEquals(dao.getMilestoneTitle(), logDAO.getMilestoneTitle());
+  }
+
+  @Test
+  @DisplayName("Test MilestoneLogDAO to MilestoneDTO mapping")
+  public void testLogDaoToDTOMapping() {
+    // Create a sample MilestoneLogDAO object
+    MilestoneLogDAO logDAO = new MilestoneLogDAO();
+    logDAO.setMilestoneId(1L);
+    logDAO.setUserDAO(new UserDAO());
+    logDAO.getUserDAO().setUsername("testUser");
+    logDAO.setMilestoneTitle("Test Milestone");
+    // Set other properties as needed...
+
+    // Map MilestoneLogDAO to MilestoneDTO
+    MilestoneDTO dto = MilestoneMapper.DAOLogToDTO(logDAO);
+
+    // Assert that the mapping is correct
+    assertNotNull(dto);
+    assertEquals(logDAO.getMilestoneId(), dto.getMilestoneId());
+    assertEquals(logDAO.getUserDAO().getUsername(), dto.getUsername());
+    assertEquals(logDAO.getMilestoneTitle(), dto.getMilestoneTitle());
   }
 }
