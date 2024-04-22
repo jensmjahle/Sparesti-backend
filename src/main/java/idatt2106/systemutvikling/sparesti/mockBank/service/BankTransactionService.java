@@ -1,9 +1,6 @@
 package idatt2106.systemutvikling.sparesti.mockBank.service;
 
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
-import idatt2106.systemutvikling.sparesti.mapper.TransactionMapper;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
-import idatt2106.systemutvikling.sparesti.mockBank.dao.CustomerDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.mapper.MockBankTransactionMapper;
 import idatt2106.systemutvikling.sparesti.mockBank.repository.TransactionRepository;
@@ -17,10 +14,6 @@ import jakarta.persistence.criteria.Root;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import jakarta.persistence.criteria.Order;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
