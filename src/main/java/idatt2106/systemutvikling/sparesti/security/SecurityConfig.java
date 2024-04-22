@@ -2,6 +2,7 @@ package idatt2106.systemutvikling.sparesti.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -11,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @AllArgsConstructor
+@Configuration
 public class SecurityConfig {
 
   public static final String BASIC = "BASIC";
@@ -26,14 +28,12 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(request -> new org.springframework.web.cors.CorsConfiguration().applyPermitDefaultValues()))
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/auth").permitAll()
-                    .requestMatchers("/auth").permitAll()
+                    .requestMatchers("/userCredentials/create", "/auth/login").permitAll()
                     .requestMatchers("/user/**").hasAnyRole(BASIC, COMPLETE)
                     .anyRequest().authenticated()
             )
-            .addFilterBefore(new JWTAuthorizationFilter(secrets), UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(new JWTAuthorizationFilter(secrets), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 }

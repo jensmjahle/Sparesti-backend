@@ -5,9 +5,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
+import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Service class for JWT.
@@ -17,9 +21,35 @@ public class JWTService {
 
   private static final Logger LOGGER = LogManager.getLogger(JWTService.class);
   private final SecretsConfig secrets;
+  private final CustomerServiceInterface customerService;
 
-  public JWTService(SecretsConfig secrets) {
+  private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(6);
+
+  public JWTService(SecretsConfig secrets, CustomerServiceInterface customerService, CustomerServiceInterface customerService1) {
     this.secrets = secrets;
+    this.customerService = customerService;
+  }
+
+  /**
+   * Generate a JWT token for the given user.
+   * @param username the username of the user
+   * @return the generated token
+   */
+  public String generateToken(final String username) {
+    final Instant now = Instant.now();
+    final Algorithm hmac512 = Algorithm.HMAC512(secrets.getJwt());
+    boolean isCompleteUser = true;
+    isCompleteUser &= customerService.customerExists(username);
+    isCompleteUser &= customerService.hasTwoAccounts(username);
+    String role = isCompleteUser ? SecurityConfig.ROLE_COMPLETE : SecurityConfig.ROLE_BASIC;
+
+    return JWT.create()
+            .withSubject(username)
+            .withIssuer("SparestiTokenIssuerApp")
+            .withIssuedAt(now)
+            .withExpiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toMillis()))
+            .withClaim("role", role)
+            .sign(hmac512);
   }
 
   /**
