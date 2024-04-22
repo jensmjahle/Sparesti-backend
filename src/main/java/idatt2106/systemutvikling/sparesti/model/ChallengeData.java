@@ -2,6 +2,7 @@ package idatt2106.systemutvikling.sparesti.model;
 
 import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.enums.ChallengeTheme;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
@@ -39,5 +40,6 @@ public class ChallengeData {
   private Map<TransactionCategory, Double> categoryExpensesRatio;
   private Map<TransactionCategory, Double> pastChallengesByCategoryPercentage;
   private Map<TransactionCategory, Double> pastChallengesByCategoryAcceptedPercentage;
+  private Map<ChallengeTheme, Double> pastChallengesByThemeRatio;
 
 }
