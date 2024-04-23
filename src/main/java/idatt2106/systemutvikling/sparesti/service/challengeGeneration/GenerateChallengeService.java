@@ -1,25 +1,28 @@
 package idatt2106.systemutvikling.sparesti.service.challengeGeneration;
 
+import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.model.challengeGeneration.ChallengeData;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import idatt2106.systemutvikling.sparesti.service.ChallengeLogService;
+import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class GenerateChallengeService {
 
   private final UserRepository userRepository;
   private final Logger logger = Logger.getLogger(GenerateChallengeService.class.getName());
-  private ChallengeGeneratorImpl challengeGenerator;
+  private final ChallengeGeneratorImpl challengeGenerator;
+  private final ChallengeService challengeService;
+  private final ChallengeLogService challengeLogService;
 
-  @Autowired
-  public GenerateChallengeService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
 
   /**
    * Generates one daily challenge for all users in the database. This method is called once a day
@@ -116,7 +119,14 @@ public class GenerateChallengeService {
   }
 
   public ChallengeData initializeChallengeData(UserDAO user) {
-    //todo: implement initializeChallengeData. Retrieve all necessary data from the database and return a ChallengeData object.
+    List<ChallengeDAO> activeChallenges = challengeService.getChallengesByActiveAndUsername(
+        user.getUsername(), true);
+    List<ChallengeDAO> inactiveChallenges = challengeService.getChallengesByActiveAndUsername(
+        user.getUsername(), false);
+    int activeChallengesCount = activeChallenges.size();
+    int inactiveChallengesCount = inactiveChallenges.size();
+    double challengeCompletionRate = challengeLogService.getChallengeCompletionRate(
+        user.getUsername());
 
     return null;
   }

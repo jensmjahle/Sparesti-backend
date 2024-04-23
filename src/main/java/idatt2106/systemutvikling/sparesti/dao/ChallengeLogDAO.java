@@ -28,5 +28,6 @@ public class ChallengeLogDAO {
   private Long challengeAchievedSum;
   private LocalDateTime completionDate;
   private ChallengeTheme theme;
+  private boolean accepted;
 
 }
