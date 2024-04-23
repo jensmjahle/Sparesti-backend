@@ -180,9 +180,10 @@ public class UserService {
     String username = jwtService.extractUsernameFromToken(token);
     try {
       UserDAO userDAO = userRepository.findByUsername(username);
-      if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword())) {
+      if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword()) || user.getNewPassword() == null) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
       }
+
       userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
       userRepository.save(userDAO);
       return new ResponseEntity<>(HttpStatus.OK);

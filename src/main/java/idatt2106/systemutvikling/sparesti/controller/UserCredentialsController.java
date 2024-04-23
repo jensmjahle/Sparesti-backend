@@ -26,7 +26,7 @@ public UserCredentialsController(UserService userService) {
     }
 
     @PutMapping("/updatePassword")
-    public ResponseEntity<String> updatePassword(@RequestHeader("Authorization") String token, @RequestBody UserCredentialsDTO user{
+    public ResponseEntity<String> updatePassword(@RequestHeader("Authorization") String token, @RequestBody UserCredentialsDTO user){
         logger.info("Received request to update password for user with username: " + user.getUsername() + ".");
         return userService.updatePassword(user, token);
     }
