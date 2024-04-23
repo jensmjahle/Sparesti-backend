@@ -14,4 +14,6 @@ public interface AccountRepository extends JpaRepository<AccountDAO, Long> {
   //AccountDAO findAccountDAOByCustomerDAO_Username();
   Optional<AccountDAO> findAccountDAOByAccountNr(Long accountNr);
   List<AccountDAO> findAccountDAOSByCustomerDAO(CustomerDAO customer);
+
+  List<AccountDAO> findByCustomerDAO_Username(String username);
 }
