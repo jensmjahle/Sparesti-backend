@@ -26,7 +26,7 @@ public class BankTransactionService implements TransactionServiceInterface {
 
   private final Logger logger = Logger.getLogger(BankTransactionService.class.getName());
   private final TransactionRepository transactionRepository;
-  private final AccountService accountService;
+  private final MockBankAccountService accountService;
   private final EntityManager entityManager;
 
   @Override

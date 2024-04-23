@@ -1,10 +1,7 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
-import idatt2106.systemutvikling.sparesti.dto.TransactionDTO;
-import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
-import idatt2106.systemutvikling.sparesti.mockBank.service.AccountService;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

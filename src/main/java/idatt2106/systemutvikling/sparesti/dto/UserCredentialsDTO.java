@@ -16,6 +16,8 @@ import java.time.LocalDate;
 public class UserCredentialsDTO {
   private String username;
   private String password;
+  @Nullable
+  private String newPassword;
   @ Nullable
   private String email;
   @ Nullable
