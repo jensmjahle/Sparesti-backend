@@ -77,7 +77,7 @@ public class ChallengeController {
     return ResponseEntity.ok().body("Challenge completed");
   }
 
-  @PostMapping("/delete/{challengeId}")
+  @DeleteMapping("/delete/{challengeId}")
   @ResponseBody
   public ResponseEntity<String> deleteChallenge(@PathVariable Long challengeId) {
     if (challengeId == null) {
