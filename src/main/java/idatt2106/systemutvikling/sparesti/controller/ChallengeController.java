@@ -53,4 +53,40 @@ public class ChallengeController {
     }
     return ResponseEntity.status(HttpStatus.CREATED).body(ChallengeMapper.toDTO(challengeService.createChallenge(challengeDTO)));
   }
+
+  @PostMapping("/activate/{challengeId}")
+  @ResponseBody
+  public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable Long challengeId) {
+    if (challengeId == null) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    challengeService.activateChallenge(challengeId);
+
+    return ResponseEntity.ok().body(challengeService.getChallenge(challengeId));
+  }
+
+  @PostMapping("/complete/{challengeId}")
+  @ResponseBody
+  public ResponseEntity<String> completeChallenge(@PathVariable Long challengeId) {
+    if (challengeId == null) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    challengeService.completeChallenge(challengeId);
+
+    return ResponseEntity.ok().body("Challenge completed");
+  }
+
+  @PostMapping("/delete/{challengeId}")
+  @ResponseBody
+  public ResponseEntity<String> deleteChallenge(@PathVariable Long challengeId) {
+    if (challengeId == null) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    challengeService.deleteChallenge(challengeId);
+
+    return ResponseEntity.ok().body("Challenge deleted");
+  }
 }
