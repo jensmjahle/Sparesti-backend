@@ -15,7 +15,7 @@ import java.util.List;
 public class CustomerDAO {
   @Id
   @NotNull
-  @Column(name = "firstName")
+  @Column(name = "username")
   private String username;
 
   @Column(name = "firstName")
