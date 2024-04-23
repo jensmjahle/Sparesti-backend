@@ -169,4 +169,22 @@ public class UserService {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  /**
+   * Method to update the password of a user.
+   *
+   * @param user The UserCredentialsDTO object with the new password.
+   * @return ResponseEntity with the status code.
+   */
+  public ResponseEntity<String> updatePassword(UserCredentialsDTO user, String token) {
+    String username = jwtService.extractUsernameFromToken(token);
+    try {
+      UserDAO userDAO = userRepository.findByUsername(username);
+      userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
+      userRepository.save(userDAO);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }
