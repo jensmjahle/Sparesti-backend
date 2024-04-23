@@ -4,22 +4,25 @@ import idatt2106.systemutvikling.sparesti.dao.ChallengeLogDAO;
 import idatt2106.systemutvikling.sparesti.enums.ChallengeTheme;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+
 public class ChallengeLogServiceTest {
 
   @Mock
@@ -27,6 +30,14 @@ public class ChallengeLogServiceTest {
 
   @InjectMocks
   private ChallengeLogService challengeLogService;
+
+  @BeforeEach
+  public void setup() {
+    MockitoAnnotations.openMocks(this);
+    challengeLogRepository = Mockito.mock(ChallengeLogRepository.class);
+    ReflectionTestUtils.setField(challengeLogService, "challengeLogRepository",
+        challengeLogRepository);
+  }
 
   @Test
   @DisplayName("Test getChallengeCompletionRate")

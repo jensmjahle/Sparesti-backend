@@ -14,10 +14,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
-@SpringBootTest
+
 public class ChallengeServiceTest {
 
   @Mock
@@ -25,7 +27,14 @@ public class ChallengeServiceTest {
 
   @InjectMocks
   private ChallengeService challengeService;
-  
+
+  @BeforeEach
+  public void setup() {
+    MockitoAnnotations.openMocks(this);
+    challengeRepository = Mockito.mock(ChallengeRepository.class);
+    ReflectionTestUtils.setField(challengeService, "challengeRepository", challengeRepository);
+  }
+
   @Test
   @DisplayName("Test getChallengesByActiveAndUsername returns a list of challenges")
   public void testGetChallengesByActiveAndUsername() {
