@@ -9,10 +9,12 @@ import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -23,6 +25,11 @@ public class ChallengeServiceTest {
 
   @InjectMocks
   private ChallengeService challengeService;
+
+  @BeforeEach
+  public void setup() {
+    MockitoAnnotations.openMocks(this);
+  }
 
   @Test
   @DisplayName("Test getChallengesByActiveAndUsername returns a list of challenges")
