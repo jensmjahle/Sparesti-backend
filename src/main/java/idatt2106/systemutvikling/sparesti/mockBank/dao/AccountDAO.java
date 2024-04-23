@@ -19,7 +19,7 @@ public class AccountDAO {
       allocationSize = 1, initialValue = 12313123)
   private Long accountNr;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "username", referencedColumnName = "username")
   private CustomerDAO customerDAO;
 
