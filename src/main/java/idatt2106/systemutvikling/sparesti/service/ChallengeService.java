@@ -6,6 +6,7 @@ import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
+import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +21,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ChallengeService {
 
+  private final Logger logger = Logger.getLogger(ChallengeService.class.getName());
   private ChallengeRepository challengeRepository;
-
   private ChallengeLogRepository challengeLogRepository;
 
   public ChallengeDTO getChallenge(Long challengeId) {
@@ -31,9 +32,11 @@ public class ChallengeService {
   public List<ChallengeDTO> getActiveChallenges(String username, int page, int size) {
 
     Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
-    hasChallengeTimeElapsed(challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
+    hasChallengeTimeElapsed(
+        challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
 
-    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(username, true, pageable);
+    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
+        username, true, pageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
     for (ChallengeDAO challengeDAO : challengeDAOS) {
@@ -46,9 +49,11 @@ public class ChallengeService {
   public List<ChallengeDTO> getInactiveChallenges(String username, int page, int size) {
 
     Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
-    hasChallengeTimeElapsed(challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
+    hasChallengeTimeElapsed(
+        challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
 
-    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(username, false, pageable);
+    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
+        username, false, pageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
     for (ChallengeDAO challengeDAO : challengeDAOS) {
@@ -101,5 +106,33 @@ public class ChallengeService {
 
   public void deleteChallenge(Long challengeId) {
     challengeRepository.delete(challengeRepository.findChallengeDAOByChallengeId(challengeId));
+  }
+
+  /**
+   * Method to get all challenges by username
+   *
+   * @param username the username of the user
+   * @param active   whether the challenges are active or not
+   * @return a list of challenges that belong to the user with the given username
+   */
+  public List<ChallengeDAO> getChallengesByActiveAndUsername(String username, boolean active) {
+    try {
+      return challengeRepository.findChallengeDAOByActiveAndUserDAO_Username(active, username);
+    } catch (Exception e) {
+      logger.severe("Failed to get active challenges" + e.getMessage());
+      return null;
+    }
+  }
+
+  public List<ChallengeDAO> getChallengesStartedAfterDate(LocalDateTime startDate,
+      String username) {
+    try {
+      return challengeRepository.findChallengeDAOSByStartDateAfterAndUserDAO_Username(startDate,
+          username);
+    } catch (Exception e) {
+      logger.severe("Failed to get challenges this month for user " + username + e.getMessage());
+      throw new RuntimeException(
+          "Failed to get challenges this month for user " + username + e.getMessage());
+    }
   }
 }

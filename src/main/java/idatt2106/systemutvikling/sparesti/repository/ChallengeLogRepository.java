@@ -70,4 +70,6 @@ public interface ChallengeLogRepository extends JpaRepository<ChallengeLogDAO, L
    * @return a list of challenge logs that have a completion date before the given date
    */
   List<ChallengeLogDAO> findChallengeLogDAOSByCompletionDateBefore(LocalDateTime completionDate);
+
+  List<ChallengeLogDAO> findChallengeLogDAOByUserDAO_Username(String username);
 }
