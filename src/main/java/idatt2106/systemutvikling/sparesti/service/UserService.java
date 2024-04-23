@@ -146,7 +146,7 @@ public class UserService {
    * @param user The UserCredentialsDTO object to create the user from.
    * @return ResponseEntity with the UserDTO object and status code.
    */
-  public ResponseEntity<String> createUser(UserCredentialsDTO user) {
+  public ResponseEntity<UserDTO> createUser(UserCredentialsDTO user) {
     try {
       UserDAO userDAO = UserMapper.userCredentialsDTOToUserDAO(user);
 
@@ -160,7 +160,8 @@ public class UserService {
           UserDTO userDTO = new UserDTO();
           userDTO.setUsername(userDAO.getUsername());
           userDTO.setIsConnectedToBank(UserMapper.toUserDTO(userDAO).getIsConnectedToBank());
-          return new ResponseEntity<>(HttpStatus.CREATED);
+
+          return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
         } catch (Exception e) {
           return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
