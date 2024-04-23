@@ -12,36 +12,37 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "mock_transaction")
 public class TransactionDAO {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "transactionId")
+  @Column(name = "transaction_id")
   private Long transactionId;
 
   @ManyToOne
-  @JoinColumn(name = "accountNr")
+  @JoinColumn(name = "account_nr")
   private AccountDAO accountDAO;
 
-  @Column(name = "transactionTitle")
+  @Column(name = "transaction_title")
   private String transactionTitle;
 
-  @Column(name = "time")
+  @Column(name = "time_stamp")
   @Temporal(TemporalType.TIMESTAMP)
   private Date time;
 
   @NotNull
-  @Column(name = "debtorAccount")
+  @Column(name = "debtor_account")
   private Long debtorAccount;
 
-  @Column(name = "debtorName")
+  @Column(name = "debtor_name")
   private String debtorName;
 
   @NotNull
-  @Column(name = "creditorAccount")
+  @Column(name = "creditor_account")
   private Long creditorAccount;
 
-  @Column(name = "creditorName")
+  @Column(name = "creditor_name")
   private String creditorName;
 
   @Positive
@@ -50,7 +51,5 @@ public class TransactionDAO {
 
   @Column(name = "currency")
   private String currency;
-
-
 
 }

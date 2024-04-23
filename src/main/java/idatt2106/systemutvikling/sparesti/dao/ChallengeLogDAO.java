@@ -1,11 +1,8 @@
 package idatt2106.systemutvikling.sparesti.dao;
 
 import idatt2106.systemutvikling.sparesti.enums.ChallengeTheme;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "challenge_log")
 public class ChallengeLogDAO {
 
   @Id

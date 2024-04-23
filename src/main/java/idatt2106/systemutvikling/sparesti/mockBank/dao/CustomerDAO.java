@@ -12,15 +12,16 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "mock_customer")
 public class CustomerDAO {
   @Id
   @NotNull
   @Column(name = "username")
   private String username;
 
-  @Column(name = "firstName")
+  @Column(name = "first_name")
   private String firstName;
 
-  @Column(name = "lastName")
+  @Column(name = "last_name")
   private String lastName;
 }

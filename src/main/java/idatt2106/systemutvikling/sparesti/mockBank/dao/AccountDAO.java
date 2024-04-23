@@ -10,11 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "mock_account")
 public class AccountDAO {
 
   @Id
   @NotNull
-  @Column(name = "accountNr")
+  @Column(name = "account_nr")
   private Long accountNr;
 
   @ManyToOne(fetch = FetchType.EAGER)
@@ -27,7 +28,7 @@ public class AccountDAO {
   @Column(name = "accountName")
   private String name;
 
-  @Column(name = "accountType")
+  @Column(name = "account_type")
   private String type;
 
   @Column(name = "currency")
