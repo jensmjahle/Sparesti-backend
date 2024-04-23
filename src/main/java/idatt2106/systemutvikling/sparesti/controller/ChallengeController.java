@@ -61,9 +61,7 @@ public class ChallengeController {
       return ResponseEntity.badRequest().build();
     }
 
-    challengeService.activateChallenge(challengeId);
-
-    return ResponseEntity.ok().body(challengeService.getChallenge(challengeId));
+    return ResponseEntity.ok().body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
   }
 
   @PostMapping("/complete/{challengeId}")
