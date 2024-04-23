@@ -15,7 +15,7 @@ import lombok.Setter;
 public class TransactionDAO {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "transactionIdGenerator")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "transactionTitle")
   private Long transactionId;
 
