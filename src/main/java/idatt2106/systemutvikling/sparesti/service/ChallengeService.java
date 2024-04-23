@@ -85,4 +85,21 @@ public class ChallengeService {
   public ChallengeDAO createChallenge(ChallengeDTO challengeDTO) {
     return challengeRepository.save(ChallengeMapper.toDAO(challengeDTO));
   }
+
+  public ChallengeDAO activateChallenge(Long challengeId) {
+    ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
+    challengeDAO.setActive(true);
+    return challengeRepository.save(challengeDAO);
+  }
+
+  public void completeChallenge(Long challengeId) {
+    ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
+    ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
+    challengeRepository.delete(challengeDAO);
+    challengeLogRepository.save(challengeLogDAO);
+  }
+
+  public void deleteChallenge(Long challengeId) {
+    challengeRepository.delete(challengeRepository.findChallengeDAOByChallengeId(challengeId));
+  }
 }
