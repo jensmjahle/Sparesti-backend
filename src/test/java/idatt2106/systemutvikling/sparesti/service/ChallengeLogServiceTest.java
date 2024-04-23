@@ -24,8 +24,6 @@ public class ChallengeLogServiceTest {
 
   @Mock
   private ChallengeLogRepository challengeLogRepository;
-  @Mock
-  private ChallengeLogService challengeLogService1;
 
   @InjectMocks
   private ChallengeLogService challengeLogService;
@@ -253,8 +251,7 @@ public class ChallengeLogServiceTest {
     // Mocking
     when(challengeLogRepository.findChallengeLogDAOByUserDAO_Username(username)).thenReturn(
         challengeLogs);
-    when(challengeLogService1.getChallengesByCategoryRatio(username)).thenReturn(
-        logByCategoryRatio);
+
     // Assertion
     assertEquals(expectedMap, challengeLogService.getChallengesByCategoryAcceptedRatio(username));
   }

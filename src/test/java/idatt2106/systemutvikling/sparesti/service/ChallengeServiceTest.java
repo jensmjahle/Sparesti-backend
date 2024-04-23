@@ -25,12 +25,7 @@ public class ChallengeServiceTest {
 
   @InjectMocks
   private ChallengeService challengeService;
-
-  @BeforeEach
-  public void setup() {
-    MockitoAnnotations.openMocks(this);
-  }
-
+  
   @Test
   @DisplayName("Test getChallengesByActiveAndUsername returns a list of challenges")
   public void testGetChallengesByActiveAndUsername() {
