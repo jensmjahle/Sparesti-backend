@@ -15,9 +15,7 @@ import lombok.Setter;
 public class TransactionDAO {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactionIdGenerator")
-  @SequenceGenerator(name = "transactionIdGenerator", sequenceName = "transaction_sequence",
-      allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "transactionIdGenerator")
   private Long transactionId;
 
   @ManyToOne

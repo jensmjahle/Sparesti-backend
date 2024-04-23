@@ -14,9 +14,6 @@ public class AccountDAO {
 
   @Id
   @NotNull
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accountIdGenerator")
-  @SequenceGenerator(name = "accountIdGenerator", sequenceName = "account_sequence",
-      allocationSize = 1, initialValue = 12313123)
   @Column(name = "accountNr")
   private Long accountNr;
 
