@@ -17,7 +17,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -305,7 +304,7 @@ public class ChallengeLogServiceTest {
 
     // Assertion
     assertEquals(expectedMap, challengeLogService.getChallengesByThemeRatio(username));
-    assertTrue(challengeLogService.getChallengesByThemeRatio(username).size() == 3);
+    assertEquals(3, challengeLogService.getChallengesByThemeRatio(username).size());
   }
 
   @Test
