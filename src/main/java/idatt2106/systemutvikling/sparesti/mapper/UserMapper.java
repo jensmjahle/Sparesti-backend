@@ -33,6 +33,7 @@ public class UserMapper {
     userDTO.setMonthlyFixedExpenses(userDAO.getMonthlyFixedExpenses());
     userDTO.setCurrentAccount(userDAO.getCurrentAccount());
     userDTO.setSavingsAccount(userDAO.getSavingsAccount());
+    userDTO.setAchievementDTOList(AchievementMapper.toDTOList(userDAO.getAchievements()));
 
     return userDTO;
   }
