@@ -5,6 +5,7 @@ import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,20 +21,20 @@ public class ChallengeController {
 
   @GetMapping("/paginated/active")
   @ResponseBody
-  public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(@RequestParam("page") int page, @RequestParam("size") int size) {
-    if (page < 0 || size < 0) {
+  public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(Pageable pageable) {
+    if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 0){
       return ResponseEntity.badRequest().build();
     }
-    return ResponseEntity.ok().body(challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), page, size));
+    return ResponseEntity.ok().body(challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable.getPageNumber(), pageable.getPageSize()));
   }
 
   @GetMapping("/paginated/inactive")
   @ResponseBody
-  public ResponseEntity<List<ChallengeDTO>> getInactiveChallenges(@RequestParam("page") int page, @RequestParam("size") int size) {
-    if (page < 0 || size < 0) {
+  public ResponseEntity<List<ChallengeDTO>> getInactiveChallenges(Pageable pageable) {
+    if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 0) {
       return ResponseEntity.badRequest().build();
     }
-    return ResponseEntity.ok().body(challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), page, size));
+    return ResponseEntity.ok().body(challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable.getPageNumber(), pageable.getPageSize()));
   }
 
   @GetMapping("/{challengeId}")
