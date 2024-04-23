@@ -16,7 +16,7 @@ public class TransactionDAO {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "transactionTitle")
+  @Column(name = "transactionId")
   private Long transactionId;
 
   @ManyToOne
