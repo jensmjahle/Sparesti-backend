@@ -19,6 +19,9 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * The type Challenge generator.
+ */
 @Component
 public class ChallengeGeneratorImpl {
 
@@ -26,6 +29,12 @@ public class ChallengeGeneratorImpl {
   private final ChallengeRepository challengeRepository;
   Logger logger = Logger.getLogger(ChallengeGeneratorImpl.class.getName());
 
+  /**
+   * Instantiates a new Challenge generator.
+   *
+   * @param openAIService       the open ai service
+   * @param challengeRepository the challenge repository
+   */
   @Autowired
   public ChallengeGeneratorImpl(OpenAIService openAIService,
       ChallengeRepository challengeRepository) {
@@ -33,6 +42,12 @@ public class ChallengeGeneratorImpl {
     this.challengeRepository = challengeRepository;
   }
 
+  /**
+   * Generate challenge.
+   *
+   * @param data     the data
+   * @param duration the duration
+   */
   public void generateChallenge(ChallengeData data, int duration) {
     //**********Set Global Restrictions. **********//
     int minDailyAmount = 10;
