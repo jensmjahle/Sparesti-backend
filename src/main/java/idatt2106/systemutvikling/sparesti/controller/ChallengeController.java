@@ -4,6 +4,8 @@ import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
+import idatt2106.systemutvikling.sparesti.service.MilestoneService;
+import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import java.util.List;
 public class ChallengeController {
 
   private final ChallengeService challengeService;
+  private final MilestoneService milestoneService;
 
   @GetMapping("/paginated/active")
   @ResponseBody
@@ -73,9 +76,9 @@ public class ChallengeController {
     return ResponseEntity.ok().body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
   }
 
-  @PostMapping("/complete/{challengeId}")
+  @PostMapping("/complete")
   @ResponseBody
-  public ResponseEntity<String> completeChallenge(@PathVariable Long challengeId) {
+  public ResponseEntity<String> completeChallenge(@RequestHeader("Authorization") String token, @PathParam("challengeId") Long challengeId, @PathParam("milestoneId") Long milestoneId) {
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
     }
@@ -84,7 +87,21 @@ public class ChallengeController {
       return ResponseEntity.badRequest().body("You are not the owner of this challenge");
     }
 
+    if (milestoneId == null) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    if (!milestoneService.getMilestoneDTOById(token, milestoneId).getUsername().equals(CurrentUserService.getCurrentUsername())) {
+      return ResponseEntity.badRequest().body("You are not the owner of this milestone");
+    }
+
+    Long achievedSum = challengeService.getChallenge(challengeId).getCurrentSum();
+
     challengeService.completeChallenge(challengeId);
+
+    milestoneService.getMilestoneDTOById(token, milestoneId).setMilestoneCurrentSum(milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum() + achievedSum);
+
+    milestoneService.updateMilestoneDTO(token, milestoneService.getMilestoneDTOById(token, milestoneId));
 
     return ResponseEntity.ok().body("Challenge completed");
   }
