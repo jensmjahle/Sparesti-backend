@@ -28,6 +28,30 @@ public class ChallengeService {
     return ChallengeMapper.toDTO(challengeRepository.findChallengeDAOByChallengeId(challengeId));
   }
 
+  public List<ChallengeDTO> getAllChallenges() {
+    List<ChallengeDAO> challengeDAOS = challengeRepository.findAll();
+    List<ChallengeDTO> challengeDTOS = new ArrayList<>();
+
+    for (ChallengeDAO challengeDAO : challengeDAOS) {
+      challengeDTOS.add(ChallengeMapper.toDTO(challengeDAO));
+    }
+
+    return challengeDTOS;
+  }
+
+  public List<ChallengeDTO> getChallengesByUsername(String username, int page, int size) {
+    Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
+
+    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable);
+    List<ChallengeDTO> challengeDTOS = new ArrayList<>();
+
+    for (ChallengeDAO challengeDAO : challengeDAOS) {
+      challengeDTOS.add(ChallengeMapper.toDTO(challengeDAO));
+    }
+
+    return challengeDTOS;
+  }
+
   public List<ChallengeDTO> getActiveChallenges(String username, int page, int size) {
 
     Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
