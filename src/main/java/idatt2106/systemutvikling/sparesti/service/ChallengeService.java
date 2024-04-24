@@ -91,7 +91,7 @@ public class ChallengeService {
     LocalDateTime now = LocalDateTime.now();
 
     for (ChallengeDAO challengeDAO : challengeDAOS) {
-      if (challengeDAO.getExpirationDate().isAfter(now)) {
+      if (!challengeDAO.getExpirationDate().isAfter(now)) {
         ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
         challengeLogRepository.save(challengeLogDAO);
         challengeRepository.delete(challengeDAO);
