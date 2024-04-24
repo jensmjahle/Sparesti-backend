@@ -3,6 +3,7 @@ package idatt2106.systemutvikling.sparesti.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashMap;
@@ -31,6 +34,7 @@ public class JWTAuthorizationFilterTest {
   public void setup() {
     MockitoAnnotations.openMocks(this);
   }
+
 
   @Test
   public void testDoFilterInternal() throws Exception {
@@ -52,6 +56,10 @@ public class JWTAuthorizationFilterTest {
 
     jwtAuthorizationFilter.doFilterInternal(request, response, filterChain);
 
-    assertEquals(username, ((HashMap<String, Object>) SecurityContextHolder.getContext().getAuthentication().getDetails()).get(CurrentUserService.KEY_USERNAME));
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    Authentication auth = securityContext.getAuthentication();
+
+    assertEquals(username, auth.getName());
   }
+  //*/
 }
