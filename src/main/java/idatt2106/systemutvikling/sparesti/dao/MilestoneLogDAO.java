@@ -13,17 +13,23 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "milestone_log")
 public class MilestoneLogDAO {
-  @Id
-private Long milestoneId;
-@ManyToOne (cascade = CascadeType.ALL)
-@JoinColumn(name = "username", referencedColumnName = "username")
-private UserDAO userDAO;
-private String milestoneTitle;
-private String milestoneDescription;
-private Long milestoneGoalSum;
-private Long milestoneAchievedSum;
-@Lob
-private byte[] milestoneImage;
-private LocalDateTime completionDate;
 
+    @Id
+    private Long milestoneId;@ManyToOne (cascade = CascadeType.ALL)
+
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private UserDAO userDAO;
+
+    private String milestoneTitle;
+
+    private String milestoneDescription;
+
+    private Long milestoneGoalSum;
+
+    private Long milestoneAchievedSum;
+
+    @Lob
+    private byte[] milestoneImage;
+
+    private LocalDateTime completionDate;
 }
