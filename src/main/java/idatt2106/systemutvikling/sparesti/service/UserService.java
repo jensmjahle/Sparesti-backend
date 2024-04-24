@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.service.AccountServiceInterface;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -23,14 +24,16 @@ public class UserService {
   private PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final CustomerServiceInterface customerService;
+  private final AccountServiceInterface accountService;
   private final JWTService jwtService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
 
   @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService) {
+  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService) {
     this.userRepository = userRepository;
     this.customerService = customerService;
     this.jwtService = jwtService;
+    this.accountService = accountService;
   }
 
   /**
@@ -48,11 +51,14 @@ public class UserService {
 
     try {
 
-      if (customerService.hasTwoAccounts(username)) {
+      if (customerService.hasTwoAccounts(username) && accountService.findAccountsByUsername(username).size() >= 2 &&
+              accountService.findAccountsNumbersByUsername(username).contains(userDAO.getCurrentAccount()) &&
+              accountService.findAccountsNumbersByUsername(username).contains(userDAO.getSavingsAccount())) {
         userDTO.setIsConnectedToBank(true);
       } else {
         userDTO.setIsConnectedToBank(false);
       }
+
     } catch (Exception e) {
       logger.severe("Error when checking if user has two accounts: " + e.getMessage());
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
