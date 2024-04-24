@@ -35,12 +35,10 @@ public class JWTAuthorizationFilterTest {
     MockitoAnnotations.openMocks(this);
   }
 
-
   @BeforeEach
   public void tearDown() {
     SecurityContextHolder.clearContext();
   }
-
 
   @Test
   public void testDoFilterInternal() throws Exception {

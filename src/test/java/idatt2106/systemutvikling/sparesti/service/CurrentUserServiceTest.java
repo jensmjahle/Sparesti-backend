@@ -1,5 +1,4 @@
 package idatt2106.systemutvikling.sparesti.service;
-
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,17 +38,14 @@ public class CurrentUserServiceTest {
 
   @Test
   public void testIsCompleteUser() {
-
-    // Arrange
+// Arrange
     String role = SecurityConfig.ROLE_COMPLETE;
     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
     authorities.add(new SimpleGrantedAuthority(role));
-
-    authorities.add(new SimpleGrantedAuthority(role));
     when(authentication.getAuthorities()).thenReturn((Collection) authorities);
-
+// Act
     boolean isCompleteUser = CurrentUserService.isCompleteUser();
-
+// Assert
     assertTrue(isCompleteUser);
   }
 }
