@@ -18,6 +18,7 @@ import lombok.Setter;
 public class UserDAO {
   @Id
   private String username;
+  @Column(name = "password_hash")
   private String password;
   private String email;
   private String firstName;
@@ -38,4 +39,6 @@ public class UserDAO {
   )
   private List<AchievementDAO> achievements = new ArrayList<>();
 
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+  private List<ManualSavingDAO> manualSavings;
 }
