@@ -62,6 +62,14 @@ public class ChallengeController {
       return ResponseEntity.badRequest().build();
     }
 
+    if (challengeService.getChallenge(challengeId).isActive()) {
+      return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
+    }
+
+    if (!challengeService.getChallenge(challengeId).getUsername().equals(CurrentUserService.getCurrentUsername())) {
+      return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
+    }
+
     return ResponseEntity.ok().body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
   }
 
@@ -70,6 +78,10 @@ public class ChallengeController {
   public ResponseEntity<String> completeChallenge(@PathVariable Long challengeId) {
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
+    }
+
+    if (!challengeService.getChallenge(challengeId).getUsername().equals(CurrentUserService.getCurrentUsername())) {
+      return ResponseEntity.badRequest().body("You are not the owner of this challenge");
     }
 
     challengeService.completeChallenge(challengeId);
@@ -82,6 +94,10 @@ public class ChallengeController {
   public ResponseEntity<String> deleteChallenge(@PathVariable Long challengeId) {
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
+    }
+
+    if (!challengeService.getChallenge(challengeId).getUsername().equals(CurrentUserService.getCurrentUsername())) {
+      return ResponseEntity.badRequest().body("You are not the owner of this challenge");
     }
 
     challengeService.deleteChallenge(challengeId);
