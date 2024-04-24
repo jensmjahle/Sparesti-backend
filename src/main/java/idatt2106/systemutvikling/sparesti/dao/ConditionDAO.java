@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "condition")
+@Table(name = "conditions")
 public class ConditionDAO {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
