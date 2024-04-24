@@ -1,6 +1,7 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 
+import idatt2106.systemutvikling.sparesti.dao.TransactionCategoryDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.mapper.KeywordMapper;
@@ -101,13 +102,19 @@ public class TransactionService {
      */
     public List<Transaction> categorizeTransactions(@NonNull List<Transaction> transactions) {
         for (Transaction t : transactions) {
-            TransactionCategory category = TransactionCategoryMapper
-                    .toModel(cacheService.getCategoryFromCache(t.getTransactionId()));
+            // Retrieve transaction category from cache
+            TransactionCategoryDAO categoryDAO = cacheService.getCategoryFromCache(t.getTransactionId());
 
-            if (category == null)
-                category = categorizeTransaction(t);
+            // If the cache had no entry for the transaction
+            if (categoryDAO == null) {
+                // Calculate category for this new transaction
+                TransactionCategory newCategory = categorizeTransaction(t);
+                // Store an entry for this transaction in the cache
+                categoryDAO = cacheService.setCategoryCache(t.getTransactionId(), newCategory);
+            }
 
-            t.setCategory(category);
+            // Set category of the transaction
+            t.setCategory(categoryDAO.getTransactionCategory());
         }
 
         return transactions;
