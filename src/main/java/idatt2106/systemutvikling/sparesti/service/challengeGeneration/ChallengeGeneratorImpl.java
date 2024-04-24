@@ -52,10 +52,10 @@ public class ChallengeGeneratorImpl {
     //**********Set Global Restrictions. **********//
     int minDailyAmount = 10;
     int maxDailyAmount = 500;
-    int maxInactiveChallenges = 3;
+    int maxInactiveChallenges = 2;
 
     //********** Check if user has too many active challenges. **********//
-    if (data.getInactChalCount() < maxInactiveChallenges) {
+    if (data.getInactChalCount() > maxInactiveChallenges) {
       return;
     }
 
@@ -63,6 +63,7 @@ public class ChallengeGeneratorImpl {
     LocalDateTime start = LocalDateTime.now();
     LocalDateTime end = LocalDateTime.now().plusDays(duration);
     double temperature = calcTemp(duration);
+
     double difficulty = calcDifficulty(data.getChalComplRate());
     double amount = calcAmount(minDailyAmount * duration, maxDailyAmount * duration,
         duration,
@@ -242,8 +243,7 @@ public class ChallengeGeneratorImpl {
               + "Given this information, choose a challenge theme that aligns with the user's spending habits and financial goals."
               + "Consider factors such as the user's transaction history, the adjusted amount, the challenge Category, and the duration of the challenge. "
               + "Ensure that the selected theme provides a reasonable level of difficulty based on these factors.\n"
-              + "\n"
-              + "Only select a theme from the list of available themes. If no theme is suitable, reply with 'NO_THEME'\n";
+              + "Only reply with the theme name from the list of available themes. If no theme is suitable, reply with 'NO_THEME'\n";
 
       String response = openAIService.chat(prompt);
 
@@ -288,8 +288,10 @@ public class ChallengeGeneratorImpl {
               + "Ensure that the title and description provide a reasonable level of difficulty based on these factors.\n"
               + "The title should be fun an encouraging and the description should be informative and motivating.\n"
               + "Title length should be between 10 and 45 characters and description length should be between 50 and 200 characters.\n"
-              + "Only reply with the title and description on this format: 'Title';'Description'  \n"
+              + "Only reply with the title and description on this format: Title;Description  \n"
+              + "If you use any numbers round them to the nearest whole number. \n"
               + "If you are unable to generate a title and description, reply with 'NO_TITLE_DESCRIPTION'\n"
+              + "Give your answer in norwegian\n"
               + "\n";
 
       String response = openAIService.chat(prompt);
@@ -297,7 +299,7 @@ public class ChallengeGeneratorImpl {
       if (response.equals("NO_TITLE_DESCRIPTION")) {
         String title = theme.getStandardMessage();
         String description =
-            "Try to save " + amount + " NOK in " + ChronoUnit.DAYS.between(start, end)
+            "Try to save " + Math.round(amount) + " NOK in " + ChronoUnit.DAYS.between(start, end)
                 + " days by reducing your " + theme.getExpenseCategory().getCategory()
                 + " expenses.";
         return new ChallengeTitleAndDescription(title, description);
@@ -309,7 +311,7 @@ public class ChallengeGeneratorImpl {
       logger.warning("Failed to generate title and description: " + e.getMessage());
       String title = theme.getStandardMessage();
       String description =
-          "Try to save " + amount + " NOK in " + ChronoUnit.DAYS.between(start, end)
+          "Try to save " + Math.round(amount) + " NOK in " + ChronoUnit.DAYS.between(start, end)
               + " days by reducing your " + theme.getExpenseCategory().getCategory()
               + " expenses.";
       return new ChallengeTitleAndDescription(title, description);
