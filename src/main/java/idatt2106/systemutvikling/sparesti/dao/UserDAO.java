@@ -38,4 +38,6 @@ public class UserDAO {
   )
   private List<AchievementDAO> achievements = new ArrayList<>();
 
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+  private List<ManualSavingDAO> manualSavings;
 }
