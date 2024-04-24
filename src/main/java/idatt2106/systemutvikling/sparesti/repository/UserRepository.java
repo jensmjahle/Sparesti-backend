@@ -14,4 +14,12 @@ public interface UserRepository extends JpaRepository<UserDAO, String> {
    * @return the user entity as UserDAO
    */
   UserDAO findByUsername(String username);
+
+  /**
+   * Method to find a user by its email
+   *
+   * @param email the email of the user
+   * @return the user entity as UserDAO
+   */
+  UserDAO findByEmail(String email);
 }

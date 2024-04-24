@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -118,7 +119,7 @@ public class UserService {
       existingUser.setBirthDate(updatedUserDTO.getBirthDate());
     }
 
-    if (Objects.nonNull(updatedUserDTO.getEmail())) {
+    if (Objects.nonNull(updatedUserDTO.getEmail()) && userRepository.findByEmail(existingUser.getEmail()) == null) {
       existingUser.setEmail(updatedUserDTO.getEmail());
     }
 
@@ -153,13 +154,21 @@ public class UserService {
       if (userRepository.findByUsername(userDAO.getUsername()) != null) {
         return new ResponseEntity<>(HttpStatus.CONFLICT);
       } else {
+
+        if (passwordEncoder.encode(userDAO.getPassword()).length() <= 8 || userDAO.getPassword() == null || userDAO.getUsername() == null){
+          return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (userRepository.findByUsername(userDAO.getUsername()) != null || userRepository.findByEmail(userDAO.getEmail()) != null) {
+          return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         try {
           userDAO.setPassword(passwordEncoder.encode(userDAO.getPassword()));
           userRepository.save(userDAO);
-          //here we should return only profile picture, username and isConnectedToBank
           UserDTO userDTO = new UserDTO();
           userDTO.setUsername(userDAO.getUsername());
-          userDTO.setIsConnectedToBank(UserMapper.toUserDTO(userDAO).getIsConnectedToBank());
+          userDTO.setIsConnectedToBank(false);
 
           return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -183,6 +192,10 @@ public class UserService {
       UserDAO userDAO = userRepository.findByUsername(username);
       if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword()) || user.getNewPassword() == null) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
+
+      if (passwordEncoder.encode(user.getNewPassword()).length() <= 8) {
+        return new ResponseEntity<>("Password needs to be at least 8 characters long",HttpStatus.BAD_REQUEST);
       }
 
       userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
