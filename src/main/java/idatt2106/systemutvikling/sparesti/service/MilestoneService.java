@@ -139,4 +139,18 @@ public class MilestoneService {
       return null;
     }
   }
+
+  public MilestoneDAO increaseMilestonesCurrentSum(Long milestoneId, Long amount) {
+    MilestoneDAO milestone = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneId);
+
+    if (milestone == null)
+      return null;
+
+    milestone.setMilestoneCurrentSum(milestone.getMilestoneCurrentSum() + amount);
+    return milestoneRepository.save(milestone);
+  }
+
+  public MilestoneDAO decreaseMilestonesCurrentSum(Long milestoneId, Long amount) {
+    return increaseMilestonesCurrentSum(milestoneId, -amount);
+  }
 }

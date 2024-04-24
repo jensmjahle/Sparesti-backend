@@ -18,6 +18,7 @@ import lombok.Setter;
 public class UserDAO {
   @Id
   private String username;
+  @Column(name = "password_hash")
   private String password;
   private String email;
   private String firstName;

@@ -160,4 +160,29 @@ public class TransactionService {
             throw e;
         }
     }
+
+    public boolean createSavingsTransferForCurrentUser(long amount) {
+        String username = CurrentUserService.getCurrentUsername();
+        if (username == null)
+            return false;
+
+        UserDAO user = dbUser.findByUsername(username);
+
+        if (user == null)
+            return false;
+
+        if (user.getSavingsAccount() == null)
+
+
+        transactionSocket.createTransaction(
+                username,
+                username,
+                "Sparesti: Manual savings transfer towards savings goal",
+                user.getCurrentAccount(),
+                user.getSavingsAccount(),
+                amount,
+                "NOK");
+
+        return true;
+    }
 }
