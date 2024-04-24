@@ -32,6 +32,11 @@ public class JWTAuthorizationFilterTest {
     MockitoAnnotations.openMocks(this);
   }
 
+  @BeforeEach
+  public void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
+
   @Test
   public void testDoFilterInternal() throws Exception {
     String username = "testUser";
@@ -51,7 +56,8 @@ public class JWTAuthorizationFilterTest {
     when(secretsConfig.getJwt()).thenReturn(secret);
 
     jwtAuthorizationFilter.doFilterInternal(request, response, filterChain);
-
-    assertEquals(username, ((HashMap<String, Object>) SecurityContextHolder.getContext().getAuthentication().getDetails()).get(CurrentUserService.KEY_USERNAME));
+    System.out.println( SecurityContextHolder.getContext().getAuthentication().getName());
+    System.out.println(username);
+    assertEquals(username, SecurityContextHolder.getContext().getAuthentication().getName());
   }
 }
