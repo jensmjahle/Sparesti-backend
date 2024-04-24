@@ -37,22 +37,20 @@ public class TransactionService {
      */
     public ResponseEntity<Boolean> createSavingsTransferForUser(Long amount, String username) {
         try {
-            Long checkingAccount = dbUser
-                .findByUsername(username)
-                .getCurrentAccount();
+            UserDAO user = dbUser.findByUsername(username);
 
-            Long savingsAccount = dbUser
-                .findByUsername(username)
-                .getSavingsAccount();
+            if (user == null)
+                return ResponseEntity.ok(false);
 
             transactionSocket.createTransaction(
-                username,
-                username,
-                "Savings transfer",
-                checkingAccount,
-                savingsAccount,
-                amount,
-                "NOK");
+                    username,
+                    username,
+                    "Savings transfer",
+                    user.getCurrentAccount(),
+                    user.getSavingsAccount(),
+                    amount,
+                    "NOK");
+
             return ResponseEntity.ok(true);
         } catch (Exception e) {
             logger.severe("An error occurred while making savings transfer username " + username + ": " + e.getMessage());
