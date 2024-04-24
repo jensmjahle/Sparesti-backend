@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.service.AccountServiceInterface;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -22,14 +24,16 @@ public class UserService {
   private PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final CustomerServiceInterface customerService;
+  private final AccountServiceInterface accountService;
   private final JWTService jwtService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
 
   @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService) {
+  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService) {
     this.userRepository = userRepository;
     this.customerService = customerService;
     this.jwtService = jwtService;
+    this.accountService = accountService;
   }
 
   /**
@@ -47,11 +51,14 @@ public class UserService {
 
     try {
 
-      if (customerService.hasTwoAccounts(username)) {
+      if (customerService.hasTwoAccounts(username) && accountService.findAccountsByUsername(username).size() >= 2 &&
+              accountService.findAccountsNumbersByUsername(username).contains(userDAO.getCurrentAccount()) &&
+              accountService.findAccountsNumbersByUsername(username).contains(userDAO.getSavingsAccount())) {
         userDTO.setIsConnectedToBank(true);
       } else {
         userDTO.setIsConnectedToBank(false);
       }
+
     } catch (Exception e) {
       logger.severe("Error when checking if user has two accounts: " + e.getMessage());
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -118,7 +125,7 @@ public class UserService {
       existingUser.setBirthDate(updatedUserDTO.getBirthDate());
     }
 
-    if (Objects.nonNull(updatedUserDTO.getEmail())) {
+    if (Objects.nonNull(updatedUserDTO.getEmail()) && userRepository.findByEmail(existingUser.getEmail()) == null) {
       existingUser.setEmail(updatedUserDTO.getEmail());
     }
 
@@ -153,13 +160,21 @@ public class UserService {
       if (userRepository.findByUsername(userDAO.getUsername()) != null) {
         return new ResponseEntity<>(HttpStatus.CONFLICT);
       } else {
+
+        if (passwordEncoder.encode(userDAO.getPassword()).length() <= 8 || userDAO.getPassword() == null || userDAO.getUsername() == null){
+          return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (userRepository.findByUsername(userDAO.getUsername()) != null || userRepository.findByEmail(userDAO.getEmail()) != null) {
+          return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         try {
           userDAO.setPassword(passwordEncoder.encode(userDAO.getPassword()));
           userRepository.save(userDAO);
-          //here we should return only profile picture, username and isConnectedToBank
           UserDTO userDTO = new UserDTO();
           userDTO.setUsername(userDAO.getUsername());
-          userDTO.setIsConnectedToBank(UserMapper.toUserDTO(userDAO).getIsConnectedToBank());
+          userDTO.setIsConnectedToBank(false);
 
           return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -183,6 +198,10 @@ public class UserService {
       UserDAO userDAO = userRepository.findByUsername(username);
       if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword()) || user.getNewPassword() == null) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
+
+      if (passwordEncoder.encode(user.getNewPassword()).length() <= 8) {
+        return new ResponseEntity<>("Password needs to be at least 8 characters long",HttpStatus.BAD_REQUEST);
       }
 
       userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
