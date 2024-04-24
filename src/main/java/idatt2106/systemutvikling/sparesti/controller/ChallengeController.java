@@ -46,6 +46,11 @@ public class ChallengeController {
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
     }
+
+    if (!challengeService.getChallenge(challengeId).getUsername().equals(CurrentUserService.getCurrentUsername())) {
+      return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
+    }
+
     return ResponseEntity.ok().body(challengeService.getChallenge(challengeId));
   }
 
