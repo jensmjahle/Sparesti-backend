@@ -1,6 +1,7 @@
 package idatt2106.systemutvikling.sparesti.mapper;
 
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
+import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 
@@ -51,5 +52,48 @@ public static MilestoneDAO toDAO(MilestoneDTO dto) {
 
   return dto;
 }
+
+  /**
+   * Maps MilestoneDAO to MilestoneLogDAO
+   *
+   * @param dao MilestoneDAO to be mapped
+   * @return MilestoneLogDAO
+   */
+  public static MilestoneLogDAO toLogDAO(MilestoneDAO dao) {
+  MilestoneLogDAO logDAO = new MilestoneLogDAO();
+  logDAO.setMilestoneId(dao.getMilestoneId());
+  UserDAO userDAO = new UserDAO();
+  userDAO.setUsername(dao.getUserDAO().getUsername());
+  logDAO.setUserDAO(userDAO);
+  logDAO.setMilestoneTitle(dao.getMilestoneTitle());
+  logDAO.setMilestoneDescription(dao.getMilestoneDescription());
+  logDAO.setMilestoneGoalSum(dao.getMilestoneGoalSum());
+  logDAO.setMilestoneAchievedSum(dao.getMilestoneCurrentSum());
+  logDAO.setMilestoneImage(dao.getMilestoneImage());
+  logDAO.setCompletionDate(dao.getDeadlineDate());
+
+  return logDAO;
+}
+
+  /**
+   * Maps MilestoneLogDAO to MilestoneDTO
+   *
+   * @param logDAO MilestoneLogDAO to be mapped
+   * @return MilestoneDTO
+   */
+  public static MilestoneDTO DAOLogToDTO(MilestoneLogDAO logDAO) {
+    MilestoneDTO dto = new MilestoneDTO();
+    dto.setMilestoneId(logDAO.getMilestoneId());
+    dto.setUsername(logDAO.getUserDAO().getUsername());
+    dto.setMilestoneTitle(logDAO.getMilestoneTitle());
+    dto.setMilestoneDescription(logDAO.getMilestoneDescription());
+    dto.setMilestoneGoalSum(logDAO.getMilestoneGoalSum());
+    dto.setMilestoneCurrentSum(logDAO.getMilestoneAchievedSum());
+    dto.setMilestoneImage(Base64Mapper.toBase64String(logDAO.getMilestoneImage()));
+    dto.setDeadlineDate(logDAO.getCompletionDate());
+    dto.setStartDate(logDAO.getCompletionDate());
+
+    return dto;
+  }
 
 }

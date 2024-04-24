@@ -1,12 +1,6 @@
 package idatt2106.systemutvikling.sparesti.mockBank.dao;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.util.Date;
@@ -18,36 +12,44 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "mock_transaction")
 public class TransactionDAO {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactionIdGenerator")
-  @SequenceGenerator(name = "transactionIdGenerator", sequenceName = "transaction_sequence",
-      allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "transaction_id")
   private Long transactionId;
 
   @ManyToOne
-  @JoinColumn(name = "accountNr")
+  @JoinColumn(name = "account_nr")
   private AccountDAO accountDAO;
 
+  @Column(name = "transaction_title")
   private String transactionTitle;
 
+  @Column(name = "time_stamp")
+  @Temporal(TemporalType.TIMESTAMP)
   private Date time;
 
   @NotNull
+  @Column(name = "debtor_account")
   private Long debtorAccount;
 
+  @Column(name = "debtor_name")
   private String debtorName;
+
   @NotNull
+  @Column(name = "creditor_account")
   private Long creditorAccount;
 
+  @Column(name = "creditor_name")
   private String creditorName;
 
   @Positive
+  @Column(name = "amount")
   private Long amount;
 
+  @Column(name = "currency")
   private String currency;
-
-
 
 }

@@ -2,10 +2,13 @@ package idatt2106.systemutvikling.sparesti.mapper;
 
 import idatt2106.systemutvikling.sparesti.dto.TransactionDTO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
+import idatt2106.systemutvikling.sparesti.model.Transaction;
+
+import java.util.Date;
 
 public class TransactionMapper {
 
-    public static TransactionDTO toDTO(TransactionDAO t) {
+    public static TransactionDTO toDTO(Transaction t) {
         TransactionDTO dto = new TransactionDTO();
 
         dto.setTransactionId(t.getTransactionId());
@@ -17,6 +20,7 @@ public class TransactionMapper {
         dto.setCreditorName(t.getCreditorName());
         dto.setDebtorAccount(t.getDebtorAccount());
         dto.setDebtorName(t.getDebtorName());
+        dto.setTransactionCategory(t.getCategory());
 
         return dto;
     }

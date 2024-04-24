@@ -2,6 +2,7 @@ package idatt2106.systemutvikling.sparesti.repository;
 
 import idatt2106.systemutvikling.sparesti.dao.ChallengeLogDAO;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Data transfer object for User
@@ -35,6 +36,8 @@ public class UserDTO {
   private Long currentAccount;
   @Nullable
   private Long savingsAccount;
+  @Nullable
+  private List<AchievementDTO> achievementDTOList;
   private Boolean isConnectedToBank;
 
 }
