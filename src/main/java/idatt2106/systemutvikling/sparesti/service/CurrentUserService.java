@@ -20,7 +20,7 @@ public class CurrentUserService {
      * @return the username of the currently authenticated user.
      */
     public static String getCurrentUsername() {
-        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+        if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
             return null;
 
         Map<String, Object> userDetails = (Map<String, Object>) SecurityContextHolder.getContext().getAuthentication().getDetails();

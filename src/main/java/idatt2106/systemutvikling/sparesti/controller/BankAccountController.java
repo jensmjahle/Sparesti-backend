@@ -4,6 +4,7 @@ import idatt2106.systemutvikling.sparesti.dto.BankAccountDTO;
 import idatt2106.systemutvikling.sparesti.mapper.BankAccountMapper;
 import idatt2106.systemutvikling.sparesti.service.BankAccountService;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user/account")
+@AllArgsConstructor
 public class BankAccountController {
 
     private BankAccountService srvAccount;
