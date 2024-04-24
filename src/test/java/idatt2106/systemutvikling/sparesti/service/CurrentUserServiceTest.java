@@ -1,5 +1,4 @@
 package idatt2106.systemutvikling.sparesti.service;
-
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import java.util.Collection;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-
 public class CurrentUserServiceTest {
 
   @Mock
@@ -35,17 +33,14 @@ public class CurrentUserServiceTest {
 
   @Test
   public void testIsCompleteUser() {
-    // Arrange
+// Arrange
     String role = SecurityConfig.ROLE_COMPLETE;
     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
     authorities.add(new SimpleGrantedAuthority(role));
-
     when(authentication.getAuthorities()).thenReturn((Collection) authorities);
-
-    // Act
+// Act
     boolean isCompleteUser = CurrentUserService.isCompleteUser();
-
-    // Assert
+// Assert
     assertTrue(isCompleteUser);
   }
 }

@@ -1,6 +1,7 @@
 package idatt2106.systemutvikling.sparesti.repository;
 
 import idatt2106.systemutvikling.sparesti.enums.RecurringInterval;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -35,16 +36,21 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
    * @param username the username of the user
    * @return a list of challenges that belong to the user with the given username
    */
-  List<ChallengeDAO> findChallengeDAOByUserDAO_Username(String username);
+  List<ChallengeDAO> findChallengeDAOSByUserDAO_Username(String username, Pageable pageable);
+
+  List<ChallengeDAO> findChallengeDAOSByUserDAO_UsernameAndActive(String username, boolean active, Pageable pageable);
 
   /**
-   * Method to find all challenges that have a start date after the given start date and an expiration date before the given expiration date
+   * Method to find all challenges that have a start date after the given start date and an
+   * expiration date before the given expiration date
    *
    * @param startDate      the start date
    * @param expirationDate the expiration date
    * @return a list of challenges that have a start date after the given date
    */
-  List<ChallengeDAO> findChallengeDAOSByStartDateAfterAndExpirationDateBefore(LocalDateTime startDate, LocalDateTime expirationDate);
+  List<ChallengeDAO> findChallengeDAOSByStartDateAfterAndExpirationDateBefore(
+      LocalDateTime startDate, LocalDateTime expirationDate);
+
 
   /**
    * Method to find all challenges that have a start date after the given start date
@@ -53,6 +59,18 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
    * @return a list of challenges that have a start date after the given date
    */
   List<ChallengeDAO> findChallengeDAOSByStartDateAfter(LocalDateTime startDate);
+
+  /**
+   * Method to find all challenges that have a start date after the given start date and belong to a
+   * user with the given username
+   *
+   * @param startDate the start date
+   * @param username  the username of the user
+   * @return a list of challenges that have a start date after the given date and belong to the user
+   * with the given username
+   */
+  List<ChallengeDAO> findChallengeDAOSByStartDateAfterAndUserDAO_Username(LocalDateTime startDate,
+      String username);
 
   /**
    * Method to find all challenges that have an expiration date before the given expiration date
@@ -78,7 +96,17 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
    */
   List<ChallengeDAO> findAllByActive(boolean active);
 
-
   //@Query(value = "SELECT * FROM challengedao cd WHERE cd.challenge_id = :id AND username = :username", nativeQuery = true)
   //ChallengeDAO findChallengeDAOByIdAndUsername(Long id, String username);
+
+
+  /**
+   * Method to find all challenges that are active and belong to a user with the given username
+   *
+   * @param active   boolean value that indicates if the challenge is active
+   * @param username the username of the user
+   * @return a list of challenges that are active and belong to the user with the given username
+   */
+  List<ChallengeDAO> findChallengeDAOByActiveAndUserDAO_Username(boolean active, String username);
+
 }

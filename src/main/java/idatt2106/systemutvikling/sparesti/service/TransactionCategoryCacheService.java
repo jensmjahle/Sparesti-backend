@@ -14,13 +14,13 @@ public class TransactionCategoryCacheService {
 
 
 
-    public void setCategoryCache(Long transactionId, TransactionCategory category) {
+    public TransactionCategoryDAO setCategoryCache(Long transactionId, TransactionCategory category) {
         TransactionCategoryDAO dao = new TransactionCategoryDAO(transactionId, category);
-        setCategoryCache(dao);
+        return setCategoryCache(dao);
     }
 
-    public void setCategoryCache(TransactionCategoryDAO dao) {
-        categoryCache.save(dao);
+    public TransactionCategoryDAO setCategoryCache(TransactionCategoryDAO dao) {
+        return categoryCache.save(dao);
     }
 
     public TransactionCategoryDAO getCategoryFromCache(Long transactionId) {
