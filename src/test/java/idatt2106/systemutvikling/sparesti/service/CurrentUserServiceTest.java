@@ -25,6 +25,11 @@ public class CurrentUserServiceTest {
   private Authentication authentication;
 
   @BeforeEach
+  public void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
+
+  @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
     when(securityContext.getAuthentication()).thenReturn(authentication);

@@ -59,9 +59,10 @@ public class JWTAuthorizationFilterTest {
     when(secretsConfig.getJwt()).thenReturn(secret);
 
     jwtAuthorizationFilter.doFilterInternal(request, response, filterChain);
+
     System.out.println( SecurityContextHolder.getContext().getAuthentication().getName());
     System.out.println(username);
     assertEquals(username, SecurityContextHolder.getContext().getAuthentication().getName());
+
   }
-  //*/
 }
