@@ -7,6 +7,7 @@ import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +23,14 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping("/latest/expense")
-    public ResponseEntity<?> getLatestExpensesCategorized(final @RequestBody PaginatedRequestDTO pagination) {
+    public ResponseEntity<?> getLatestExpensesCategorized(Pageable pageable) {
         String username = CurrentUserService.getCurrentUsername();
 
         List<Transaction> transactions = transactionService
                 .getLatestExpensesForUserCategorized(
                         username,
-                        pagination.getPageNum(),
-                        pagination.getPageSize()
+                        pageable.getPageSize(),
+                        pageable.getPageNumber()
                 );
 
         if (transactions == null)
