@@ -7,6 +7,7 @@ import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,20 +27,20 @@ public class ChallengeController {
 
   @GetMapping("/paginated/active")
   @ResponseBody
-  public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(Pageable pageable) {
+  public ResponseEntity<Page<ChallengeDTO>> getActiveChallenges(Pageable pageable) {
     if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 0){
       return ResponseEntity.badRequest().build();
     }
-    return ResponseEntity.ok().body(challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable.getPageNumber(), pageable.getPageSize()));
+    return ResponseEntity.ok().body(challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
   @GetMapping("/paginated/inactive")
   @ResponseBody
-  public ResponseEntity<List<ChallengeDTO>> getInactiveChallenges(Pageable pageable) {
+  public ResponseEntity<Page<ChallengeDTO>> getInactiveChallenges(Pageable pageable) {
     if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 0) {
       return ResponseEntity.badRequest().build();
     }
-    return ResponseEntity.ok().body(challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable.getPageNumber(), pageable.getPageSize()));
+    return ResponseEntity.ok().body(challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
   @GetMapping("/{challengeId}")

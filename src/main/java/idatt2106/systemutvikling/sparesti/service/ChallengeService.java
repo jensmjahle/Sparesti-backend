@@ -10,9 +10,7 @@ import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
 import java.util.logging.Logger;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -55,30 +53,38 @@ public class ChallengeService {
     return challengeDTOS;
   }
 
-  public List<ChallengeDTO> getActiveChallenges(String username, int page, int size) {
+  public Page<ChallengeDTO> getActiveChallenges(String username, Pageable pageable) {
 
-    Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
+    Pageable sortedPageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            Sort.by("expirationDate").descending());
+
     hasChallengeTimeElapsed(
-            challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
+            challengeRepository.findChallengeDAOSByUserDAO_Username(username, sortedPageable));
 
-    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
-            username, true, pageable);
+    Page<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
+            username, true, sortedPageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
     for (ChallengeDAO challengeDAO : challengeDAOS) {
       challengeDTOS.add(ChallengeMapper.toDTO(challengeDAO));
     }
 
-    return challengeDTOS;
+    return new PageImpl<>(challengeDTOS, sortedPageable, challengeDAOS.getTotalElements());
   }
 
-  public List<ChallengeDTO> getInactiveChallenges(String username, int page, int size) {
+  public Page<ChallengeDTO> getInactiveChallenges(String username, Pageable pageable) {
 
-    Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
+    Pageable sortedPageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            Sort.by("expirationDate").descending());
+
     hasChallengeTimeElapsed(
             challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
 
-    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
+    Page<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
             username, false, pageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
@@ -86,7 +92,7 @@ public class ChallengeService {
       challengeDTOS.add(ChallengeMapper.toDTO(challengeDAO));
     }
 
-    return challengeDTOS;
+    return new PageImpl<>(challengeDTOS, sortedPageable, challengeDAOS.getTotalElements());
   }
 
   public void hasChallengeTimeElapsed(List<ChallengeDAO> challengeDAOS) {
