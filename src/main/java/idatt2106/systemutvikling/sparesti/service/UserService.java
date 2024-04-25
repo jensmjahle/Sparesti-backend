@@ -77,11 +77,6 @@ public class UserService {
    * @return ResponseEntity with the status code.
    */
   public ResponseEntity<String> updateUserDTO(String token, UserDTO updatedUserDTO) {
-    //TODO: Update userDTO in database
-
-    // Find the user in the database based on the username, and then update the fields given in the updatedUserDTO
-    // if they are not null and not equal to the existing values.
-
     String username = jwtService.extractUsernameFromToken(token);
 
     UserDAO existingUser = userRepository.findByUsername(username);
@@ -125,26 +120,23 @@ public class UserService {
       existingUser.setBirthDate(updatedUserDTO.getBirthDate());
     }
 
-    if (Objects.nonNull(updatedUserDTO.getEmail()) && userRepository.findByEmail(existingUser.getEmail()) == null) {
+    if (Objects.nonNull(updatedUserDTO.getEmail())) {
+      UserDAO userWithNewEmail = userRepository.findByEmail(updatedUserDTO.getEmail());
+      if (userWithNewEmail != null && !userWithNewEmail.getUsername().equals(username)) {
+        return new ResponseEntity<>("Email already in use", HttpStatus.CONFLICT);
+      }
       existingUser.setEmail(updatedUserDTO.getEmail());
     }
 
     userRepository.save(existingUser);
 
-    return null;
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   public ResponseEntity<UserDTO> deleteUserDTO(String token) {
     //TODO: Delete userDTO from database
     String username = jwtService.extractUsernameFromToken(token);
 
-    return null;
-  }
-
-  public ResponseEntity<UserDTO> login(LoginRequestModel user) {
-    //TODO: Check if user exists in database, and if password is correct
-    //TODO: Return userDTO if login is successful
-    //TODO: Return only profile picture, username and isConnectedToBank if login is successful
     return null;
   }
 
