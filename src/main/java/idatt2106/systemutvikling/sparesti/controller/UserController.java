@@ -31,7 +31,7 @@ public class UserController {
     return userService.deleteUserDTO(token);
   }
 
-  @RequestMapping("/update")
+  @PostMapping("/update")
   public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token, @RequestBody UserDTO updatedUserDTO) {
     logger.info("Received request to update user information.");
     return userService.updateUserDTO(token, updatedUserDTO);
