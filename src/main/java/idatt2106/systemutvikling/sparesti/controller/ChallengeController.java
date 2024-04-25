@@ -105,12 +105,16 @@ public class ChallengeController {
     }
 
     Long achievedSum = challengeService.getChallenge(challengeId).getCurrentSum();
+    Long milestoneCurrentSum = milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum();
+    long targetSum = achievedSum + milestoneCurrentSum;
+
+    milestoneService.increaseMilestonesCurrentSum(milestoneId, achievedSum);
+
+    if (targetSum > milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum()) {
+      return ResponseEntity.badRequest().body("Could not transfer money to milestone");
+    }
 
     challengeService.completeChallenge(challengeId);
-
-    milestoneService.getMilestoneDTOById(token, milestoneId).setMilestoneCurrentSum(milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum() + achievedSum);
-
-    milestoneService.updateMilestoneDTO(token, milestoneService.getMilestoneDTOById(token, milestoneId));
 
     return ResponseEntity.ok().body("Challenge completed");
   }
