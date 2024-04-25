@@ -14,6 +14,7 @@ import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
 import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -58,7 +59,7 @@ public class MilestoneLogService {
     String username = jwtService.extractUsernameFromToken(token);
     try {
       List<MilestoneLogDAO> milestoneLogDAOs = milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username);
-      List<MilestoneDTO> milestoneDTOS = null;
+      List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneLogDAO milestoneDAO : milestoneLogDAOs) {
         milestoneDTOS.add(MilestoneMapper.DAOLogToDTO(milestoneDAO));
       }
