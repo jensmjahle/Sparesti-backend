@@ -29,8 +29,8 @@ public class TransactionController {
         List<Transaction> transactions = transactionService
                 .getLatestExpensesForUserCategorized(
                         username,
-                        pageable.getPageSize(),
-                        pageable.getPageNumber()
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
                 );
 
         if (transactions == null)
