@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/user/challenge")
@@ -21,6 +22,7 @@ public class ChallengeController {
 
   private final ChallengeService challengeService;
   private final MilestoneService milestoneService;
+  private final Logger logger = Logger.getLogger(TokenController.class.getName());
 
   @GetMapping("/paginated/active")
   @ResponseBody
@@ -43,6 +45,7 @@ public class ChallengeController {
   @GetMapping("/{challengeId}")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> getChallenge(@PathVariable Long challengeId) {
+    logger.info("id " + challengeId);
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
     }
@@ -66,6 +69,7 @@ public class ChallengeController {
   @PostMapping("/activate/{challengeId}")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable Long challengeId) {
+
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
     }
@@ -83,7 +87,7 @@ public class ChallengeController {
 
   @PostMapping("/complete")
   @ResponseBody
-  public ResponseEntity<String> completeChallenge(@RequestHeader("Authorization") String token, @PathParam("challengeId") Long challengeId, @PathParam("milestoneId") Long milestoneId) {
+  public ResponseEntity<String> completeChallenge(@RequestHeader("Authorization") String token, @RequestParam("challengeId") Long challengeId, @RequestParam("milestoneId") Long milestoneId) {
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
     }

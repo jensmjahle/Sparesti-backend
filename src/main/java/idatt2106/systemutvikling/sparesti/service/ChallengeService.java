@@ -6,7 +6,9 @@ import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
+
 import java.util.logging.Logger;
+
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -57,10 +59,10 @@ public class ChallengeService {
 
     Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
     hasChallengeTimeElapsed(
-        challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
+            challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
 
     List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
-        username, true, pageable);
+            username, true, pageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
     for (ChallengeDAO challengeDAO : challengeDAOS) {
@@ -74,10 +76,10 @@ public class ChallengeService {
 
     Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
     hasChallengeTimeElapsed(
-        challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
+            challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
 
     List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
-        username, false, pageable);
+            username, false, pageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
     for (ChallengeDAO challengeDAO : challengeDAOS) {
@@ -91,7 +93,7 @@ public class ChallengeService {
     LocalDateTime now = LocalDateTime.now();
 
     for (ChallengeDAO challengeDAO : challengeDAOS) {
-      if (challengeDAO.getExpirationDate().isAfter(now)) {
+      if (!challengeDAO.getExpirationDate().isAfter(now)) {
         ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
         challengeLogRepository.save(challengeLogDAO);
         challengeRepository.delete(challengeDAO);
@@ -112,6 +114,11 @@ public class ChallengeService {
   }
 
   public ChallengeDAO createChallenge(ChallengeDTO challengeDTO) {
+    challengeDTO.setActive(true);
+    challengeDTO.setStartDate(LocalDateTime.now());
+    challengeDTO.setCurrentSum(0L);
+    challengeDTO.setUsername(CurrentUserService.getCurrentUsername());
+
     return challengeRepository.save(ChallengeMapper.toDAO(challengeDTO));
   }
 
@@ -148,15 +155,14 @@ public class ChallengeService {
     }
   }
 
-  public List<ChallengeDAO> getChallengesStartedAfterDate(LocalDateTime startDate,
-      String username) {
+  public List<ChallengeDAO> getChallengesStartedAfterDate(LocalDateTime startDate, String username) {
     try {
       return challengeRepository.findChallengeDAOSByStartDateAfterAndUserDAO_Username(startDate,
-          username);
+              username);
     } catch (Exception e) {
       logger.severe("Failed to get challenges this month for user " + username + e.getMessage());
       throw new RuntimeException(
-          "Failed to get challenges this month for user " + username + e.getMessage());
+              "Failed to get challenges this month for user " + username + e.getMessage());
     }
   }
 }

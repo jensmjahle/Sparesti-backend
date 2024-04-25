@@ -16,9 +16,9 @@ use sparesti;
 	profile_picture tinyblob
 	savings_account BigInt
 */
-INSERT INTO users (username, birth_date, current_account, email, first_name, last_name, monthly_fixed_expenses, monthly_income, monthly_savings, password, profile_picture, savings_account) VALUES
-    ("JohnSmith12", "1995-01-01", 45651009037, "john.smith@gmail.com", "John", "Smith", 10000, 10500, 500, "$2a$10$LtSLyK2hKjYtUyUg3byo9.Jjv3zvdi45Qz1a8pNXQWdDy/11nF/CK", NULL, 62367154487),
-    ("AliceLearn64", "2000-01-01", 36987451238, "alice.learn@gmail.com", "Alice", "Learn", 9000, 95000, 500, "$2a$10$mztKNoROPQzu/QLgMXpVLuWax.QmGgrG7I.4cCD4rBMYK0q6OakzG", NULL, 78562345100);
+INSERT INTO users (username, birth_date, current_account, email, first_name, last_name, monthly_fixed_expenses, monthly_income, monthly_savings, password_hash, profile_picture, savings_account) VALUES
+    ("JohnSmith12", "1995-01-01", 45651009037, "john.smith@gmail.com", "John", "Smith", 10000, 10500, 500, "$2a$10$llETSC.ScUDe.6le7v0RoejfJvVY2/qqGhR2/YIgrQ5gUfPfjww2m", NULL, 62367154487),
+    ("AliceLearn64", "2000-01-01", 36987451238, "alice.learn@gmail.com", "Alice", "Learn", 9000, 95000, 500, "$2a$10$llETSC.ScUDe.6le7v0RoejfJvVY2/qqGhR2/YIgrQ5gUfPfjww2m", NULL, 78562345100);
 
 /*
 	challenge_id BigInt NOT NULL AUTO_INCREMENT

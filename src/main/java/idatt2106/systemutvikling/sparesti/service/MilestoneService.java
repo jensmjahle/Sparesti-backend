@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
@@ -52,7 +54,7 @@ public class MilestoneService {
     String username = jwtService.extractUsernameFromToken(token);
     try {
       List<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username);
-      List<MilestoneDTO> milestoneDTOS = null;
+      List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneDAO milestoneDAO : milestoneDAOs) {
         milestoneDTOS.add(MilestoneMapper.toDTO(milestoneDAO));
       }
