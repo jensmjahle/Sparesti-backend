@@ -85,11 +85,10 @@ public class MilestoneService {
   /**
    * Method to complete a milestone.
    *
-   * @param token       token of the user to complete the milestone
+   * @param username    username of the user to complete the milestone
    * @param milestoneId the id of the milestone to complete
    */
-  public void completeMilestone(String token, Long milestoneId) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public void completeMilestone(String username, Long milestoneId) {
     try {
       MilestoneDAO milestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneIdAndUserDAO_Username(milestoneId, username);
       MilestoneLogDAO milestoneLogDAO = MilestoneMapper.toLogDAO(milestoneDAO);
@@ -103,12 +102,11 @@ public class MilestoneService {
   /**
    * Method to create a milestone.
    *
-   * @param token        token of the user to create the milestone
+   * @param username     username of the user to create the milestone
    * @param milestoneDTO the milestone to create
    * @return the created milestone
    */
-  public MilestoneDTO createMilestoneDTO(String token, MilestoneDTO milestoneDTO) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public MilestoneDTO createMilestoneDTO(String username, MilestoneDTO milestoneDTO) {
     try {
       MilestoneDAO milestoneDAO = MilestoneMapper.toDAO(milestoneDTO);
       milestoneDAO.setUserDAO(userRepository.findByUsername(username));

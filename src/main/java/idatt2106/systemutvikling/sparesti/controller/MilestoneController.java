@@ -35,16 +35,15 @@ public class MilestoneController {
 
 
   @GetMapping("/user")
-  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(@RequestHeader("Authorization") String token, Pageable pageable) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(Pageable pageable) {
     logger.info("Received request to get user milestones.");
-  return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsernamePaginated(username, pageable));
+  return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsernamePaginated(CurrentUserService.getCurrentUsername(), pageable));
   }
 
   @PostMapping("/create")
-  public void createMilestone(@RequestHeader("Authorization") String token, @RequestBody MilestoneDTO milestoneDTO) {
+  public void createMilestone(@RequestBody MilestoneDTO milestoneDTO) {
     logger.info("Received request to create milestone.");
-    milestoneService.createMilestoneDTO(token, milestoneDTO);
+    milestoneService.createMilestoneDTO(CurrentUserService.getCurrentUsername(), milestoneDTO);
   }
 
   @GetMapping("/{id}")
@@ -54,9 +53,9 @@ public class MilestoneController {
   }
 
   @PostMapping("/complete")
-  public void completeMilestone(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  public void completeMilestone(@RequestBody Long milestoneId) {
     logger.info("Received request to complete milestone.");
-    milestoneService.completeMilestone(token, milestoneId);
+    milestoneService.completeMilestone(CurrentUserService.getCurrentUsername(), milestoneId);
   }
 
   @PostMapping ("/update")
