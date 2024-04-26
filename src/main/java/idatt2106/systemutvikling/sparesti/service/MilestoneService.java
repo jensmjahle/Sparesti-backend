@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
 
 import java.util.List;
@@ -24,7 +23,6 @@ public class MilestoneService {
 
   private final MilestoneRepository milestoneRepository;
 
-  private final JWTService jwtService;
 
   private final UserRepository userRepository;
 
@@ -33,9 +31,8 @@ public class MilestoneService {
   private final MilestoneLogService milestoneLogService;
 
   @Autowired
-  public MilestoneService(MilestoneRepository milestoneRepository, JWTService jwtService, UserRepository userRepository, MilestoneLogService milestoneLogService) {
+  public MilestoneService(MilestoneRepository milestoneRepository, UserRepository userRepository, MilestoneLogService milestoneLogService) {
     this.milestoneRepository = milestoneRepository;
-    this.jwtService = jwtService;
     this.userRepository = userRepository;
     this.milestoneLogService = milestoneLogService;
   }
@@ -134,14 +131,13 @@ public class MilestoneService {
     }
   }
 
-  public MilestoneDTO updateMilestoneDTO(String token, MilestoneDTO milestoneDTO) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public MilestoneDTO updateMilestoneDTO(String username, MilestoneDTO milestoneDTO) {
     try {
-      MilestoneDAO updatingMilestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneIdAndUserDAO_Username(milestoneDTO.getMilestoneId(), username);
+      MilestoneDAO updatingMilestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDTO.getMilestoneId());
       updatingMilestoneDAO.setMilestoneCurrentSum(milestoneDTO.getMilestoneCurrentSum());
 
       if (updatingMilestoneDAO.getMilestoneCurrentSum() >= updatingMilestoneDAO.getMilestoneGoalSum()) {
-        completeMilestone(token, updatingMilestoneDAO.getMilestoneId());
+        completeMilestone(username, updatingMilestoneDAO.getMilestoneId());
       } else {
         milestoneRepository.save(updatingMilestoneDAO);
       }
