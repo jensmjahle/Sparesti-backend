@@ -7,6 +7,7 @@ import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,20 +27,20 @@ public class ChallengeController {
 
   @GetMapping("/paginated/active")
   @ResponseBody
-  public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(Pageable pageable) {
+  public ResponseEntity<Page<ChallengeDTO>> getActiveChallenges(Pageable pageable) {
     if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 0){
       return ResponseEntity.badRequest().build();
     }
-    return ResponseEntity.ok().body(challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable.getPageNumber(), pageable.getPageSize()));
+    return ResponseEntity.ok().body(challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
   @GetMapping("/paginated/inactive")
   @ResponseBody
-  public ResponseEntity<List<ChallengeDTO>> getInactiveChallenges(Pageable pageable) {
+  public ResponseEntity<Page<ChallengeDTO>> getInactiveChallenges(Pageable pageable) {
     if (pageable == null || pageable.getPageNumber() < 0 || pageable.getPageSize() < 0) {
       return ResponseEntity.badRequest().build();
     }
-    return ResponseEntity.ok().body(challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable.getPageNumber(), pageable.getPageSize()));
+    return ResponseEntity.ok().body(challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
   @GetMapping("/{challengeId}")
@@ -104,13 +105,17 @@ public class ChallengeController {
       return ResponseEntity.badRequest().body("You are not the owner of this milestone");
     }
 
-    Long achievedSum = challengeService.getChallenge(challengeId).getCurrentSum();
+    Long achievedSum = challengeService.getChallenge(challengeId).getGoalSum();
+    Long milestoneCurrentSum = milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum();
+    long targetSum = achievedSum + milestoneCurrentSum;
+
+    milestoneService.increaseMilestonesCurrentSum(milestoneId, achievedSum);
+
+    if (targetSum > milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum()) {
+      return ResponseEntity.badRequest().body("Could not transfer money to milestone");
+    }
 
     challengeService.completeChallenge(challengeId);
-
-    milestoneService.getMilestoneDTOById(token, milestoneId).setMilestoneCurrentSum(milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum() + achievedSum);
-
-    milestoneService.updateMilestoneDTO(token, milestoneService.getMilestoneDTOById(token, milestoneId));
 
     return ResponseEntity.ok().body("Challenge completed");
   }
