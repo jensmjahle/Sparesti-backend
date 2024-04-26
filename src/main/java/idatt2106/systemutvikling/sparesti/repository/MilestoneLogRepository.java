@@ -1,6 +1,8 @@
 package idatt2106.systemutvikling.sparesti.repository;
 
 import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -33,15 +35,16 @@ public interface MilestoneLogRepository extends JpaRepository<MilestoneLogDAO, L
    * @param username the username of the user
    * @return a list of milestone logs that belong to the user with the given username
    */
-  List<MilestoneLogDAO> findMilestoneLogDAOByUserDAO_Username(String username);
+  Page<MilestoneLogDAO> findMilestoneLogDAOByUserDAO_Username(String username, Pageable pageable);
 
+  List<MilestoneLogDAO> findMilestoneLogDAOByUserDAO_Username(String username);
   /**
    * Method to find all milestone logs that have a completion date after the given completion date
    *
    * @param completionDate the completion date
    * @return a list of milestone logs that have a completion date after the given date
    */
-  List<MilestoneLogDAO> findMilestoneLogDAOSByCompletionDate(LocalDateTime completionDate);
+  Page<MilestoneLogDAO> findMilestoneLogDAOSByCompletionDate(LocalDateTime completionDate, Pageable pageable);
 
   /**
    * Method to find all milestone logs that have a completion date before the given completion date

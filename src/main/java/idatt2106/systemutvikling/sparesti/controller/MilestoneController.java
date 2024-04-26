@@ -4,12 +4,11 @@ import idatt2106.systemutvikling.sparesti.dao.ManualSavingDAO;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dto.ManualSavingDTO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
-import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
-import idatt2106.systemutvikling.sparesti.service.ManualSavingService;
-import idatt2106.systemutvikling.sparesti.service.MilestoneService;
-import idatt2106.systemutvikling.sparesti.service.TransactionService;
+import idatt2106.systemutvikling.sparesti.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +31,15 @@ public class MilestoneController {
 
   private final TransactionService transactionService;
 
+  private final JWTService jwtService;
+
 
 
   @GetMapping("/user")
-  public ResponseEntity<List<MilestoneDTO>> getUserMilestones() {
+  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(@RequestHeader("Authorization") String token, Pageable pageable) {
+    String username = jwtService.extractUsernameFromToken(token);
     logger.info("Received request to get user milestones.");
-    return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsername(CurrentUserService.getCurrentUsername()));
+  return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsernamePaginated(username, pageable));
   }
 
   @PostMapping("/create")

@@ -7,6 +7,9 @@ import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
 import idatt2106.systemutvikling.sparesti.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -50,9 +53,31 @@ public class MilestoneService {
    * @param username The username of the user to get milestones for.
    * @return List of MilestoneDTOs.
    */
+  public Page<MilestoneDTO> getActiveMilestonesDTOsByUsernamePaginated(String username, Pageable pageable) {
+    try {
+      Page<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username, pageable);
+
+      List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
+      for (MilestoneDAO milestoneDAO : milestoneDAOs) {
+        milestoneDTOS.add(MilestoneMapper.toDTO(milestoneDAO));
+      }
+      return new PageImpl<>(milestoneDTOS, pageable, milestoneDAOs.getTotalElements());
+    } catch (Exception e) {
+      logger.severe("Error when getting milestones: " + e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Method to get all active milestones for a user.
+   *
+   * @param username The username of the user to get milestones for.
+   * @return List of MilestoneDTOs.
+   */
   public List<MilestoneDTO> getActiveMilestonesDTOsByUsername(String username) {
     try {
       List<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username);
+
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneDAO milestoneDAO : milestoneDAOs) {
         milestoneDTOS.add(MilestoneMapper.toDTO(milestoneDAO));
