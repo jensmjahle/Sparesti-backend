@@ -1,20 +1,18 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
-import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
-import idatt2106.systemutvikling.sparesti.service.AccountServiceInterface;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -26,14 +24,18 @@ public class UserService {
   private final CustomerServiceInterface customerService;
   private final AccountServiceInterface accountService;
   private final JWTService jwtService;
+  private final MilestoneService milestoneService;
+  private final MilestoneLogService milestoneLogService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
 
   @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService) {
+  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService) {
     this.userRepository = userRepository;
     this.customerService = customerService;
     this.jwtService = jwtService;
     this.accountService = accountService;
+    this.milestoneService = milestoneService;
+    this.milestoneLogService = milestoneLogService;
   }
 
   /**
@@ -68,6 +70,34 @@ public class UserService {
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+  }
+
+  /**
+   * Retrieves the total amount saved by the user based on active milestones and milestone logs.
+   *
+   * @param token The authentication token of the user.
+   * @return The total amount saved by the user.
+   */
+  public Long getTotalAmountSavedByUser(String token) {
+    Long result = 0L;
+
+    // Retrieve active milestones
+    List<MilestoneDTO> milestones = milestoneService.getActiveMilestonesDTOsByUsername(token);
+
+    // Calculate total amount saved based on active milestones
+    for (MilestoneDTO milestone : milestones) {
+      result += milestone.getMilestoneCurrentSum();
+    }
+
+    // Retrieve milestone logs
+    milestones = milestoneLogService.getMilestoneLogsByUsername(token);
+
+    // Calculate total amount saved based on milestone logs
+    for (MilestoneDTO milestone : milestones) {
+      result += milestone.getMilestoneCurrentSum();
+    }
+
+    return result;
   }
 
   /**
