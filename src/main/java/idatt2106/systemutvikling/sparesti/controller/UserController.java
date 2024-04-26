@@ -15,6 +15,7 @@ import idatt2106.systemutvikling.sparesti.service.UserService;
 @CrossOrigin
 @RequestMapping("/users")
 public class UserController {
+
   private final Logger logger = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
 
@@ -44,17 +45,18 @@ public class UserController {
   @GetMapping("/get")
   public ResponseEntity<UserDTO> getUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to get user information.");
-    return userService.getUserDTO(token);
+    return ResponseEntity.ok(userService.getUserDTO(token));
   }
 
   @DeleteMapping("/delete")
   public ResponseEntity<UserDTO> deleteUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to delete user information.");
-    return userService.deleteUserDTO(token);
+    return ResponseEntity.ok(userService.deleteUserDTO(token));
   }
 
   @PutMapping("/update")
-  public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token, @RequestBody UserDTO updatedUserDTO) {
+  public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token,
+      @RequestBody UserDTO updatedUserDTO) {
     logger.info("Received request to update user information.");
     userService.updateUserDTO(token, updatedUserDTO);
     return ResponseEntity.ok("User information updated.");

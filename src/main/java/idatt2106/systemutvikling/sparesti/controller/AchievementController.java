@@ -16,16 +16,20 @@ import java.util.logging.Logger;
 @RequestMapping("/achievement")
 @AllArgsConstructor
 public class AchievementController {
+
   private final Logger logger = Logger.getLogger(AchievementController.class.getName());
   private final AchievementService achievementService;
 
   @GetMapping("/locked")
   public ResponseEntity<List<AchievementDTO>> getLockedAchievements() {
-    return achievementService.getLockedAchievementsAsDTOS(CurrentUserService.getCurrentUsername());
+    logger.info("Received request to get locked achievements.");
+    return ResponseEntity.ok(
+        achievementService.getLockedAchievementsAsDTOS(CurrentUserService.getCurrentUsername()));
   }
 
   @GetMapping("/newUnlocked")
   public ResponseEntity<List<AchievementDTO>> getNewUnlockedAchievements() {
-    return achievementService.checkForUnlockedAchievements(CurrentUserService.getCurrentUsername());
+    return ResponseEntity.ok(
+        achievementService.checkForUnlockedAchievements(CurrentUserService.getCurrentUsername()));
   }
 }

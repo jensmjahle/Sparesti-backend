@@ -1,9 +1,7 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
-import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.service.MilestoneLogService;
-import idatt2106.systemutvikling.sparesti.service.MilestoneService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +24,15 @@ public class MilestoneLogController {
   }
 
   @GetMapping("/user")
-  public ResponseEntity<List<MilestoneDTO>> getUserMilestones(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<List<MilestoneDTO>> getUserMilestones(
+      @RequestHeader("Authorization") String token) {
     logger.info("Received request to get user milestones.");
     return ResponseEntity.ok(milestoneLogService.getMilestoneLogsByUsername(token));
   }
 
   @PostMapping("/id")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token,
+      @RequestBody Long milestoneId) {
     logger.info("Received request to get milestone by id.");
     return ResponseEntity.ok(milestoneLogService.getMilestoneLogById(token, milestoneId));
   }
