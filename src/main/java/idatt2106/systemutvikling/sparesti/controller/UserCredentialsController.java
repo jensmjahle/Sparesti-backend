@@ -3,7 +3,6 @@ package idatt2106.systemutvikling.sparesti.controller;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.service.UserService;
-import idatt2106.systemutvikling.sparesti.utils.ResponseEntityExceptionHandler;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

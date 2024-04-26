@@ -5,10 +5,8 @@ import idatt2106.systemutvikling.sparesti.exceptions.NotFoundInDatabaseException
 import idatt2106.systemutvikling.sparesti.mapper.BankAccountMapper;
 import idatt2106.systemutvikling.sparesti.service.BankAccountService;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
-import idatt2106.systemutvikling.sparesti.utils.ResponseEntityExceptionHandler;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

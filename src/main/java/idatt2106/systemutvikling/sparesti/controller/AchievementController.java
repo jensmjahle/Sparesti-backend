@@ -3,7 +3,6 @@ package idatt2106.systemutvikling.sparesti.controller;
 import idatt2106.systemutvikling.sparesti.dto.AchievementDTO;
 import idatt2106.systemutvikling.sparesti.service.AchievementService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
-import idatt2106.systemutvikling.sparesti.utils.ResponseEntityExceptionHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
