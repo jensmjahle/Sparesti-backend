@@ -1,12 +1,15 @@
 package idatt2106.systemutvikling.sparesti.service;
 
+import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
-import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import idatt2106.systemutvikling.sparesti.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,22 +20,22 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @Service
+@AllArgsConstructor
 public class UserService {
   @Autowired
   private PasswordEncoder passwordEncoder;
-  private final UserRepository userRepository;
   private final CustomerServiceInterface customerService;
   private final AccountServiceInterface accountService;
   private final JWTService jwtService;
-  private final Logger logger = Logger.getLogger(UserService.class.getName());
 
-  @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService) {
-    this.userRepository = userRepository;
-    this.customerService = customerService;
-    this.jwtService = jwtService;
-    this.accountService = accountService;
-  }
+  private final UserRepository userRepository;
+  private final ManualSavingRepository dbSaving;
+  private final MilestoneRepository dbMilestone;
+  private final MilestoneLogRepository dbMilestoneLog;
+  private final ChallengeLogRepository dbChallenge;
+  private final ChallengeRepository dbChallengeLog;
+
+  private final Logger logger = Logger.getLogger(UserService.class.getName());
 
   /**
    * Method to get a user by username from the database.
@@ -219,19 +222,30 @@ public class UserService {
   }
 
   @Transactional
-  public boolean deleteUserByUsername(String username) {
+  public boolean deleteUserByUsername(@NonNull String username) {
+
+    // Check whether user exists
+    if (userRepository.findByUsername(username) == null)
+      return false;
 
     // Delete manual savings
-
+    dbSaving.deleteAllByUser_Username(username);
 
     // Delete milestones
+    dbMilestone.deleteAllByUserDAO_Username(username);
 
     // Delete milestone log
+    dbMilestoneLog.deleteAllByUserDAO_Username(username);
 
     // Delete challenges
+    dbMilestone.deleteAllByUserDAO_Username(username);
 
     // Delete challenge log
+    dbMilestone.deleteAllByUserDAO_Username(username);
 
-    return false;
+    // Finally, delete user
+    userRepository.deleteByUsername(username);
+
+    return true;
   }
 }

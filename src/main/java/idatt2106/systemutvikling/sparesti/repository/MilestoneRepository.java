@@ -63,4 +63,5 @@ public interface MilestoneRepository extends JpaRepository<MilestoneDAO, Long> {
   List<MilestoneDAO> findMilestoneDAOSByDeadlineDateBefore(LocalDateTime deadlineDate);
 
 
+  void deleteAllByUserDAO_Username(String username);
 }

@@ -109,4 +109,7 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
    */
   List<ChallengeDAO> findChallengeDAOByActiveAndUserDAO_Username(boolean active, String username);
 
+
+
+  void deleteAllByUserDAO_Username(String username);
 }
