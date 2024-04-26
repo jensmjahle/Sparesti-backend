@@ -72,6 +72,12 @@ public class UserService {
     }
   }
 
+  /**
+   * Calculates the total amount saved by all users in the system by summing up the savings
+   * of each individual user.
+   *
+   * @return The total amount saved by all users, or {@code null} if an error occurs during calculation.
+   */
   public Long getTotalAmountSavedByAllUsers() {
     Long result = 0L;
     try {
@@ -84,7 +90,7 @@ public class UserService {
       return result;
     } catch (Exception e) {
       logger.severe("Error when getting milestones and calculating savings: " + e.getMessage());
-      return null;
+      return null; // Return null to indicate error
     }
   }
 
