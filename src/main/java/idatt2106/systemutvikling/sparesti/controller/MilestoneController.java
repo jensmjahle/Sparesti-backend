@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -49,9 +48,9 @@ public class MilestoneController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+  public ResponseEntity<MilestoneDTO> getMilestoneById(@PathVariable Long id) {
     logger.info("Received request to get milestone by id.");
-    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(token, id));
+    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(id));
   }
 
   @PostMapping("/complete")

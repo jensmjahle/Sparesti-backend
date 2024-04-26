@@ -5,7 +5,6 @@ import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
-import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -23,7 +21,7 @@ public class ChallengeController {
 
   private final ChallengeService challengeService;
   private final MilestoneService milestoneService;
-  private final Logger logger = Logger.getLogger(TokenController.class.getName());
+  private final Logger logger = Logger.getLogger(ChallengeController.class.getName());
 
   @GetMapping("/paginated/active")
   @ResponseBody
@@ -48,7 +46,6 @@ public class ChallengeController {
   @GetMapping("/{challengeId}")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> getChallenge(@PathVariable Long challengeId) {
-    logger.info("id " + challengeId);
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
     }
@@ -110,19 +107,19 @@ public class ChallengeController {
       return ResponseEntity.badRequest().build();
     }
 
-    if (!milestoneService.getMilestoneDTOById(token, milestoneId).getUsername()
+    if (!milestoneService.getMilestoneDTOById(milestoneId).getUsername()
         .equals(CurrentUserService.getCurrentUsername())) {
       return ResponseEntity.badRequest().body("You are not the owner of this milestone");
     }
 
     Long achievedSum = challengeService.getChallenge(challengeId).getGoalSum();
-    Long milestoneCurrentSum = milestoneService.getMilestoneDTOById(token, milestoneId)
+    Long milestoneCurrentSum = milestoneService.getMilestoneDTOById(milestoneId)
         .getMilestoneCurrentSum();
     long targetSum = achievedSum + milestoneCurrentSum;
 
     milestoneService.increaseMilestonesCurrentSum(milestoneId, achievedSum);
 
-    if (targetSum > milestoneService.getMilestoneDTOById(token, milestoneId)
+    if (targetSum > milestoneService.getMilestoneDTOById(milestoneId)
         .getMilestoneCurrentSum()) {
       return ResponseEntity.badRequest().body("Could not transfer money to milestone");
     }
