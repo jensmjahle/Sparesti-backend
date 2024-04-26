@@ -25,12 +25,7 @@ public class UserCredentialsController {
   @RequestMapping("/create")
   public ResponseEntity<UserDTO> createUser(@RequestBody UserCredentialsDTO user) {
     logger.info("Received request to create user with username: " + user.getUsername() + ".");
-    try {
-      return ResponseEntity.ok(userService.createUser(user));
-    } catch (Exception e) {
-      logger.severe("Failed to create user with username: " + user.getUsername() + ".");
-      return ResponseEntityExceptionHandler.handleException(e);
-    }
+    return ResponseEntity.ok(userService.createUser(user));
   }
 
   @PostMapping("/updatePassword")
