@@ -91,8 +91,7 @@ public class ChallengeController {
 
   @PostMapping("/complete")
   @ResponseBody
-  public ResponseEntity<String> completeChallenge(@RequestHeader("Authorization") String token,
-      @RequestParam("challengeId") Long challengeId,
+  public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") Long challengeId,
       @RequestParam("milestoneId") Long milestoneId) {
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
