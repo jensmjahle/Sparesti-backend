@@ -3,17 +3,15 @@ package idatt2106.systemutvikling.sparesti.service;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
+import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import idatt2106.systemutvikling.sparesti.model.LoginRequestModel;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
-import idatt2106.systemutvikling.sparesti.service.AccountServiceInterface;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -210,5 +208,30 @@ public class UserService {
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+
+
+  public boolean deleteCurrentUser() {
+    String username = CurrentUserService.getCurrentUsername();
+
+    return deleteUserByUsername(username);
+  }
+
+  @Transactional
+  public boolean deleteUserByUsername(String username) {
+
+    // Delete manual savings
+
+
+    // Delete milestones
+
+    // Delete milestone log
+
+    // Delete challenges
+
+    // Delete challenge log
+
+    return false;
   }
 }
