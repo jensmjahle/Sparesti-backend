@@ -5,6 +5,8 @@ import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.service.MilestoneLogService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +28,10 @@ public class MilestoneLogController {
   }
 
   @GetMapping("/user")
-  public ResponseEntity<List<MilestoneDTO>> getUserMilestones(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones
+          (@RequestHeader("Authorization") String token, Pageable pageable) {
     logger.info("Received request to get user milestones.");
-    return ResponseEntity.ok(milestoneLogService.getMilestoneLogsByUsername(token));
+    return ResponseEntity.ok(milestoneLogService.getMilestoneLogsByUsername(token, pageable));
   }
 
   @PostMapping("/id")
