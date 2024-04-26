@@ -4,6 +4,7 @@ import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 
 import java.util.logging.Logger;
 
+import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +24,12 @@ public class UserController {
   }
 
   @GetMapping("/get/savings")
-  public ResponseEntity<Long> getUserTotalSavings(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<Long> getUserTotalSavings() {
     logger.info("Received request to get user total savings.");
-    Long savings = userService.getTotalAmountSavedByUser(token);
+    Long savings = userService.getTotalAmountSavedByUser(CurrentUserService.getCurrentUsername());
 
     if (savings == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    return ResponseEntity.ok(userService.getTotalAmountSavedByUser(token));
+    return ResponseEntity.ok(savings);
   }
 
   @GetMapping("/get")
