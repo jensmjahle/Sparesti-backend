@@ -47,11 +47,10 @@ public class MilestoneService {
   /**
    * Method to get all active milestones for a user.
    *
-   * @param token The token of the user to get milestones for.
+   * @param username The username of the user to get milestones for.
    * @return List of MilestoneDTOs.
    */
-  public List<MilestoneDTO> getActiveMilestonesDTOsByUsername(String token) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public List<MilestoneDTO> getActiveMilestonesDTOsByUsername(String username) {
     try {
       List<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username);
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();

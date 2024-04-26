@@ -52,11 +52,10 @@ public class MilestoneLogService {
   /**
    * Method to get all milestones for a user.
    *
-   * @param token The token of the user to get milestones for.
+   * @param username The username of the user to get milestones for.
    * @return List of MilestoneLogDAOs.
    */
-  public List<MilestoneDTO> getMilestoneLogsByUsername(String token) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public List<MilestoneDTO> getMilestoneLogsByUsername(String username) {
     try {
       List<MilestoneLogDAO> milestoneLogDAOs = milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username);
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();

@@ -1,6 +1,7 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorException;
@@ -16,6 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
@@ -24,17 +30,20 @@ public class UserService {
   private final CustomerServiceInterface customerService;
   private final AccountServiceInterface accountService;
   private final JWTService jwtService;
+  private final MilestoneService milestoneService;
+  private final MilestoneLogService milestoneLogService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
   @Autowired
   private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService,
-      JWTService jwtService, AccountServiceInterface accountService) {
+  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService) {
     this.userRepository = userRepository;
     this.customerService = customerService;
     this.jwtService = jwtService;
     this.accountService = accountService;
+    this.milestoneService = milestoneService;
+    this.milestoneLogService = milestoneLogService;
   }
 
   /**
@@ -73,6 +82,58 @@ public class UserService {
     } catch (Exception e) {
       logger.severe("Error when getting user: " + e.getMessage());
       throw new UserNotFoundException("User not found");
+    }
+  }
+
+  /**
+   * Calculates the total amount saved by all users in the system by summing up the savings
+   * of each individual user.
+   *
+   * @return The total amount saved by all users, or {@code null} if an error occurs during calculation.
+   */
+  public Long getTotalAmountSavedByAllUsers() {
+    Long result = 0L;
+    try {
+      List<UserDAO> users = userRepository.findAll();
+      String username;
+      for (UserDAO user : users) {
+        username = user.getUsername();
+        result += getTotalAmountSavedByUser(username);
+      }
+      return result;
+    } catch (Exception e) {
+      logger.severe("Error when getting milestones and calculating savings: " + e.getMessage());
+      return null; // Return null to indicate error
+    }
+  }
+
+  /**
+   * Retrieves the total amount saved by the user based on active milestones and milestone logs.
+   *
+   * @param username The authentication token of the user.
+   * @return The total amount saved by the user.
+   */
+  public Long getTotalAmountSavedByUser(String username) {
+    Long result = 0L;
+
+    try {
+      List<MilestoneDTO> milestones = milestoneService.getActiveMilestonesDTOsByUsername(username);
+
+      for (MilestoneDTO milestone : milestones) {
+        result += milestone.getMilestoneCurrentSum();
+      }
+
+      milestones = milestoneLogService.getMilestoneLogsByUsername(username);
+
+      for (MilestoneDTO milestone : milestones) {
+        result += milestone.getMilestoneCurrentSum();
+      }
+
+      return result;
+
+    } catch (Exception e) {
+      logger.severe("Error when getting milestones and calculating savings: " + e.getMessage());
+      return null;
     }
   }
 

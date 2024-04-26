@@ -105,7 +105,7 @@ public class ChallengeController {
       return ResponseEntity.badRequest().body("You are not the owner of this milestone");
     }
 
-    Long achievedSum = challengeService.getChallenge(challengeId).getCurrentSum();
+    Long achievedSum = challengeService.getChallenge(challengeId).getGoalSum();
     Long milestoneCurrentSum = milestoneService.getMilestoneDTOById(token, milestoneId).getMilestoneCurrentSum();
     long targetSum = achievedSum + milestoneCurrentSum;
 
