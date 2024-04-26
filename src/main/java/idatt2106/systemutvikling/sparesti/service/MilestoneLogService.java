@@ -96,14 +96,12 @@ public class MilestoneLogService {
   /**
    * Method to get a milestone by id.
    *
-   * @param token The token of the user to get the milestone for.
    * @param id The id of the milestone to get.
    * @return The MilestoneLogDAO.
    */
-  public MilestoneDTO getMilestoneLogById(String token, long id) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public MilestoneDTO getMilestoneLogById(long id) {
     try {
-      return MilestoneMapper.DAOLogToDTO(milestoneLogRepository.findMilestoneLogDAOByMilestoneIdAndUserDAO_Username(id, username));
+      return MilestoneMapper.DAOLogToDTO(milestoneLogRepository.findMilestoneLogDAOByMilestoneId(id));
     } catch (Exception e) {
       logger.severe("Error when getting milestone: " + e.getMessage());
       return null;
