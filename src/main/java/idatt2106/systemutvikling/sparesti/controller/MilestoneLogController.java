@@ -1,6 +1,7 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
+import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.JWTService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneLogService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 @CrossOrigin(origins = "*")
 public class MilestoneLogController {
 
-  Logger logger = Logger.getLogger(TokenController.class.getName());
+  Logger logger = Logger.getLogger(MilestoneLogController.class.getName());
   MilestoneLogService milestoneLogService;
   JWTService jwtService;
 
@@ -27,18 +28,16 @@ public class MilestoneLogController {
   }
 
   @GetMapping("/user")
-  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones
-          (@RequestHeader("Authorization") String token, Pageable pageable) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(Pageable pageable) {
+    String username = CurrentUserService.getCurrentUsername();
     logger.info("Received request to get user milestones.");
     return ResponseEntity.ok(milestoneLogService.getMilestoneLogsByUsernamePaginated(username, pageable));
   }
 
-  @PostMapping("/id")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token,
-      @RequestBody Long milestoneId) {
+  @GetMapping("/id")
+  public ResponseEntity<MilestoneDTO> getMilestoneLogById(@RequestBody Long milestoneLogId) {
     logger.info("Received request to get milestone by id.");
-    return ResponseEntity.ok(milestoneLogService.getMilestoneLogById(token, milestoneId));
+    return ResponseEntity.ok(milestoneLogService.getMilestoneLogById(milestoneLogId));
   }
 
 }

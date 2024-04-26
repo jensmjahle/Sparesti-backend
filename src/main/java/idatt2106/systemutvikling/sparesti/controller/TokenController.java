@@ -6,6 +6,7 @@ import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
+import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
 import idatt2106.systemutvikling.sparesti.service.JWTService;
 import idatt2106.systemutvikling.sparesti.service.PasswordService;
@@ -96,16 +97,14 @@ public class TokenController {
   /**
    * Refresh the JWT token.
    *
-   * @param token the token to be exchanged for a new token to be given to the user
    * @return the refreshed token
    */
   @GetMapping(value = "/refresh")
   @ResponseStatus(value = HttpStatus.CREATED)
-  public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<String> refreshToken() {
     logger.info("Received request to refresh token.");
 
-    String userid = jwtService.extractUsernameFromToken(token);
-    return ResponseEntity.ok().body(jwtService.generateToken(userid));
+    return ResponseEntity.ok().body(jwtService.generateToken(CurrentUserService.getCurrentUsername()));
   }
 
 }
