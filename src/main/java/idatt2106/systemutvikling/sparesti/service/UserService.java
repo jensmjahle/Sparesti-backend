@@ -73,22 +73,44 @@ public class UserService {
   }
 
   /**
+   * Calculates the total amount saved by all users in the system by summing up the savings
+   * of each individual user.
+   *
+   * @return The total amount saved by all users, or {@code null} if an error occurs during calculation.
+   */
+  public Long getTotalAmountSavedByAllUsers() {
+    Long result = 0L;
+    try {
+      List<UserDAO> users = userRepository.findAll();
+      String username;
+      for (UserDAO user : users) {
+        username = user.getUsername();
+        result += getTotalAmountSavedByUser(username);
+      }
+      return result;
+    } catch (Exception e) {
+      logger.severe("Error when getting milestones and calculating savings: " + e.getMessage());
+      return null; // Return null to indicate error
+    }
+  }
+
+  /**
    * Retrieves the total amount saved by the user based on active milestones and milestone logs.
    *
-   * @param token The authentication token of the user.
+   * @param username The authentication token of the user.
    * @return The total amount saved by the user.
    */
-  public Long getTotalAmountSavedByUser(String token) {
+  public Long getTotalAmountSavedByUser(String username) {
     Long result = 0L;
 
     try {
-      List<MilestoneDTO> milestones = milestoneService.getActiveMilestonesDTOsByUsername(token);
+      List<MilestoneDTO> milestones = milestoneService.getActiveMilestonesDTOsByUsername(username);
 
       for (MilestoneDTO milestone : milestones) {
         result += milestone.getMilestoneCurrentSum();
       }
 
-      milestones = milestoneLogService.getMilestoneLogsByUsername(token);
+      milestones = milestoneLogService.getMilestoneLogsByUsername(username);
 
       for (MilestoneDTO milestone : milestones) {
         result += milestone.getMilestoneCurrentSum();
