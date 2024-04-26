@@ -46,10 +46,10 @@ public class MilestoneController {
     milestoneService.createMilestoneDTO(token, milestoneDTO);
   }
 
-  @GetMapping("/id")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  @GetMapping("/{id}")
+  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @PathVariable Long id) {
     logger.info("Received request to get milestone by id.");
-    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(token, milestoneId));
+    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(token, id));
   }
 
   @PostMapping("/complete")
