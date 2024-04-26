@@ -17,11 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 @Service
 public class UserService {
@@ -49,13 +46,10 @@ public class UserService {
   /**
    * Method to get a user by username from the database.
    *
-   * @param token The token of the user to get.
+   * @param username The username of the user to get.
    * @return ResponseEntity with the User object and status code.
    */
-  public UserDTO getUserDTO(String token) {
-
-    String username = jwtService.extractUsernameFromToken(token);
-
+  public UserDTO getUserDTO(String username) {
     try {
       UserDAO userDAO = userRepository.findByUsername(username);
       UserDTO userDTO = UserMapper.toUserDTO(userDAO);
@@ -243,23 +237,21 @@ public class UserService {
   /**
    * Method to update the password of a user.
    *
-   * @param user The UserCredentialsDTO object with the new password.
+   * @param userCredentialsDTO The UserCredentialsDTO object with the new password.
    * @return ResponseEntity with the status code.
    */
-  public String updatePassword(UserCredentialsDTO user, String token) {
-    String username = jwtService.extractUsernameFromToken(token);
-
-    UserDAO userDAO = userRepository.findByUsername(username);
-    if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword())
-        || user.getNewPassword() == null) {
+  public String updatePassword(UserCredentialsDTO userCredentialsDTO) {
+    UserDAO userDAO = userRepository.findByUsername(CurrentUserService.getCurrentUsername());
+    if (!passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())
+        || userCredentialsDTO.getNewPassword() == null) {
       throw new InvalidCredentialsException("Invalid password");
     }
 
-    if (passwordEncoder.encode(user.getNewPassword()).length() <= 8) {
+    if (passwordEncoder.encode(userCredentialsDTO.getNewPassword()).length() <= 8) {
       throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
     }
 
-    userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
+    userDAO.setPassword(passwordEncoder.encode(userCredentialsDTO.getPassword()));
     userRepository.save(userDAO);
     return "Password updated";
   }
