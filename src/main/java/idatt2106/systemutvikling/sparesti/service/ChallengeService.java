@@ -46,8 +46,14 @@ public class ChallengeService {
     List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable);
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
 
+    /*
     for (ChallengeDAO challengeDAO : challengeDAOS) {
       challengeDTOS.add(ChallengeMapper.toDTO(challengeDAO));
+    }
+     */
+
+    for (int i = 0; i < challengeDAOS.size(); i++) {
+      challengeDTOS.add(ChallengeMapper.toDTO(challengeDAOS.get(i)));
     }
 
     return challengeDTOS;
@@ -67,8 +73,15 @@ public class ChallengeService {
             username, true, sortedPageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
+
+    /*
     for (ChallengeDAO challengeDAO : challengeDAOS) {
       challengeDTOS.add(ChallengeMapper.toDTO(challengeDAO));
+    }
+     */
+
+    for (int i = 0; i < challengeDAOS.getTotalElements(); i++) {
+      challengeDTOS.add(ChallengeMapper.toDTO(challengeDAOS.getContent().get(i)));
     }
 
     return new PageImpl<>(challengeDTOS, sortedPageable, challengeDAOS.getTotalElements());
@@ -98,11 +111,11 @@ public class ChallengeService {
   public void hasChallengeTimeElapsed(List<ChallengeDAO> challengeDAOS) {
     LocalDateTime now = LocalDateTime.now();
 
-    for (ChallengeDAO challengeDAO : challengeDAOS) {
-      if (!challengeDAO.getExpirationDate().isAfter(now)) {
-        ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
+    for (int i = 0; i < challengeDAOS.size(); i++) {
+      if (!challengeDAOS.get(i).getExpirationDate().isAfter(now)) {
+        ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAOS.get(i));
         challengeLogRepository.save(challengeLogDAO);
-        challengeRepository.delete(challengeDAO);
+        challengeRepository.delete(challengeDAOS.get(i));
       }
     }
   }
@@ -134,11 +147,12 @@ public class ChallengeService {
     return challengeRepository.save(challengeDAO);
   }
 
-  public void completeChallenge(Long challengeId) {
+  public ChallengeLogDAO completeChallenge(Long challengeId) {
     ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
     ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
     challengeRepository.delete(challengeDAO);
     challengeLogRepository.save(challengeLogDAO);
+    return challengeLogDAO;
   }
 
   public void deleteChallenge(Long challengeId) {
