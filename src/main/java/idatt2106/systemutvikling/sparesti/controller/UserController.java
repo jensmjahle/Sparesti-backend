@@ -23,6 +23,15 @@ public class UserController {
     this.userService = userService;
   }
 
+  @GetMapping("/get/totalSavings")
+  public ResponseEntity<Long> getTotalSavingsForAllUsers() {
+    logger.info("Received request to get total savings for all users.");
+    Long savings = userService.getTotalAmountSavedByAllUsers();
+
+    if (savings == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    return ResponseEntity.ok(savings);
+  }
+
   @GetMapping("/get/savings")
   public ResponseEntity<Long> getUserTotalSavings() {
     logger.info("Received request to get user total savings.");
