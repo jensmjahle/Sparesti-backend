@@ -2,10 +2,10 @@ package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import idatt2106.systemutvikling.sparesti.service.UserService;
@@ -20,6 +20,15 @@ public class UserController {
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
+  }
+
+  @GetMapping("/get/savings")
+  public ResponseEntity<Long> getUserTotalSavings(@RequestHeader("Authorization") String token) {
+    logger.info("Received request to get user total savings.");
+    Long savings = userService.getTotalAmountSavedByUser(token);
+
+    if (savings == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    return ResponseEntity.ok(userService.getTotalAmountSavedByUser(token));
   }
 
   @GetMapping("/get")
