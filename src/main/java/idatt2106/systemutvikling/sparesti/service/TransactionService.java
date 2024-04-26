@@ -5,7 +5,6 @@ import idatt2106.systemutvikling.sparesti.dao.TransactionCategoryDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.mapper.KeywordMapper;
-import idatt2106.systemutvikling.sparesti.mapper.TransactionCategoryMapper;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import java.util.logging.Logger;
