@@ -50,7 +50,7 @@ public class MilestoneService {
   /**
    * Method to get all active milestones for a user.
    *
-   * @param token The token of the user to get milestones for.
+   * @param username The username of the user to get milestones for.
    * @return List of MilestoneDTOs.
    */
   public Page<MilestoneDTO> getActiveMilestonesDTOsByUsername(String token, Pageable pageable) {

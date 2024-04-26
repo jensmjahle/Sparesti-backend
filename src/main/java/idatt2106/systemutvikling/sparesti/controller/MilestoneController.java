@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class MilestoneController {
 
-  private final Logger logger = Logger.getLogger(TokenController.class.getName());
+  private final Logger logger = Logger.getLogger(MilestoneController.class.getName());
 
   private final MilestoneService milestoneService;
 
@@ -48,10 +48,10 @@ public class MilestoneController {
     milestoneService.createMilestoneDTO(token, milestoneDTO);
   }
 
-  @GetMapping("/id")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  @GetMapping("/{id}")
+  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @PathVariable Long id) {
     logger.info("Received request to get milestone by id.");
-    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(token, milestoneId));
+    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(token, id));
   }
 
   @PostMapping("/complete")
