@@ -28,11 +28,10 @@ public class UserCredentialsController {
   }
 
   @PostMapping("/updatePassword")
-  public ResponseEntity<String> updatePassword(@RequestHeader("Authorization") String token,
-      @RequestBody UserCredentialsDTO user) {
+  public ResponseEntity<String> updatePassword(@RequestBody UserCredentialsDTO userCredentialsDTO) {
     logger.info(
-        "Received request to update password for user with username: " + user.getUsername() + ".");
-    return ResponseEntity.ok(userService.updatePassword(user, token));
+        "Received request to update password for user with username: " + userCredentialsDTO.getUsername() + ".");
+    return ResponseEntity.ok(userService.updatePassword(userCredentialsDTO));
   }
 
 }

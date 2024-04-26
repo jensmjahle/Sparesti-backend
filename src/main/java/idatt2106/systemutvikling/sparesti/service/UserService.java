@@ -237,23 +237,21 @@ public class UserService {
   /**
    * Method to update the password of a user.
    *
-   * @param user The UserCredentialsDTO object with the new password.
+   * @param userCredentialsDTO The UserCredentialsDTO object with the new password.
    * @return ResponseEntity with the status code.
    */
-  public String updatePassword(UserCredentialsDTO user, String token) {
-    String username = jwtService.extractUsernameFromToken(token);
-
-    UserDAO userDAO = userRepository.findByUsername(username);
-    if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword())
-        || user.getNewPassword() == null) {
+  public String updatePassword(UserCredentialsDTO userCredentialsDTO) {
+    UserDAO userDAO = userRepository.findByUsername(CurrentUserService.getCurrentUsername());
+    if (!passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())
+        || userCredentialsDTO.getNewPassword() == null) {
       throw new InvalidCredentialsException("Invalid password");
     }
 
-    if (passwordEncoder.encode(user.getNewPassword()).length() <= 8) {
+    if (passwordEncoder.encode(userCredentialsDTO.getNewPassword()).length() <= 8) {
       throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
     }
 
-    userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
+    userDAO.setPassword(passwordEncoder.encode(userCredentialsDTO.getPassword()));
     userRepository.save(userDAO);
     return "Password updated";
   }
