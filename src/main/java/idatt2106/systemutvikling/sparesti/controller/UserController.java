@@ -27,36 +27,21 @@ public class UserController {
   @GetMapping("/get")
   public ResponseEntity<UserDTO> getUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to get user information.");
-    try {
-      return ResponseEntity.ok(userService.getUserDTO(token));
-    } catch (Exception e) {
-      logger.severe("Failed to get user information.");
-      return ResponseEntityExceptionHandler.handleException(e);
-    }
+    return ResponseEntity.ok(userService.getUserDTO(token));
   }
 
   @DeleteMapping("/delete")
   public ResponseEntity<UserDTO> deleteUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to delete user information.");
-    try {
-      return ResponseEntity.ok(userService.deleteUserDTO(token));
-    } catch (Exception e) {
-      logger.severe("Failed to delete user information.");
-      return ResponseEntityExceptionHandler.handleException(e);
-    }
+    return ResponseEntity.ok(userService.deleteUserDTO(token));
   }
 
   @PutMapping("/update")
   public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token,
       @RequestBody UserDTO updatedUserDTO) {
     logger.info("Received request to update user information.");
-    try {
-      userService.updateUserDTO(token, updatedUserDTO);
-      return ResponseEntity.ok("User information updated.");
-    } catch (Exception e) {
-      logger.severe("Failed to update user information.");
-      return ResponseEntityExceptionHandler.handleException(e);
-    }
+    userService.updateUserDTO(token, updatedUserDTO);
+    return ResponseEntity.ok("User information updated.");
   }
 
 }

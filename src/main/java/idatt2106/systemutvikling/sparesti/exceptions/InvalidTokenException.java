@@ -10,4 +10,7 @@ public class InvalidTokenException extends RuntimeException {
     super(message, cause);
   }
 
+  public InvalidTokenException() {
+    super("Invalid token.");
+  }
 }

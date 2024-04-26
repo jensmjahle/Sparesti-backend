@@ -6,6 +6,10 @@ public class BankConnectionErrorException extends RuntimeException {
     super(message);
   }
 
+  public BankConnectionErrorException() {
+    super("Could not connect to bank.");
+  }
+
   public BankConnectionErrorException(String message, Throwable cause) {
     super(message, cause);
   }

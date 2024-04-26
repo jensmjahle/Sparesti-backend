@@ -10,4 +10,7 @@ public class NotFoundInDatabaseException extends RuntimeException {
     super(message, cause);
   }
 
+  public NotFoundInDatabaseException() {
+    super("Not found in database.");
+  }
 }

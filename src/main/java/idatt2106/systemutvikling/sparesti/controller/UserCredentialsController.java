@@ -33,13 +33,7 @@ public class UserCredentialsController {
       @RequestBody UserCredentialsDTO user) {
     logger.info(
         "Received request to update password for user with username: " + user.getUsername() + ".");
-    try {
-      return ResponseEntity.ok(userService.updatePassword(user, token));
-    } catch (Exception e) {
-      logger.severe(
-          "Failed to update password for user with username: " + user.getUsername() + ".");
-      return ResponseEntityExceptionHandler.handleException(e);
-    }
+    return ResponseEntity.ok(userService.updatePassword(user, token));
   }
 
 }

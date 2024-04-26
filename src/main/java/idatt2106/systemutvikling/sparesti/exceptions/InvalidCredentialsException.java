@@ -10,5 +10,8 @@ public class InvalidCredentialsException extends RuntimeException {
     super(message, cause);
   }
 
+  public InvalidCredentialsException() {
+    super("Invalid credentials.");
+  }
 
 }

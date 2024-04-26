@@ -2,6 +2,7 @@ package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.PaginatedRequestDTO;
 import idatt2106.systemutvikling.sparesti.dto.TransactionDTO;
+import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorException;
 import idatt2106.systemutvikling.sparesti.mapper.TransactionMapper;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
@@ -20,35 +21,35 @@ import java.util.List;
 @AllArgsConstructor
 public class TransactionController {
 
-    private final TransactionService transactionService;
+  private final TransactionService transactionService;
 
-    @GetMapping("/latest/expense")
-    public ResponseEntity<?> getLatestExpensesCategorized(Pageable pageable) {
-        String username = CurrentUserService.getCurrentUsername();
+  //todo: move logic to service layer
+  @GetMapping("/latest/expense")
+  public ResponseEntity<?> getLatestExpensesCategorized(Pageable pageable) {
+    String username = CurrentUserService.getCurrentUsername();
 
-        List<Transaction> transactions = transactionService
-                .getLatestExpensesForUserCategorized(
-                        username,
-                        pageable.getPageNumber(),
-                        pageable.getPageSize()
-                );
+    List<Transaction> transactions = transactionService
+        .getLatestExpensesForUserCategorized(
+            username,
+            pageable.getPageNumber(),
+            pageable.getPageSize()
+        );
 
-        if (transactions == null)
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("No expenses found for the selected checking account");
-
-        // Convert transactions to their DTO counterpart.
-        List<TransactionDTO> dtos = transactions
-                .stream()
-                .map(TransactionMapper::toDTO)
-                .toList();
-
-        return ResponseEntity.ok().body(dtos);
+    if (transactions == null) {
+      throw new BankConnectionErrorException();
     }
 
-    @PostMapping
-    public void performTransaction() {
+    // Convert transactions to their DTO counterpart.
+    List<TransactionDTO> dtos = transactions
+        .stream()
+        .map(TransactionMapper::toDTO)
+        .toList();
 
-    }
+    return ResponseEntity.ok().body(dtos);
+  }
+
+  @PostMapping
+  public void performTransaction() {
+
+  }
 }
