@@ -4,7 +4,14 @@ import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
+import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorException;
+import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
+import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
+import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
+import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import java.util.Objects;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +25,7 @@ import java.util.logging.Logger;
 
 @Service
 public class UserService {
-  @Autowired
-  private PasswordEncoder passwordEncoder;
+
   private final UserRepository userRepository;
   private final CustomerServiceInterface customerService;
   private final AccountServiceInterface accountService;
@@ -27,6 +33,8 @@ public class UserService {
   private final MilestoneService milestoneService;
   private final MilestoneLogService milestoneLogService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
   public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService) {
@@ -40,35 +48,40 @@ public class UserService {
 
   /**
    * Method to get a user by username from the database.
+   *
    * @param token The token of the user to get.
    * @return ResponseEntity with the User object and status code.
    */
-  public ResponseEntity<UserDTO> getUserDTO(String token) {
+  public UserDTO getUserDTO(String token) {
 
     String username = jwtService.extractUsernameFromToken(token);
 
     try {
-    UserDAO userDAO = userRepository.findByUsername(username);
-    UserDTO userDTO = UserMapper.toUserDTO(userDAO);
+      UserDAO userDAO = userRepository.findByUsername(username);
+      UserDTO userDTO = UserMapper.toUserDTO(userDAO);
 
-    try {
+      try {
 
-      if (customerService.hasTwoAccounts(username) && accountService.findAccountsByUsername(username).size() >= 2 &&
-              accountService.findAccountsNumbersByUsername(username).contains(userDAO.getCurrentAccount()) &&
-              accountService.findAccountsNumbersByUsername(username).contains(userDAO.getSavingsAccount())) {
-        userDTO.setIsConnectedToBank(true);
-      } else {
-        userDTO.setIsConnectedToBank(false);
+        if (customerService.hasTwoAccounts(username)
+            && accountService.findAccountsByUsername(username).size() >= 2 &&
+            accountService.findAccountsNumbersByUsername(username)
+                .contains(userDAO.getCurrentAccount()) &&
+            accountService.findAccountsNumbersByUsername(username)
+                .contains(userDAO.getSavingsAccount())) {
+          userDTO.setIsConnectedToBank(true);
+        } else {
+          userDTO.setIsConnectedToBank(false);
+        }
+
+      } catch (Exception e) {
+        logger.severe("Error when checking if user has two accounts: " + e.getMessage());
+        throw new BankConnectionErrorException("Error when checking if user has two accounts");
       }
 
+      return userDTO;
     } catch (Exception e) {
-      logger.severe("Error when checking if user has two accounts: " + e.getMessage());
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      logger.severe("Error when getting user: " + e.getMessage());
+      throw new UserNotFoundException("User not found");
     }
   }
 
@@ -126,7 +139,8 @@ public class UserService {
 
   /**
    * Method to update a user in the database.
-   * @param token The token of the user to update.
+   *
+   * @param token          The token of the user to update.
    * @param updatedUserDTO The updated UserDTO object with all fields.
    * @return ResponseEntity with the status code.
    */
@@ -187,7 +201,7 @@ public class UserService {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  public ResponseEntity<UserDTO> deleteUserDTO(String token) {
+  public UserDTO deleteUserDTO(String token) {
     //TODO: Delete userDTO from database
     String username = jwtService.extractUsernameFromToken(token);
 
@@ -196,41 +210,35 @@ public class UserService {
 
   /**
    * Method to create a user from a UserCredentialsDTO object.
+   *
    * @param user The UserCredentialsDTO object to create the user from.
    * @return ResponseEntity with the UserDTO object and status code.
    */
-  public ResponseEntity<UserDTO> createUser(UserCredentialsDTO user) {
-    try {
-      UserDAO userDAO = UserMapper.userCredentialsDTOToUserDAO(user);
+  public UserDTO createUser(UserCredentialsDTO user) {
+    UserDAO userDAO = UserMapper.userCredentialsDTOToUserDAO(user);
 
-      if (userRepository.findByUsername(userDAO.getUsername()) != null) {
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
-      } else {
-
-        if (passwordEncoder.encode(userDAO.getPassword()).length() <= 8 || userDAO.getPassword() == null || userDAO.getUsername() == null){
-          return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (userRepository.findByUsername(userDAO.getUsername()) != null || userRepository.findByEmail(userDAO.getEmail()) != null) {
-          return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-          userDAO.setPassword(passwordEncoder.encode(userDAO.getPassword()));
-          userRepository.save(userDAO);
-          UserDTO userDTO = new UserDTO();
-          userDTO.setUsername(userDAO.getUsername());
-          userDTO.setIsConnectedToBank(false);
-
-          return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
-        } catch (Exception e) {
-          return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-      }
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    if (userRepository.findByUsername(userDAO.getUsername()) != null) {
+      throw new ConflictException("Username already in use");
     }
+    if (passwordEncoder.encode(userDAO.getPassword()).length() <= 8 || userDAO.getPassword() == null
+        || userDAO.getUsername() == null) {
+      throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
+    }
+
+    if (userRepository.findByUsername(userDAO.getUsername()) != null
+        || userRepository.findByEmail(userDAO.getEmail()) != null) {
+      throw new ConflictException("Username or email already in use");
+    }
+
+    userDAO.setPassword(passwordEncoder.encode(userDAO.getPassword()));
+    userRepository.save(userDAO);
+    UserDTO userDTO = new UserDTO();
+    userDTO.setUsername(userDAO.getUsername());
+    userDTO.setIsConnectedToBank(false);
+
+    return userDTO;
   }
+
 
   /**
    * Method to update the password of a user.
@@ -238,23 +246,21 @@ public class UserService {
    * @param user The UserCredentialsDTO object with the new password.
    * @return ResponseEntity with the status code.
    */
-  public ResponseEntity<String> updatePassword(UserCredentialsDTO user, String token) {
+  public String updatePassword(UserCredentialsDTO user, String token) {
     String username = jwtService.extractUsernameFromToken(token);
-    try {
-      UserDAO userDAO = userRepository.findByUsername(username);
-      if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword()) || user.getNewPassword() == null) {
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-      }
 
-      if (passwordEncoder.encode(user.getNewPassword()).length() <= 8) {
-        return new ResponseEntity<>("Password needs to be at least 8 characters long",HttpStatus.BAD_REQUEST);
-      }
-
-      userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
-      userRepository.save(userDAO);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    UserDAO userDAO = userRepository.findByUsername(username);
+    if (!passwordEncoder.matches(user.getPassword(), userDAO.getPassword())
+        || user.getNewPassword() == null) {
+      throw new InvalidCredentialsException("Invalid password");
     }
+
+    if (passwordEncoder.encode(user.getNewPassword()).length() <= 8) {
+      throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
+    }
+
+    userDAO.setPassword(passwordEncoder.encode(user.getPassword()));
+    userRepository.save(userDAO);
+    return "Password updated";
   }
 }

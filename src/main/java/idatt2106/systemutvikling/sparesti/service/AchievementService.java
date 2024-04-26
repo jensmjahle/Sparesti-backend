@@ -20,6 +20,7 @@ import java.util.logging.Logger;
  */
 @Service
 public class AchievementService {
+
   private final Logger logger = Logger.getLogger(AchievementService.class.getName());
 
   private final AchievementRepository achievementRepository;
@@ -36,9 +37,9 @@ public class AchievementService {
    * @param userRepository        The repository for users.
    */
   public AchievementService(AchievementRepository achievementRepository,
-                            ConditionRepository conditionRepository,
-                            ConditionService conditionService,
-                            UserRepository userRepository) {
+      ConditionRepository conditionRepository,
+      ConditionService conditionService,
+      UserRepository userRepository) {
     this.achievementRepository = achievementRepository;
     this.conditionRepository = conditionRepository;
     this.conditionService = conditionService;
@@ -62,51 +63,43 @@ public class AchievementService {
    * Retrieves locked achievements for a user and converts them to AchievementDTOs.
    *
    * @param username The username of the user for whom locked achievements are to be retrieved.
-   * @return ResponseEntity containing a list of AchievementDTOs representing the locked achievements.
+   * @return ResponseEntity containing a list of AchievementDTOs representing the locked
+   * achievements.
    */
-  public ResponseEntity<List<AchievementDTO>> getLockedAchievementsAsDTOS(String username) {
-    try {
-      List<AchievementDAO> achievedDAOS = getLockedAchievements(username);
-      List<AchievementDTO> achievedDTOS = AchievementMapper.toDTOList(achievedDAOS);
-      return ResponseEntity.ok(achievedDTOS);
-    } catch (Exception e) {
-      logger.severe("An error occurred while getting locked achievements with username " + username + ": " + e.getMessage());
-      return ResponseEntity.status(500).build();
-    }
+  public List<AchievementDTO> getLockedAchievementsAsDTOS(String username) {
+    List<AchievementDAO> achievedDAOS = getLockedAchievements(username);
+    return AchievementMapper.toDTOList(achievedDAOS);
   }
 
   /**
-   * Checks for unlocked achievements for a given user and adds them to the user's achievements if unlocked.
+   * Checks for unlocked achievements for a given user and adds them to the user's achievements if
+   * unlocked.
    *
    * @param username The user for whom to check and unlock achievements.
    * @return The list of newly unlocked achievements.
    */
-  public ResponseEntity<List<AchievementDTO>> checkForUnlockedAchievements(String username) {
-    try {
-      UserDAO user = userRepository.findByUsername(username);
-      List<AchievementDTO> newAchievements = new ArrayList<>();
-      List<AchievementDAO> lockedAchievement = getLockedAchievements(user.getUsername());
-      List<ConditionDAO> conditions;
-      boolean achievementUnlocked;
-      for (AchievementDAO achievement : lockedAchievement) {
-        achievementUnlocked = true;
-        conditions = conditionRepository.findAllByAchievementDAO_AchievementId(achievement.getAchievementId());
-        for (ConditionDAO condition : conditions) {
-          if(!conditionService.isConditionMet(condition)) {
-            achievementUnlocked = false;
-            break;
-          }
-        }
-        if (achievementUnlocked) {
-          user.getAchievements().add(achievement);
-          userRepository.save(user);
-          newAchievements.add(AchievementMapper.toDTO(achievement));
+  public List<AchievementDTO> checkForUnlockedAchievements(String username) {
+    UserDAO user = userRepository.findByUsername(username);
+    List<AchievementDTO> newAchievements = new ArrayList<>();
+    List<AchievementDAO> lockedAchievement = getLockedAchievements(user.getUsername());
+    List<ConditionDAO> conditions;
+    boolean achievementUnlocked;
+    for (AchievementDAO achievement : lockedAchievement) {
+      achievementUnlocked = true;
+      conditions = conditionRepository.findAllByAchievementDAO_AchievementId(
+          achievement.getAchievementId());
+      for (ConditionDAO condition : conditions) {
+        if (!conditionService.isConditionMet(condition)) {
+          achievementUnlocked = false;
+          break;
         }
       }
-      return ResponseEntity.ok(newAchievements);
-    } catch (Exception e) {
-      logger.severe("An error occurred while getting unlocked achievements with username " + username + ": " + e.getMessage());
-      return ResponseEntity.status(500).build();
+      if (achievementUnlocked) {
+        user.getAchievements().add(achievement);
+        userRepository.save(user);
+        newAchievements.add(AchievementMapper.toDTO(achievement));
+      }
     }
+    return newAchievements;
   }
 }

@@ -35,7 +35,8 @@ public class MilestoneLogController {
   }
 
   @PostMapping("/id")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token,
+      @RequestBody Long milestoneId) {
     logger.info("Received request to get milestone by id.");
     return ResponseEntity.ok(milestoneLogService.getMilestoneLogById(token, milestoneId));
   }
