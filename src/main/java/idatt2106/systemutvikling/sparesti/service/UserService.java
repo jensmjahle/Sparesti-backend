@@ -17,11 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 @Service
 public class UserService {
@@ -49,13 +46,10 @@ public class UserService {
   /**
    * Method to get a user by username from the database.
    *
-   * @param token The token of the user to get.
+   * @param username The username of the user to get.
    * @return ResponseEntity with the User object and status code.
    */
-  public UserDTO getUserDTO(String token) {
-
-    String username = jwtService.extractUsernameFromToken(token);
-
+  public UserDTO getUserDTO(String username) {
     try {
       UserDAO userDAO = userRepository.findByUsername(username);
       UserDTO userDTO = UserMapper.toUserDTO(userDAO);

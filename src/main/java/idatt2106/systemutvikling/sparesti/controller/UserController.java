@@ -43,9 +43,9 @@ public class UserController {
   }
 
   @GetMapping("/get")
-  public ResponseEntity<UserDTO> getUserDTO(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<UserDTO> getUserDTO() {
     logger.info("Received request to get user information.");
-    return ResponseEntity.ok(userService.getUserDTO(token));
+    return ResponseEntity.ok(userService.getUserDTO(CurrentUserService.getCurrentUsername()));
   }
 
   @DeleteMapping("/delete")
