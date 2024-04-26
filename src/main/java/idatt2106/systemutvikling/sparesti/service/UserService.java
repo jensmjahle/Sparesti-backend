@@ -81,23 +81,25 @@ public class UserService {
   public Long getTotalAmountSavedByUser(String token) {
     Long result = 0L;
 
-    // Retrieve active milestones
-    List<MilestoneDTO> milestones = milestoneService.getActiveMilestonesDTOsByUsername(token);
+    try {
+      List<MilestoneDTO> milestones = milestoneService.getActiveMilestonesDTOsByUsername(token);
 
-    // Calculate total amount saved based on active milestones
-    for (MilestoneDTO milestone : milestones) {
-      result += milestone.getMilestoneCurrentSum();
+      for (MilestoneDTO milestone : milestones) {
+        result += milestone.getMilestoneCurrentSum();
+      }
+
+      milestones = milestoneLogService.getMilestoneLogsByUsername(token);
+
+      for (MilestoneDTO milestone : milestones) {
+        result += milestone.getMilestoneCurrentSum();
+      }
+
+      return result;
+
+    } catch (Exception e) {
+      logger.severe("Error when getting milestones and calculating savings: " + e.getMessage());
+      return null;
     }
-
-    // Retrieve milestone logs
-    milestones = milestoneLogService.getMilestoneLogsByUsername(token);
-
-    // Calculate total amount saved based on milestone logs
-    for (MilestoneDTO milestone : milestones) {
-      result += milestone.getMilestoneCurrentSum();
-    }
-
-    return result;
   }
 
   /**
