@@ -37,6 +37,7 @@ public interface MilestoneLogRepository extends JpaRepository<MilestoneLogDAO, L
    */
   Page<MilestoneLogDAO> findMilestoneLogDAOByUserDAO_Username(String username, Pageable pageable);
 
+  List<MilestoneLogDAO> findMilestoneLogDAOByUserDAO_Username(String username);
   /**
    * Method to find all milestone logs that have a completion date after the given completion date
    *

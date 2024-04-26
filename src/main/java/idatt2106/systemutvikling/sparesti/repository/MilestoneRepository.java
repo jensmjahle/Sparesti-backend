@@ -39,6 +39,9 @@ public interface MilestoneRepository extends JpaRepository<MilestoneDAO, Long> {
    */
   Page<MilestoneDAO> findMilestoneDAOByUserDAO_Username(String username, Pageable pageable);
 
+  List<MilestoneDAO> findMilestoneDAOByUserDAO_Username(String username);
+
+
   /**
    * Method to find all milestones that have a start date after the given start date and a deadline date before the given deadline date
    *

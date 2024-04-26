@@ -53,8 +53,7 @@ public class MilestoneService {
    * @param username The username of the user to get milestones for.
    * @return List of MilestoneDTOs.
    */
-  public Page<MilestoneDTO> getActiveMilestonesDTOsByUsername(String token, Pageable pageable) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public Page<MilestoneDTO> getActiveMilestonesDTOsByUsernamePaginated(String username, Pageable pageable) {
     try {
       Page<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username, pageable);
 
@@ -63,6 +62,27 @@ public class MilestoneService {
         milestoneDTOS.add(MilestoneMapper.toDTO(milestoneDAO));
       }
       return new PageImpl<>(milestoneDTOS, pageable, milestoneDAOs.getTotalElements());
+    } catch (Exception e) {
+      logger.severe("Error when getting milestones: " + e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Method to get all active milestones for a user.
+   *
+   * @param username The username of the user to get milestones for.
+   * @return List of MilestoneDTOs.
+   */
+  public List<MilestoneDTO> getActiveMilestonesDTOsByUsername(String username) {
+    try {
+      List<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username);
+
+      List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
+      for (MilestoneDAO milestoneDAO : milestoneDAOs) {
+        milestoneDTOS.add(MilestoneMapper.toDTO(milestoneDAO));
+      }
+      return milestoneDTOS;
     } catch (Exception e) {
       logger.severe("Error when getting milestones: " + e.getMessage());
       return null;
