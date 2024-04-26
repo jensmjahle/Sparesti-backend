@@ -2,6 +2,7 @@ package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 
+import idatt2106.systemutvikling.sparesti.utils.ResponseEntityExceptionHandler;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -14,6 +15,7 @@ import idatt2106.systemutvikling.sparesti.service.UserService;
 @CrossOrigin
 @RequestMapping("/users")
 public class UserController {
+
   private final Logger logger = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
 
@@ -25,20 +27,36 @@ public class UserController {
   @GetMapping("/get")
   public ResponseEntity<UserDTO> getUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to get user information.");
-    return userService.getUserDTO(token);
+    try {
+      return ResponseEntity.ok(userService.getUserDTO(token));
+    } catch (Exception e) {
+      logger.severe("Failed to get user information.");
+      return ResponseEntityExceptionHandler.handleException(e);
+    }
   }
 
   @DeleteMapping("/delete")
   public ResponseEntity<UserDTO> deleteUserDTO(@RequestHeader("Authorization") String token) {
     logger.info("Received request to delete user information.");
-    return userService.deleteUserDTO(token);
+    try {
+      return ResponseEntity.ok(userService.deleteUserDTO(token));
+    } catch (Exception e) {
+      logger.severe("Failed to delete user information.");
+      return ResponseEntityExceptionHandler.handleException(e);
+    }
   }
 
   @PutMapping("/update")
-  public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token, @RequestBody UserDTO updatedUserDTO) {
+  public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token,
+      @RequestBody UserDTO updatedUserDTO) {
     logger.info("Received request to update user information.");
-    userService.updateUserDTO(token, updatedUserDTO);
-    return ResponseEntity.ok("User information updated.");
+    try {
+      userService.updateUserDTO(token, updatedUserDTO);
+      return ResponseEntity.ok("User information updated.");
+    } catch (Exception e) {
+      logger.severe("Failed to update user information.");
+      return ResponseEntityExceptionHandler.handleException(e);
+    }
   }
 
 }

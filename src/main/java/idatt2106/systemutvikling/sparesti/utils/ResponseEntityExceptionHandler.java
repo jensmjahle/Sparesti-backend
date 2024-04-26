@@ -17,6 +17,7 @@ public class ResponseEntityExceptionHandler {
       case "OpenAIException" -> status = HttpStatus.BAD_GATEWAY;
       case "InvalidTokenException", "InvalidCredentialsException" ->
           status = HttpStatus.UNAUTHORIZED;
+      case "ConflictException" -> status = HttpStatus.CONFLICT;
     }
     return ResponseEntity.status(status).build();
   }
