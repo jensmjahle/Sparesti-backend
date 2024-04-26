@@ -37,13 +37,14 @@ public class UserService {
   private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService) {
+  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.customerService = customerService;
     this.jwtService = jwtService;
     this.accountService = accountService;
     this.milestoneService = milestoneService;
     this.milestoneLogService = milestoneLogService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   /**
