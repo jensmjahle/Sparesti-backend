@@ -6,10 +6,9 @@ import org.springframework.http.ResponseEntity;
 public class ResponseEntityExceptionHandler {
 
   private ResponseEntityExceptionHandler() {
-    // Empty constructor
   }
 
-  public static ResponseEntity<Object> handleException(Exception e) {
+  public static <T> ResponseEntity<T> handleException(Exception e) {
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
     switch (e.getClass().getSimpleName()) {
@@ -18,9 +17,8 @@ public class ResponseEntityExceptionHandler {
       case "OpenAIException" -> status = HttpStatus.BAD_GATEWAY;
       case "InvalidTokenException", "InvalidCredentialsException" ->
           status = HttpStatus.UNAUTHORIZED;
-
     }
-    return ResponseEntity.status(status).body(e.getMessage());
+    return ResponseEntity.status(status).build();
   }
 
 }

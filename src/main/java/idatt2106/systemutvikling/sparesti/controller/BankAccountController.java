@@ -1,9 +1,12 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.BankAccountDTO;
+import idatt2106.systemutvikling.sparesti.exceptions.NotFoundInDatabaseException;
 import idatt2106.systemutvikling.sparesti.mapper.BankAccountMapper;
 import idatt2106.systemutvikling.sparesti.service.BankAccountService;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
+import idatt2106.systemutvikling.sparesti.utils.ResponseEntityExceptionHandler;
+import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,19 +21,26 @@ import java.util.List;
 @AllArgsConstructor
 public class BankAccountController {
 
-    private BankAccountService srvAccount;
+  private final Logger logger = Logger.getLogger(BankAccountController.class.getName());
+  private BankAccountService srvAccount;
 
-    @GetMapping
-    public ResponseEntity<?> getAllBankAccounts() {
-        List<BankAccount> accounts = srvAccount.getAllAccountsForCurrentUser();
+  @GetMapping
+  public ResponseEntity<?> getAllBankAccounts() {
+    try {
+      List<BankAccount> accounts = srvAccount.getAllAccountsForCurrentUser();
 
-        if (accounts == null || accounts.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      if (accounts == null || accounts.isEmpty()) {
+        throw new NotFoundInDatabaseException("No bank accounts found for current user.");
+      }
 
-        List<BankAccountDTO> body = accounts.stream()
-                .map(BankAccountMapper::toDTO)
-                .toList();
+      List<BankAccountDTO> body = accounts.stream()
+          .map(BankAccountMapper::toDTO)
+          .toList();
 
-        return ResponseEntity.ok().body(body);
+      return ResponseEntity.ok().body(body);
+    } catch (Exception e) {
+      logger.severe("An error occurred:" + e.getMessage());
+      return ResponseEntityExceptionHandler.handleException(e);
     }
+  }
 }
