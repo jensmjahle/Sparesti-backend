@@ -38,7 +38,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(request -> corsConfiguration))
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/userCredentials/create", "/auth/login").permitAll()
+                    .requestMatchers("/userCredentials/create", "/auth/login", "/users/get/totalSavings").permitAll()
                     .requestMatchers("/user/**").hasAnyRole(BASIC, COMPLETE)
                     .anyRequest().authenticated()
             )
