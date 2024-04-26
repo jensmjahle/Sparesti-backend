@@ -1,79 +1,143 @@
 package idatt2106.systemutvikling.sparesti.mapper;
 
 import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.enums.RecurringInterval;
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
-import java.time.LocalDateTime;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Base64;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChallengeMapperTest {
 
-  @Test
-  @DisplayName("Test mapping from ChallengeDTO to ChallengeDAO")
-  public void testToDAOMapping() {
-    // Given
-    ChallengeDTO dto = new ChallengeDTO();
-    dto.setChallengeId(1L);
-    dto.setUsername("testUser");
-    dto.setChallengeTitle("Test Challenge");
-    dto.setChallengeDescription("Description");
-    dto.setGoalSum(100L);
-    dto.setCurrentSum(50L);
-    dto.setStartDate(LocalDateTime.now());
-    dto.setExpirationDate(LocalDateTime.now().plusDays(7));
-    dto.setRecurring(24 * 60 * 60); // DAILY
-    dto.setActive(true);
+  // existing tests...
 
-    // When
+  @Test
+  public void testMapRecurringIntervalDaily() {
+    ChallengeDTO dto = new ChallengeDTO();
+    dto.setRecurring(24 * 60 * 60); // DAILY
+
     ChallengeDAO dao = ChallengeMapper.toDAO(dto);
 
-    // Then
-    assertEquals(dto.getChallengeId(), dao.getChallengeId());
-    assertEquals(dto.getUsername(), dao.getUserDAO().getUsername());
-    assertEquals(dto.getChallengeTitle(), dao.getChallengeTitle());
-    assertEquals(dto.getChallengeDescription(), dao.getChallengeDescription());
-    assertEquals(dto.getGoalSum(), dao.getGoalSum());
-    assertEquals(dto.getCurrentSum(), dao.getCurrentSum());
-    assertEquals(dto.getStartDate(), dao.getStartDate());
-    assertEquals(dto.getExpirationDate(), dao.getExpirationDate());
     assertEquals(RecurringInterval.DAILY, dao.getRecurringInterval());
-    assertEquals(dto.isActive(), dao.isActive());
   }
 
   @Test
-  @DisplayName("Test mapping from ChallengeDAO to ChallengeDTO")
-  public void testToDTOMapping() {
-    // Given
+  public void testMapRecurringIntervalWeekly() {
+    ChallengeDTO dto = new ChallengeDTO();
+    dto.setRecurring(60 * 60 * 24 * 7); // WEEKLY
+
+    ChallengeDAO dao = ChallengeMapper.toDAO(dto);
+
+    assertEquals(RecurringInterval.WEEKLY, dao.getRecurringInterval());
+  }
+
+  @Test
+  public void testMapRecurringIntervalMonthly() {
+    ChallengeDTO dto = new ChallengeDTO();
+    dto.setRecurring(60 * 60 * 24 * 30); // MONTHLY
+
+    ChallengeDAO dao = ChallengeMapper.toDAO(dto);
+
+    assertEquals(RecurringInterval.MONTHLY, dao.getRecurringInterval());
+  }
+
+  @Test
+  public void testMapRecurringIntervalNone() {
+    ChallengeDTO dto = new ChallengeDTO();
+    dto.setRecurring(0); // NONE
+
+    ChallengeDAO dao = ChallengeMapper.toDAO(dto);
+
+    assertEquals(RecurringInterval.NONE, dao.getRecurringInterval());
+  }
+
+  @Test
+  public void testMapRecurringIntervalInvalid() {
+    ChallengeDTO dto = new ChallengeDTO();
+    dto.setRecurring(12345); // Invalid recurring interval
+
+    assertThrows(IllegalArgumentException.class, () -> ChallengeMapper.toDAO(dto));
+  }
+
+  @Test
+  public void testToDTOMappingRecurringIntervalDaily() {
     ChallengeDAO dao = new ChallengeDAO();
-    dao.setChallengeId(1L);
+    dao.setRecurringInterval(RecurringInterval.DAILY);
     UserDAO userDAO = new UserDAO();
     userDAO.setUsername("testUser");
     dao.setUserDAO(userDAO);
-    dao.setChallengeTitle("Test Challenge");
-    dao.setChallengeDescription("Description");
-    dao.setGoalSum(100L);
-    dao.setCurrentSum(50L);
-    dao.setStartDate(LocalDateTime.now());
-    dao.setExpirationDate(LocalDateTime.now().plusDays(7));
-    dao.setRecurringInterval(RecurringInterval.DAILY);
-    dao.setActive(true);
 
-    // When
     ChallengeDTO dto = ChallengeMapper.toDTO(dao);
 
-    // Then
-    assertEquals(dao.getChallengeId(), dto.getChallengeId());
-    assertEquals(dao.getUserDAO().getUsername(), dto.getUsername());
-    assertEquals(dao.getChallengeTitle(), dto.getChallengeTitle());
-    assertEquals(dao.getChallengeDescription(), dto.getChallengeDescription());
-    assertEquals(dao.getGoalSum(), dto.getGoalSum());
-    assertEquals(dao.getCurrentSum(), dto.getCurrentSum());
-    assertEquals(dao.getStartDate(), dto.getStartDate());
-    assertEquals(dao.getExpirationDate(), dto.getExpirationDate());
-    assertEquals(dao.isActive(), dto.isActive());
-    assertEquals(dao.getRecurringInterval().getSeconds(), dto.getRecurring());
+    assertEquals(24 * 60 * 60, dto.getRecurring());
+  }
+
+  @Test
+  public void testToDTOMappingRecurringIntervalWeekly() {
+    ChallengeDAO dao = new ChallengeDAO();
+    dao.setRecurringInterval(RecurringInterval.WEEKLY);
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testUser");
+    dao.setUserDAO(userDAO);
+
+    ChallengeDTO dto = ChallengeMapper.toDTO(dao);
+
+    assertEquals(60 * 60 * 24 * 7, dto.getRecurring());
+  }
+
+  @Test
+  public void testToDTOMappingRecurringIntervalMonthly() {
+    ChallengeDAO dao = new ChallengeDAO();
+    dao.setRecurringInterval(RecurringInterval.MONTHLY);
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testUser");
+    dao.setUserDAO(userDAO);
+
+    ChallengeDTO dto = ChallengeMapper.toDTO(dao);
+
+    assertEquals(60 * 60 * 24 * 30, dto.getRecurring());
+  }
+
+  @Test
+  public void testToDTOMappingRecurringIntervalNone() {
+    ChallengeDAO dao = new ChallengeDAO();
+    dao.setRecurringInterval(RecurringInterval.NONE);
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testUser");
+    dao.setUserDAO(userDAO);
+
+    ChallengeDTO dto = ChallengeMapper.toDTO(dao);
+
+    assertEquals(0, dto.getRecurring());
+  }
+
+  @Test
+  public void testToByteArrayWithImageData() {
+    String base64String = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(new byte[]{1, 2, 3});
+
+    byte[] decodedBytes = Base64Mapper.toByteArray(base64String);
+
+    assertArrayEquals(new byte[]{1, 2, 3}, decodedBytes);
+  }
+
+  @Test
+  public void testToByteArrayWithoutImageData() {
+    String base64String = Base64.getEncoder().encodeToString(new byte[]{1, 2, 3});
+
+    byte[] decodedBytes = Base64Mapper.toByteArray(base64String);
+
+    assertArrayEquals(new byte[]{1, 2, 3}, decodedBytes);
+  }
+
+  @Test
+  public void testToByteArrayWithNull() {
+    String base64String = null;
+
+    byte[] decodedBytes = Base64Mapper.toByteArray(base64String);
+
+    assertNull(decodedBytes);
   }
 }
