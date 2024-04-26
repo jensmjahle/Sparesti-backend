@@ -23,23 +23,14 @@ public class AchievementController {
 
   @GetMapping("/locked")
   public ResponseEntity<List<AchievementDTO>> getLockedAchievements() {
-    try {
-      return ResponseEntity.ok(
-          achievementService.getLockedAchievementsAsDTOS(CurrentUserService.getCurrentUsername()));
-    } catch (Exception e) {
-      logger.severe("Failed to get locked achievements.");
-      return ResponseEntity.internalServerError().build();
-    }
+    logger.info("Received request to get locked achievements.");
+    return ResponseEntity.ok(
+        achievementService.getLockedAchievementsAsDTOS(CurrentUserService.getCurrentUsername()));
   }
 
   @GetMapping("/newUnlocked")
   public ResponseEntity<List<AchievementDTO>> getNewUnlockedAchievements() {
-    try {
-      return ResponseEntity.ok(
-          achievementService.checkForUnlockedAchievements(CurrentUserService.getCurrentUsername()));
-    } catch (Exception e) {
-      logger.severe("Failed to get new unlocked achievements.");
-      return ResponseEntityExceptionHandler.handleException(e);
-    }
+    return ResponseEntity.ok(
+        achievementService.checkForUnlockedAchievements(CurrentUserService.getCurrentUsername()));
   }
 }

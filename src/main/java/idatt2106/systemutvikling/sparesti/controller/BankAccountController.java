@@ -24,23 +24,19 @@ public class BankAccountController {
   private final Logger logger = Logger.getLogger(BankAccountController.class.getName());
   private BankAccountService srvAccount;
 
+
   @GetMapping
   public ResponseEntity<?> getAllBankAccounts() {
-    try {
-      List<BankAccount> accounts = srvAccount.getAllAccountsForCurrentUser();
+    List<BankAccount> accounts = srvAccount.getAllAccountsForCurrentUser();
 
-      if (accounts == null || accounts.isEmpty()) {
-        throw new NotFoundInDatabaseException("No bank accounts found for current user.");
-      }
-
-      List<BankAccountDTO> body = accounts.stream()
-          .map(BankAccountMapper::toDTO)
-          .toList();
-
-      return ResponseEntity.ok().body(body);
-    } catch (Exception e) {
-      logger.severe("An error occurred:" + e.getMessage());
-      return ResponseEntityExceptionHandler.handleException(e);
+    if (accounts == null || accounts.isEmpty()) {
+      throw new NotFoundInDatabaseException("No bank accounts found for current user.");
     }
+
+    List<BankAccountDTO> body = accounts.stream()
+        .map(BankAccountMapper::toDTO)
+        .toList();
+
+    return ResponseEntity.ok().body(body);
   }
 }
