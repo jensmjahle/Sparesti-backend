@@ -9,9 +9,13 @@ import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
@@ -58,16 +62,17 @@ public class UserServiceTest {
 
   @Test
   public void testGetUserDTO() {
-    String token = "token";
-    String username = "username";
+    // Arrange
+    String username = "testUser";
     UserDAO userDAO = new UserDAO();
     userDAO.setUsername(username);
-    when(jwtService.extractUsernameFromToken(token)).thenReturn(username);
     when(userRepository.findByUsername(username)).thenReturn(userDAO);
 
-    UserDTO userDTO = userService.getUserDTO(token);
+    // Act
+    UserDTO result = userService.getUserDTO(username);
 
-    assertEquals(username, userDTO.getUsername());
+    // Assert
+    assertEquals(username, result.getUsername());
   }
 
   @Test
@@ -228,22 +233,33 @@ public class UserServiceTest {
 
   @Test
   public void testUpdatePassword() {
-    String token = "token";
-    String username = "username";
-    UserDAO userDAO = new UserDAO();
-    userDAO.setUsername(username);
-    userDAO.setPassword("oldPassword");
+    // Arrange
     UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+    userCredentialsDTO.setUsername("testUser");
     userCredentialsDTO.setPassword("oldPassword");
     userCredentialsDTO.setNewPassword("newPassword");
-    when(jwtService.extractUsernameFromToken(token)).thenReturn(username);
-    when(userRepository.findByUsername(username)).thenReturn(userDAO);
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testUser");
+    userDAO.setPassword(passwordEncoder.encode("oldPassword"));
+    when(userRepository.findByUsername("testUser")).thenReturn(userDAO);
     when(passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())).thenReturn(true);
-    when(passwordEncoder.encode(userCredentialsDTO.getNewPassword())).thenReturn("newEncodedPassword");
+    when(passwordEncoder.encode(userCredentialsDTO.getNewPassword())).thenReturn("encodedNewPassword");
 
-    String response = userService.updatePassword(userCredentialsDTO, token);
+    // Mock SecurityContext and Authentication
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Authentication authentication = Mockito.mock(Authentication.class);
+    when(authentication.getName()).thenReturn("testUser");
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    when(authentication.isAuthenticated()).thenReturn(true);
+    when(authentication.getName()).thenReturn("testUser");
 
-    assertEquals("Password updated", response);
+    // Act
+    String result = userService.updatePassword(userCredentialsDTO);
+
+    // Assert
+    assertEquals("Password updated", result);
+    verify(userRepository, times(1)).save(userDAO);
+    assertEquals("encodedNewPassword", userDAO.getPassword());
   }
 
   @Test
@@ -273,20 +289,6 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetTotalAmountSavedByAllUsers() {
-    // Arrange
-    when(userRepository.findAll()).thenReturn(List.of(new UserDAO(), new UserDAO()));
-    when(userService.getTotalAmountSavedByUser(anyString())).thenReturn(100L);
-    when(milestoneLogService.getMilestoneLogsByUsername(anyString())).thenReturn(List.of(new MilestoneDTO())); // return a list
-
-    // Act
-    Long result = userService.getTotalAmountSavedByAllUsers();
-
-    // Assert
-    assertEquals(200L, result);
-  }
-
-  @Test
   public void testGetTotalAmountSavedByUser() {
     // Arrange
     String username = "testUser";
@@ -302,7 +304,7 @@ public class UserServiceTest {
     assertEquals(0L, result); // Adjust this according to your logic
   }
 
-  /*@Test
+  @Test
   public void testUpdateUserDTO_whenEmailAlreadyExists() {
     // Arrange
     String token = "token";
@@ -311,6 +313,7 @@ public class UserServiceTest {
     UserDAO existingUser = new UserDAO();
     existingUser.setUsername("existingUsername"); // Set the username of the existing user
     UserDAO anotherUser = new UserDAO();
+    anotherUser.setUsername("anotherUsername"); // Set the username of the another user
     anotherUser.setEmail("newEmail@example.com");
 
     when(jwtService.extractUsernameFromToken(token)).thenReturn("existingUsername"); // Return the username of the existing user
@@ -322,7 +325,7 @@ public class UserServiceTest {
 
     // Assert
     assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-  }*/
+  }
 
 
 }

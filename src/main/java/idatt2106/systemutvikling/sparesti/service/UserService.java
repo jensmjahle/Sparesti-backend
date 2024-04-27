@@ -244,7 +244,7 @@ public class UserService {
   public String updatePassword(UserCredentialsDTO userCredentialsDTO) {
     UserDAO userDAO = userRepository.findByUsername(CurrentUserService.getCurrentUsername());
     if (!passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())
-        || userCredentialsDTO.getNewPassword() == null) {
+            || userCredentialsDTO.getNewPassword() == null) {
       throw new InvalidCredentialsException("Invalid password");
     }
 
@@ -252,7 +252,7 @@ public class UserService {
       throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
     }
 
-    userDAO.setPassword(passwordEncoder.encode(userCredentialsDTO.getPassword()));
+    userDAO.setPassword(passwordEncoder.encode(userCredentialsDTO.getNewPassword()));
     userRepository.save(userDAO);
     return "Password updated";
   }
