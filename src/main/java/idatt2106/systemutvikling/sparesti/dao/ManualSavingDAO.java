@@ -32,7 +32,7 @@ public class ManualSavingDAO {
     private Long milestoneId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_id")
     @Setter
     private UserDAO user;
 }

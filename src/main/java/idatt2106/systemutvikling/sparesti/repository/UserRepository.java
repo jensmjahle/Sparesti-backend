@@ -22,4 +22,10 @@ public interface UserRepository extends JpaRepository<UserDAO, String> {
    * @return the user entity as UserDAO
    */
   UserDAO findByEmail(String email);
+
+  /**
+   * Deletes the user identified by the specified username.
+   * @param username The username identifying the user to be deleted.
+   */
+  void deleteByUsername(String username);
 }
