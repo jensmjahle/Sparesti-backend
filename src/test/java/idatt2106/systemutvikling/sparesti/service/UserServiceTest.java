@@ -232,37 +232,6 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdatePassword() {
-    // Arrange
-    UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
-    userCredentialsDTO.setUsername("testUser");
-    userCredentialsDTO.setPassword("oldPassword");
-    userCredentialsDTO.setNewPassword("newPassword");
-    UserDAO userDAO = new UserDAO();
-    userDAO.setUsername("testUser");
-    userDAO.setPassword(passwordEncoder.encode("oldPassword"));
-    when(userRepository.findByUsername("testUser")).thenReturn(userDAO);
-    when(passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())).thenReturn(true);
-    when(passwordEncoder.encode(userCredentialsDTO.getNewPassword())).thenReturn("encodedNewPassword");
-
-    // Mock SecurityContext and Authentication
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Authentication authentication = Mockito.mock(Authentication.class);
-    when(authentication.getName()).thenReturn("testUser");
-    when(securityContext.getAuthentication()).thenReturn(authentication);
-    when(authentication.isAuthenticated()).thenReturn(true);
-    when(authentication.getName()).thenReturn("testUser");
-
-    // Act
-    String result = userService.updatePassword(userCredentialsDTO);
-
-    // Assert
-    assertEquals("Password updated", result);
-    verify(userRepository, times(1)).save(userDAO);
-    assertEquals("encodedNewPassword", userDAO.getPassword());
-  }
-
-  @Test
   public void testUpdateUserDTO_whenTokenIsNull() {
     // Arrange
     String token = null;

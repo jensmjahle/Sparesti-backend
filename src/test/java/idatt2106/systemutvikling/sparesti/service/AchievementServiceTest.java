@@ -14,9 +14,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -96,18 +98,67 @@ class AchievementServiceTest {
     // Mock the behavior of the repositories
     when(achievementRepository.findAll()).thenReturn(List.of(achievement));
     when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenReturn(
-        new ArrayList<>());
+            List.of(new ConditionDAO())); // Mock a condition exists for the achievement
     when(userRepository.findByUsername(any(String.class))).thenReturn(user);
     // Mock conditionService.isConditionMet() with a valid ConditionDAO argument
     when(conditionService.isConditionMet(any(ConditionDAO.class))).thenReturn(
-        true); // Mock condition always being met
+            true); // Mock condition always being met
 
     // Call the method to test
     List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(
-        user.getUsername());
+            user.getUsername());
 
     // Verify the result
     assertEquals(1, unlockedAchievements.size());
     assertEquals(1, user.getAchievements().size());
+  }
+
+  @Test
+  public void testCheckForUnlockedAchievements_ConditionNotMet() {
+    // Create a test user
+    UserDAO user = new UserDAO();
+    user.setUsername("johndoe");
+    user.setAchievements(new ArrayList<>());
+
+    // Create test achievement
+    AchievementDAO achievement = new AchievementDAO();
+    achievement.setAchievementId(1L);
+
+    // Mock the behavior of the repositories
+    when(achievementRepository.findAll()).thenReturn(List.of(achievement));
+    when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenReturn(
+            new ArrayList<>());
+    when(userRepository.findByUsername(any(String.class))).thenReturn(user);
+    // Mock conditionService.isConditionMet() with a valid ConditionDAO argument
+    when(conditionService.isConditionMet(any(ConditionDAO.class))).thenReturn(
+            false); // Mock condition not being met
+
+    // Call the method to test
+    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(
+            user.getUsername());
+
+    // Verify the result
+    assertTrue(unlockedAchievements.isEmpty());
+    assertTrue(user.getAchievements().isEmpty());
+  }
+
+  @Test
+  public void testCheckForUnlockedAchievements_UserNotFound() {
+    // Create test achievement
+    AchievementDAO achievement = new AchievementDAO();
+    achievement.setAchievementId(1L);
+
+    // Mock the behavior of the repositories
+    when(achievementRepository.findAll()).thenReturn(List.of(achievement));
+    when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenReturn(
+            new ArrayList<>());
+    when(userRepository.findByUsername(any(String.class))).thenReturn(null); // Mock user not found
+
+    // Call the method to test
+    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(
+            "unknownUser");
+
+    // Verify the result
+    assertTrue(unlockedAchievements.isEmpty());
   }
 }
