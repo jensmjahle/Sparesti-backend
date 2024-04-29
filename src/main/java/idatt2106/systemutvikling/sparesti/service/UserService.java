@@ -9,39 +9,37 @@ import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
 import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
-import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import java.util.Objects;
-import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import idatt2106.systemutvikling.sparesti.repository.*;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-
-  private final UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
   private final CustomerServiceInterface customerService;
   private final AccountServiceInterface accountService;
   private final JWTService jwtService;
+
   private final MilestoneService milestoneService;
   private final MilestoneLogService milestoneLogService;
-  private final Logger logger = Logger.getLogger(UserService.class.getName());
-  @Autowired
-  private PasswordEncoder passwordEncoder;
 
-  @Autowired
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService) {
-    this.userRepository = userRepository;
-    this.customerService = customerService;
-    this.jwtService = jwtService;
-    this.accountService = accountService;
-    this.milestoneService = milestoneService;
-    this.milestoneLogService = milestoneLogService;
-  }
+  private final UserRepository userRepository;
+  private final ManualSavingRepository dbSaving;
+  private final MilestoneRepository dbMilestone;
+  private final MilestoneLogRepository dbMilestoneLog;
+  private final ChallengeLogRepository dbChallenge;
+  private final ChallengeRepository dbChallengeLog;
+
+  private final Logger logger = Logger.getLogger(UserService.class.getName());
 
   /**
    * Method to get a user by username from the database.
@@ -195,13 +193,6 @@ public class UserService {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  public UserDTO deleteUserDTO(String token) {
-    //TODO: Delete userDTO from database
-    String username = jwtService.extractUsernameFromToken(token);
-
-    return null;
-  }
-
   /**
    * Method to create a user from a UserCredentialsDTO object.
    *
@@ -243,7 +234,7 @@ public class UserService {
   public String updatePassword(UserCredentialsDTO userCredentialsDTO) {
     UserDAO userDAO = userRepository.findByUsername(CurrentUserService.getCurrentUsername());
     if (!passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())
-        || userCredentialsDTO.getNewPassword() == null) {
+            || userCredentialsDTO.getNewPassword() == null) {
       throw new InvalidCredentialsException("Invalid password");
     }
 
@@ -251,8 +242,46 @@ public class UserService {
       throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
     }
 
-    userDAO.setPassword(passwordEncoder.encode(userCredentialsDTO.getPassword()));
+    userDAO.setPassword(passwordEncoder.encode(userCredentialsDTO.getNewPassword()));
     userRepository.save(userDAO);
     return "Password updated";
+  }
+
+
+
+  public boolean deleteCurrentUser() {
+    String username = CurrentUserService.getCurrentUsername();
+
+    if (username == null)
+      return false;
+
+    return deleteUserByUsername(username);
+  }
+
+  public boolean deleteUserByUsername(@NonNull String username) {
+
+    // Check whether user exists
+    if (userRepository.findByUsername(username) == null)
+      return false;
+
+    // Delete manual savings
+    dbSaving.deleteAllByUser_Username(username);
+
+    // Delete milestones
+    dbMilestone.deleteAllByUserDAO_Username(username);
+
+    // Delete milestone log
+    dbMilestoneLog.deleteAllByUserDAO_Username(username);
+
+    // Delete challenges
+    dbChallenge.deleteAllByUserDAO_Username(username);
+
+    // Delete challenge log
+    dbChallengeLog.deleteAllByUserDAO_Username(username);
+
+    // Finally, delete user
+    userRepository.deleteByUsername(username);
+
+    return true;
   }
 }

@@ -53,10 +53,16 @@ public class AchievementService {
    * @return The list of locked achievements.
    */
   public List<AchievementDAO> getLockedAchievements(String username) {
-    List<AchievementDAO> achieved = userRepository.findByUsername(username).getAchievements();
-    List<AchievementDAO> lockedAchievements = new ArrayList<>(achievementRepository.findAll());
-    lockedAchievements.removeAll(achieved);
-    return lockedAchievements;
+    UserDAO user = userRepository.findByUsername(username);
+    if (user == null) {
+      // Handle the case when the user is not found
+      return new ArrayList<>();
+    }
+
+    List<AchievementDAO> allAchievements = new ArrayList<>(achievementRepository.findAll());
+    List<AchievementDAO> userAchievements = user.getAchievements();
+    allAchievements.removeAll(userAchievements);
+    return allAchievements;
   }
 
   /**
@@ -80,14 +86,19 @@ public class AchievementService {
    */
   public List<AchievementDTO> checkForUnlockedAchievements(String username) {
     UserDAO user = userRepository.findByUsername(username);
+    if (user == null) {
+      // Handle the case when the user is not found
+      return new ArrayList<>();
+    }
     List<AchievementDTO> newAchievements = new ArrayList<>();
     List<AchievementDAO> lockedAchievement = getLockedAchievements(user.getUsername());
     List<ConditionDAO> conditions;
     boolean achievementUnlocked;
     for (AchievementDAO achievement : lockedAchievement) {
-      achievementUnlocked = true;
       conditions = conditionRepository.findAllByAchievementDAO_AchievementId(
-          achievement.getAchievementId());
+              achievement.getAchievementId());
+      if (!conditions.isEmpty()) achievementUnlocked = true;
+      else break;
       for (ConditionDAO condition : conditions) {
         if (!conditionService.isConditionMet(condition)) {
           achievementUnlocked = false;

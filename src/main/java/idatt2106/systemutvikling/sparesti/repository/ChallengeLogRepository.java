@@ -72,4 +72,8 @@ public interface ChallengeLogRepository extends JpaRepository<ChallengeLogDAO, L
   List<ChallengeLogDAO> findChallengeLogDAOSByCompletionDateBefore(LocalDateTime completionDate);
 
   List<ChallengeLogDAO> findChallengeLogDAOByUserDAO_Username(String username);
+
+
+
+  void deleteAllByUserDAO_Username(String username);
 }

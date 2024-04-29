@@ -17,7 +17,7 @@ public class ChallengeLogDAO {
 
   @Id
   private Long challengeId;
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne
   @JoinColumn(name = "username", referencedColumnName = "username")
   private UserDAO userDAO;
   private String challengeTitle;

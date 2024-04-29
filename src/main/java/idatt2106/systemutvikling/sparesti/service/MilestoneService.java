@@ -2,9 +2,12 @@ package idatt2106.systemutvikling.sparesti.service;
 
 
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.mapper.Base64Mapper;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -146,6 +149,43 @@ public class MilestoneService {
 
     } catch (Exception e) {
       logger.severe("Error when updating milestone: " + e.getMessage());
+      return null;
+    }
+  }
+
+
+  public MilestoneDTO editMilestone(String username, MilestoneDTO milestoneDTO){
+    try {
+      MilestoneDAO updatedMilestone = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDTO.getMilestoneId());
+      UserDAO user = userRepository.findByUsername(username);
+      if(!Objects.equals(user.getUsername(), updatedMilestone.getUserDAO().getUsername())){
+        return null;
+      }
+      if (Objects.nonNull(milestoneDTO.getMilestoneTitle())) {
+        updatedMilestone.setMilestoneTitle(milestoneDTO.getMilestoneTitle());
+      }
+      if (Objects.nonNull(milestoneDTO.getMilestoneDescription())) {
+        updatedMilestone.setMilestoneDescription(milestoneDTO.getMilestoneDescription());
+      }
+      if( Objects.nonNull(milestoneDTO.getMilestoneImage())){
+        updatedMilestone.setMilestoneImage(Base64Mapper.toByteArray(milestoneDTO.getMilestoneImage()));
+      }
+      if(Objects.nonNull(milestoneDTO.getMilestoneCurrentSum())){
+        updatedMilestone.setMilestoneCurrentSum(milestoneDTO.getMilestoneCurrentSum());
+      }
+      if(Objects.nonNull(milestoneDTO.getMilestoneGoalSum())){
+        updatedMilestone.setMilestoneGoalSum(milestoneDTO.getMilestoneGoalSum());
+      }
+      if(Objects.nonNull(milestoneDTO.getStartDate())){
+        updatedMilestone.setStartDate(milestoneDTO.getStartDate());
+      }
+      if(Objects.nonNull(milestoneDTO.getDeadlineDate())){
+        updatedMilestone.setDeadlineDate(milestoneDTO.getDeadlineDate());
+      }
+      milestoneRepository.save(updatedMilestone);
+      return MilestoneMapper.toDTO(updatedMilestone);
+    } catch (RuntimeException e){
+      logger.severe("Error when editing milestone: "+e.getMessage());
       return null;
     }
   }
