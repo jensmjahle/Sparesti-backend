@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
   private final Logger logger = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
