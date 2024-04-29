@@ -55,7 +55,8 @@ public class UserServiceTest {
   public void setup() {
     MockitoAnnotations.openMocks(this);
     passwordEncoder = mock(PasswordEncoder.class);
-    userService = new UserService(userRepository, customerService, jwtService, accountService, milestoneService, milestoneLogService, passwordEncoder);
+    userService = new UserService(passwordEncoder, customerService, accountService, jwtService, milestoneService, milestoneLogService, userRepository, null, null, null, null, null);
+    when(jwtService.extractUsernameFromToken(anyString())).thenReturn("testUser");
     when(customerService.hasTwoAccounts(anyString())).thenReturn(true);
     when(milestoneLogService.getMilestoneLogsByUsername(anyString())).thenReturn(Collections.emptyList()); // return an empty list
   }
