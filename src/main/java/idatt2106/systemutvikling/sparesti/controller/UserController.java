@@ -3,13 +3,15 @@ package idatt2106.systemutvikling.sparesti.controller;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import java.util.logging.Logger;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
   private final Logger logger = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
@@ -25,10 +27,16 @@ public class UserController {
     return userService.getUserDTO(token);
   }
 
+  @Transactional
   @DeleteMapping("/delete")
-  public ResponseEntity<UserDTO> deleteUserDTO(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<String> deleteUserDTO() {
     logger.info("Received request to delete user information.");
-    return userService.deleteUserDTO(token);
+
+    boolean deleted = userService.deleteCurrentUser();
+
+    return deleted ?
+            ResponseEntity.ok().body("User deleted successfully") :
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found");
   }
 
   @RequestMapping("/update")

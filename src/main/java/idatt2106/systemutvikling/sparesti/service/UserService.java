@@ -135,13 +135,6 @@ public class UserService {
     return null;
   }
 
-  public ResponseEntity<UserDTO> deleteUserDTO(String token) {
-    //TODO: Delete userDTO from database
-    String username = jwtService.extractUsernameFromToken(token);
-
-    return null;
-  }
-
   public ResponseEntity<UserDTO> login(LoginRequestModel user) {
     //TODO: Check if user exists in database, and if password is correct
     //TODO: Return userDTO if login is successful
@@ -218,10 +211,12 @@ public class UserService {
   public boolean deleteCurrentUser() {
     String username = CurrentUserService.getCurrentUsername();
 
+    if (username == null)
+      return false;
+
     return deleteUserByUsername(username);
   }
 
-  @Transactional
   public boolean deleteUserByUsername(@NonNull String username) {
 
     // Check whether user exists
@@ -238,10 +233,10 @@ public class UserService {
     dbMilestoneLog.deleteAllByUserDAO_Username(username);
 
     // Delete challenges
-    dbMilestone.deleteAllByUserDAO_Username(username);
+    dbChallenge.deleteAllByUserDAO_Username(username);
 
     // Delete challenge log
-    dbMilestone.deleteAllByUserDAO_Username(username);
+    dbChallengeLog.deleteAllByUserDAO_Username(username);
 
     // Finally, delete user
     userRepository.deleteByUsername(username);
