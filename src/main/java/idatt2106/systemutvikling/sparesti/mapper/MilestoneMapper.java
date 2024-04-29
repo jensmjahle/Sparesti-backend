@@ -61,7 +61,6 @@ public static MilestoneDAO toDAO(MilestoneDTO dto) {
    */
   public static MilestoneLogDAO toLogDAO(MilestoneDAO dao) {
   MilestoneLogDAO logDAO = new MilestoneLogDAO();
-  logDAO.setMilestoneId(dao.getMilestoneId());
   UserDAO userDAO = new UserDAO();
   userDAO.setUsername(dao.getUserDAO().getUsername());
   logDAO.setUserDAO(userDAO);
