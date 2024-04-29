@@ -9,9 +9,7 @@ import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,7 +46,12 @@ public class MilestoneService {
    */
   public Page<MilestoneDTO> getActiveMilestonesDTOsByUsernamePaginated(String username, Pageable pageable) {
     try {
-      Page<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username, pageable);
+      Pageable sortedPageable = PageRequest.of(
+              pageable.getPageNumber(),
+              pageable.getPageSize(),
+              Sort.by("deadlineDate"));
+
+      Page<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username, sortedPageable);
 
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneDAO milestoneDAO : milestoneDAOs) {
