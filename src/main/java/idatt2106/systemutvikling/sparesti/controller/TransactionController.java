@@ -47,4 +47,20 @@ public class TransactionController {
 
     return ResponseEntity.ok().body(dtos);
   }
+
+  @GetMapping("/30-day-expenses")
+  public ResponseEntity<List<TransactionDTO>> getLatestExpenses_LastMonth_Categorized() {
+    List<Transaction> transactions = transactionService.getLatestExpensesFromCheckingAccountOfCurrentUserCategorized();
+    if (transactions == null)
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+
+    List<TransactionDTO> body = transactions
+            .stream()
+            .map(TransactionMapper::toDTO)
+            .toList();
+
+
+    return ResponseEntity.ok().body(body);
+  }
 }
