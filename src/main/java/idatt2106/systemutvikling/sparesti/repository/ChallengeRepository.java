@@ -39,6 +39,8 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
    */
   List<ChallengeDAO> findChallengeDAOSByUserDAO_Username(String username, Pageable pageable);
 
+  List<ChallengeDAO> findChallengeDAOSByUserDAO_Username(String username);
+
   Page<ChallengeDAO> findChallengeDAOSByUserDAO_UsernameAndActive(String username, boolean active, Pageable pageable);
 
   /**
@@ -110,4 +112,7 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
    */
   List<ChallengeDAO> findChallengeDAOByActiveAndUserDAO_Username(boolean active, String username);
 
+
+
+  void deleteAllByUserDAO_Username(String username);
 }

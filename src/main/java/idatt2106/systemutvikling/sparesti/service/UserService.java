@@ -10,17 +10,16 @@ import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException
 import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import idatt2106.systemutvikling.sparesti.repository.*;
-
-import java.util.Objects;
-import java.util.logging.Logger;
-
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -41,7 +40,6 @@ public class UserService {
   private final ChallengeRepository dbChallengeLog;
 
   private final Logger logger = Logger.getLogger(UserService.class.getName());
-
 
   /**
    * Method to get a user by username from the database.
@@ -195,13 +193,6 @@ public class UserService {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  public UserDTO deleteUserDTO(String token) {
-    //TODO: Delete userDTO from database
-    String username = jwtService.extractUsernameFromToken(token);
-
-    return null;
-  }
-
   /**
    * Method to create a user from a UserCredentialsDTO object.
    *
@@ -254,5 +245,43 @@ public class UserService {
     userDAO.setPassword(passwordEncoder.encode(userCredentialsDTO.getNewPassword()));
     userRepository.save(userDAO);
     return "Password updated";
+  }
+
+
+
+  public boolean deleteCurrentUser() {
+    String username = CurrentUserService.getCurrentUsername();
+
+    if (username == null)
+      return false;
+
+    return deleteUserByUsername(username);
+  }
+
+  public boolean deleteUserByUsername(@NonNull String username) {
+
+    // Check whether user exists
+    if (userRepository.findByUsername(username) == null)
+      return false;
+
+    // Delete manual savings
+    dbSaving.deleteAllByUser_Username(username);
+
+    // Delete milestones
+    dbMilestone.deleteAllByUserDAO_Username(username);
+
+    // Delete milestone log
+    dbMilestoneLog.deleteAllByUserDAO_Username(username);
+
+    // Delete challenges
+    dbChallenge.deleteAllByUserDAO_Username(username);
+
+    // Delete challenge log
+    dbChallengeLog.deleteAllByUserDAO_Username(username);
+
+    // Finally, delete user
+    userRepository.deleteByUsername(username);
+
+    return true;
   }
 }
