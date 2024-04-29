@@ -1,6 +1,8 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
+
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import jakarta.transaction.Transactional;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/users")
 public class UserController {
   private final Logger logger = Logger.getLogger(UserController.class.getName());
@@ -39,10 +42,11 @@ public class UserController {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found");
   }
 
-  @RequestMapping("/update")
+  @PutMapping("/update")
   public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token, @RequestBody UserDTO updatedUserDTO) {
     logger.info("Received request to update user information.");
-    return userService.updateUserDTO(token, updatedUserDTO);
+    userService.updateUserDTO(token, updatedUserDTO);
+    return ResponseEntity.ok("User information updated.");
   }
 
 }

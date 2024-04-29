@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Arrays;
+import java.util.List;
 
 @EnableWebSecurity
 @AllArgsConstructor
@@ -24,9 +28,15 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173")); // specify your allowed origins
+    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // specify your allowed methods
+    corsConfiguration.setAllowCredentials(true);
+    corsConfiguration.setAllowedHeaders(List.of("*"));
+
     http
             .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(request -> new org.springframework.web.cors.CorsConfiguration().applyPermitDefaultValues()))
+            .cors(cors -> cors.configurationSource(request -> corsConfiguration))
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/userCredentials/create", "/auth/login").permitAll()
                     .requestMatchers("/user/**").hasAnyRole(BASIC, COMPLETE)
