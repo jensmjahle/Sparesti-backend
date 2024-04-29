@@ -16,8 +16,6 @@ public class ManualSavingService {
     private final UserRepository dbUser;
     private final ManualSavingRepository dbManualSaving;
 
-
-
     public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount) {
         ManualSavingDAO dao = new ManualSavingDAO();
 

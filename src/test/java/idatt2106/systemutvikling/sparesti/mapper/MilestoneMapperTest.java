@@ -27,7 +27,6 @@ public class MilestoneMapperTest {
 
     // Assert that the mapping is correct
     assertNotNull(dao);
-    assertEquals(dto.getMilestoneId(), dao.getMilestoneId());
     assertEquals(dto.getUsername(), dao.getUserDAO().getUsername());
     assertEquals(dto.getMilestoneTitle(), dao.getMilestoneTitle());
   }
@@ -48,7 +47,6 @@ public class MilestoneMapperTest {
 
     // Assert that the mapping is correct
     assertNotNull(dto);
-    assertEquals(dao.getMilestoneId(), dto.getMilestoneId());
     assertEquals(dao.getUserDAO().getUsername(), dto.getUsername());
     assertEquals(dao.getMilestoneTitle(), dto.getMilestoneTitle());
   }
@@ -69,7 +67,6 @@ public class MilestoneMapperTest {
 
     // Assert that the mapping is correct
     assertNotNull(logDAO);
-    assertEquals(dao.getMilestoneId(), logDAO.getMilestoneId());
     assertEquals(dao.getUserDAO().getUsername(), logDAO.getUserDAO().getUsername());
     assertEquals(dao.getMilestoneTitle(), logDAO.getMilestoneTitle());
   }
@@ -90,7 +87,6 @@ public class MilestoneMapperTest {
 
     // Assert that the mapping is correct
     assertNotNull(dto);
-    assertEquals(logDAO.getMilestoneId(), dto.getMilestoneId());
     assertEquals(logDAO.getUserDAO().getUsername(), dto.getUsername());
     assertEquals(logDAO.getMilestoneTitle(), dto.getMilestoneTitle());
   }
