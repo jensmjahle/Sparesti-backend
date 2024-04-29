@@ -16,7 +16,8 @@ public class MilestoneDAO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long milestoneId;
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
     private UserDAO userDAO;
     private String milestoneTitle;

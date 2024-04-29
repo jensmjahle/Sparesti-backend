@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -33,11 +34,16 @@ public class MilestoneController {
   private final JWTService jwtService;
 
 
+  @GetMapping("/user/paginated")
+  public ResponseEntity<Page<MilestoneDTO>> getUserMilestonesPaginated(Pageable pageable) {
+    logger.info("Received request to get paginated list of user milestones.");
+    return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsernamePaginated(CurrentUserService.getCurrentUsername(), pageable));
+  }
 
   @GetMapping("/user")
-  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(Pageable pageable) {
-    logger.info("Received request to get user milestones.");
-  return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsernamePaginated(CurrentUserService.getCurrentUsername(), pageable));
+  public ResponseEntity<List<MilestoneDTO>> getUserMilestones() {
+    logger.info("Received request to get list of user milestones.");
+    return ResponseEntity.ok().body(milestoneService.getActiveMilestonesDTOsByUsername(CurrentUserService.getCurrentUsername()));
   }
 
   @PostMapping("/create")
@@ -58,7 +64,7 @@ public class MilestoneController {
     milestoneService.completeMilestone(CurrentUserService.getCurrentUsername(), milestoneId);
   }
 
-  @PostMapping ("/update")
+  @PostMapping("/update")
   public ResponseEntity<MilestoneDTO> updateMilestone(@RequestBody MilestoneDTO milestoneDTO) {
     logger.info("Received request to update milestone.");
     return ResponseEntity.ok(milestoneService.updateMilestoneDTO(CurrentUserService.getCurrentUsername(), milestoneDTO));
@@ -70,7 +76,8 @@ public class MilestoneController {
     return ResponseEntity.ok(milestoneService.editMilestone(CurrentUserService.getCurrentUsername(), milestoneDTO));
   }
 
-  @PostMapping ("/inject")
+
+  @PostMapping("/inject")
   public ResponseEntity<?> manualInjectionIntoMilestone(@RequestBody ManualSavingDTO dto) {
 
     // Create new record

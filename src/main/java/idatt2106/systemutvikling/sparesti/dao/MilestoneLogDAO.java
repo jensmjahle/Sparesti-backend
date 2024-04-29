@@ -15,8 +15,9 @@ import java.time.LocalDateTime;
 public class MilestoneLogDAO {
 
     @Id
-    private Long milestoneId;@ManyToOne (cascade = CascadeType.ALL)
+    private Long milestoneId;
 
+    @ManyToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
     private UserDAO userDAO;
 

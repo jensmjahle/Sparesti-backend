@@ -10,5 +10,5 @@ public interface ManualSavingRepository extends JpaRepository<ManualSavingDAO, L
 
     List<ManualSavingDAO> findByUser_UsernameAndTimeOfTransferAfter(String username, Date threshold);
 
-
+    void deleteAllByUser_Username(String username);
 }
