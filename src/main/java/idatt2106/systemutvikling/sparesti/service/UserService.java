@@ -32,7 +32,6 @@ public class UserService {
   private final Logger logger = Logger.getLogger(UserService.class.getName());
   private final PasswordEncoder passwordEncoder;
 
-  @Autowired
   public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.customerService = customerService;
