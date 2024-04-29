@@ -1,12 +1,13 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 
-import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.dao.*;
 import idatt2106.systemutvikling.sparesti.mapper.Base64Mapper;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
+
+import java.time.LocalDateTime;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
 
 import java.util.List;
 
@@ -46,6 +46,7 @@ public class MilestoneService {
    */
   public Page<MilestoneDTO> getActiveMilestonesDTOsByUsernamePaginated(String username, Pageable pageable) {
     try {
+      hasMilestoneTimeElapsed(milestoneRepository.findMilestoneDAOByUserDAO_Username(username));
       Pageable sortedPageable = PageRequest.of(
               pageable.getPageNumber(),
               pageable.getPageSize(),
@@ -72,8 +73,8 @@ public class MilestoneService {
    */
   public List<MilestoneDTO> getActiveMilestonesDTOsByUsername(String username) {
     try {
+      hasMilestoneTimeElapsed(milestoneRepository.findMilestoneDAOByUserDAO_Username(username));
       List<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username);
-
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneDAO milestoneDAO : milestoneDAOs) {
         milestoneDTOS.add(MilestoneMapper.toDTO(milestoneDAO));
@@ -205,5 +206,16 @@ public class MilestoneService {
 
   public MilestoneDAO decreaseMilestonesCurrentSum(Long milestoneId, Long amount) {
     return increaseMilestonesCurrentSum(milestoneId, -amount);
+  }
+
+  public void hasMilestoneTimeElapsed(List<MilestoneDAO> milestoneDAOS) {
+    LocalDateTime now = LocalDateTime.now();
+      for (MilestoneDAO milestoneDAO : milestoneDAOS) {
+          if (!milestoneDAO.getDeadlineDate().isAfter(now)) {
+              Long milestoneId = milestoneDAO.getMilestoneId();
+              String username = milestoneDAO.getUserDAO().getUsername();
+              completeMilestone(username, milestoneId);
+          }
+      }
   }
 }
