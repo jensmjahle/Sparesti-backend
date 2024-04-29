@@ -24,7 +24,9 @@ public class MilestoneDAO {
     private String milestoneDescription;
     private Long milestoneGoalSum;
     private Long milestoneCurrentSum;
+
     @Lob
+    @Column(length = 10000)
     private byte[] milestoneImage;
     private LocalDateTime deadlineDate;
     private LocalDateTime startDate;
