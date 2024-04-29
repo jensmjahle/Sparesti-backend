@@ -56,7 +56,7 @@ public class MilestoneLogService {
       Pageable sortedPageable = PageRequest.of(
               pageable.getPageNumber(),
               pageable.getPageSize(),
-              Sort.by("completionDate"));
+              Sort.by("completionDate").descending());
 
       Page<MilestoneLogDAO> milestoneLogDAOs =
               milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username, sortedPageable);
