@@ -49,7 +49,7 @@ public class MilestoneService {
       Pageable sortedPageable = PageRequest.of(
               pageable.getPageNumber(),
               pageable.getPageSize(),
-              Sort.by("deadlineDate").descending());
+              Sort.by("deadlineDate"));
 
       Page<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username, sortedPageable);
 
