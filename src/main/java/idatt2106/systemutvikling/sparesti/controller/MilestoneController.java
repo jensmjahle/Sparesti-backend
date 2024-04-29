@@ -4,17 +4,15 @@ import idatt2106.systemutvikling.sparesti.dao.ManualSavingDAO;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dto.ManualSavingDTO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
-import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
-import idatt2106.systemutvikling.sparesti.service.ManualSavingService;
-import idatt2106.systemutvikling.sparesti.service.MilestoneService;
-import idatt2106.systemutvikling.sparesti.service.TransactionService;
+import idatt2106.systemutvikling.sparesti.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -24,7 +22,7 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class MilestoneController {
 
-  private final Logger logger = Logger.getLogger(TokenController.class.getName());
+  private final Logger logger = Logger.getLogger(MilestoneController.class.getName());
 
   private final MilestoneService milestoneService;
 
@@ -32,37 +30,38 @@ public class MilestoneController {
 
   private final TransactionService transactionService;
 
+  private final JWTService jwtService;
+
 
 
   @GetMapping("/user")
-  public ResponseEntity<List<MilestoneDTO>> getUserMilestones(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(Pageable pageable) {
     logger.info("Received request to get user milestones.");
-  return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsername(token));
+  return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsernamePaginated(CurrentUserService.getCurrentUsername(), pageable));
   }
 
   @PostMapping("/create")
-  public void createMilestone(@RequestHeader("Authorization") String token, @RequestBody MilestoneDTO milestoneDTO) {
+  public void createMilestone(@RequestBody MilestoneDTO milestoneDTO) {
     logger.info("Received request to create milestone.");
-    milestoneService.createMilestoneDTO(token, milestoneDTO);
+    milestoneService.createMilestoneDTO(CurrentUserService.getCurrentUsername(), milestoneDTO);
   }
 
-  @GetMapping("/id")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  @GetMapping("/{id}")
+  public ResponseEntity<MilestoneDTO> getMilestoneById(@PathVariable Long id) {
     logger.info("Received request to get milestone by id.");
-    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(token, milestoneId));
+    return ResponseEntity.ok(milestoneService.getMilestoneDTOById(id));
   }
 
   @PostMapping("/complete")
-  public void completeMilestone(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  public void completeMilestone(@RequestBody Long milestoneId) {
     logger.info("Received request to complete milestone.");
-    milestoneService.completeMilestone(token, milestoneId);
+    milestoneService.completeMilestone(CurrentUserService.getCurrentUsername(), milestoneId);
   }
 
   @PostMapping ("/update")
-  public ResponseEntity<MilestoneDTO> updateMilestone(@RequestHeader("Authorization") String token, @RequestBody MilestoneDTO milestoneDTO) {
+  public ResponseEntity<MilestoneDTO> updateMilestone(@RequestBody MilestoneDTO milestoneDTO) {
     logger.info("Received request to update milestone.");
-    milestoneService.updateMilestoneDTO(token, milestoneDTO);
-    return ResponseEntity.ok(milestoneDTO);
+    return ResponseEntity.ok(milestoneService.updateMilestoneDTO(CurrentUserService.getCurrentUsername(), milestoneDTO));
   }
 
   @PostMapping ("/inject")

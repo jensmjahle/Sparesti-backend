@@ -3,6 +3,8 @@ package idatt2106.systemutvikling.sparesti.repository;
 import idatt2106.systemutvikling.sparesti.dao.ChallengeLogDAO;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -35,7 +37,10 @@ public interface MilestoneRepository extends JpaRepository<MilestoneDAO, Long> {
    * @param username the username of the user
    * @return a list of milestones that belong to the user with the given username
    */
+  Page<MilestoneDAO> findMilestoneDAOByUserDAO_Username(String username, Pageable pageable);
+
   List<MilestoneDAO> findMilestoneDAOByUserDAO_Username(String username);
+
 
   /**
    * Method to find all milestones that have a start date after the given start date and a deadline date before the given deadline date

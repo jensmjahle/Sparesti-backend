@@ -1,14 +1,15 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
-import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
+import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
+import idatt2106.systemutvikling.sparesti.service.JWTService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneLogService;
-import idatt2106.systemutvikling.sparesti.service.MilestoneService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -17,24 +18,26 @@ import java.util.logging.Logger;
 @CrossOrigin(origins = "*")
 public class MilestoneLogController {
 
-  Logger logger = Logger.getLogger(TokenController.class.getName());
-
+  Logger logger = Logger.getLogger(MilestoneLogController.class.getName());
   MilestoneLogService milestoneLogService;
+  JWTService jwtService;
 
-  public MilestoneLogController(MilestoneLogService milestoneLogService) {
+  public MilestoneLogController(MilestoneLogService milestoneLogService, JWTService jwtService) {
     this.milestoneLogService = milestoneLogService;
+      this.jwtService = jwtService;
   }
 
   @GetMapping("/user")
-  public ResponseEntity<List<MilestoneDTO>> getUserMilestones(@RequestHeader("Authorization") String token) {
+  public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(Pageable pageable) {
+    String username = CurrentUserService.getCurrentUsername();
     logger.info("Received request to get user milestones.");
-    return ResponseEntity.ok(milestoneLogService.getMilestoneLogsByUsername(token));
+    return ResponseEntity.ok(milestoneLogService.getMilestoneLogsByUsernamePaginated(username, pageable));
   }
 
-  @PostMapping("/id")
-  public ResponseEntity<MilestoneDTO> getMilestoneById(@RequestHeader("Authorization") String token, @RequestBody Long milestoneId) {
+  @GetMapping("/id")
+  public ResponseEntity<MilestoneDTO> getMilestoneLogById(@RequestBody Long milestoneLogId) {
     logger.info("Received request to get milestone by id.");
-    return ResponseEntity.ok(milestoneLogService.getMilestoneLogById(token, milestoneId));
+    return ResponseEntity.ok(milestoneLogService.getMilestoneLogById(milestoneLogId));
   }
 
 }

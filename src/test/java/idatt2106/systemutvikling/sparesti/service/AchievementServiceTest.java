@@ -70,7 +70,8 @@ class AchievementServiceTest {
     when(achievementRepository.findAll()).thenReturn(allAchievements);
     when(userRepository.findByUsername(any(String.class))).thenReturn(user);
     // Act
-    List<AchievementDAO> lockedAchievements = achievementService.getLockedAchievements(user.getUsername());
+    List<AchievementDAO> lockedAchievements = achievementService.getLockedAchievements(
+        user.getUsername());
 
     // Assert
     assertEquals(2, lockedAchievements.size());
@@ -94,13 +95,16 @@ class AchievementServiceTest {
 
     // Mock the behavior of the repositories
     when(achievementRepository.findAll()).thenReturn(List.of(achievement));
-    when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenReturn(new ArrayList<>());
+    when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenReturn(
+        new ArrayList<>());
     when(userRepository.findByUsername(any(String.class))).thenReturn(user);
     // Mock conditionService.isConditionMet() with a valid ConditionDAO argument
-    when(conditionService.isConditionMet(any(ConditionDAO.class))).thenReturn(true); // Mock condition always being met
+    when(conditionService.isConditionMet(any(ConditionDAO.class))).thenReturn(
+        true); // Mock condition always being met
 
     // Call the method to test
-    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(user.getUsername()).getBody();
+    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(
+        user.getUsername());
 
     // Verify the result
     assertEquals(1, unlockedAchievements.size());

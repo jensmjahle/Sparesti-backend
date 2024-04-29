@@ -29,21 +29,33 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
-    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173")); // specify your allowed origins
-    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // specify your allowed methods
+    corsConfiguration.setAllowedOrigins(
+        List.of("http://localhost:5173")); // specify your allowed origins
+    corsConfiguration.setAllowedMethods(
+        Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // specify your allowed methods
     corsConfiguration.setAllowCredentials(true);
     corsConfiguration.setAllowedHeaders(List.of("*"));
 
     http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(request -> corsConfiguration))
-            .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/userCredentials/create", "/auth/login").permitAll()
-                    .requestMatchers("/user/**").hasAnyRole(BASIC, COMPLETE)
-                    .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(new JWTAuthorizationFilter(secrets), UsernamePasswordAuthenticationFilter.class);
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(request -> corsConfiguration))
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/userCredentials/create",
+                "/auth/login",
+                "/users/get/totalSavings",
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/swagger-ui/index.html",
+                "/swagger-resources/",
+                "/webjars/", "/error").permitAll()
+            .requestMatchers("/user/**").hasAnyRole(BASIC, COMPLETE)
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(new JWTAuthorizationFilter(secrets),
+            UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 }

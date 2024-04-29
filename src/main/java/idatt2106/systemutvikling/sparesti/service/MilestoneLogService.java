@@ -5,13 +5,11 @@ import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import idatt2106.systemutvikling.sparesti.service.JWTService;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
-import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
-import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
-import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
 import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
 
 import java.util.ArrayList;
@@ -52,17 +50,42 @@ public class MilestoneLogService {
   /**
    * Method to get all milestones for a user.
    *
-   * @param token The token of the user to get milestones for.
+   * @param username The username of the user to get milestones for.
    * @return List of MilestoneLogDAOs.
    */
-  public List<MilestoneDTO> getMilestoneLogsByUsername(String token) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public Page<MilestoneDTO> getMilestoneLogsByUsernamePaginated(String username, Pageable pageable) {
     try {
-      List<MilestoneLogDAO> milestoneLogDAOs = milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username);
+      Page<MilestoneLogDAO> milestoneLogDAOs =
+              milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username, pageable);
+
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneLogDAO milestoneDAO : milestoneLogDAOs) {
         milestoneDTOS.add(MilestoneMapper.DAOLogToDTO(milestoneDAO));
       }
+
+      return new PageImpl<>(milestoneDTOS, pageable, milestoneLogDAOs.getTotalElements());
+    } catch (Exception e) {
+      logger.severe("Error when getting milestones: " + e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Method to get all milestones for a user.
+   *
+   * @param username The username of the user to get milestones for.
+   * @return List of MilestoneLogDAOs.
+   */
+  public List<MilestoneDTO> getMilestoneLogsByUsername(String username) {
+    try {
+      List<MilestoneLogDAO> milestoneLogDAOs =
+              milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username);
+
+      List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
+      for (MilestoneLogDAO milestoneDAO : milestoneLogDAOs) {
+        milestoneDTOS.add(MilestoneMapper.DAOLogToDTO(milestoneDAO));
+      }
+
       return milestoneDTOS;
     } catch (Exception e) {
       logger.severe("Error when getting milestones: " + e.getMessage());
@@ -73,14 +96,12 @@ public class MilestoneLogService {
   /**
    * Method to get a milestone by id.
    *
-   * @param token The token of the user to get the milestone for.
    * @param id The id of the milestone to get.
    * @return The MilestoneLogDAO.
    */
-  public MilestoneDTO getMilestoneLogById(String token, long id) {
-    String username = jwtService.extractUsernameFromToken(token);
+  public MilestoneDTO getMilestoneLogById(long id) {
     try {
-      return MilestoneMapper.DAOLogToDTO(milestoneLogRepository.findMilestoneLogDAOByMilestoneIdAndUserDAO_Username(id, username));
+      return MilestoneMapper.DAOLogToDTO(milestoneLogRepository.findMilestoneLogDAOByMilestoneId(id));
     } catch (Exception e) {
       logger.severe("Error when getting milestone: " + e.getMessage());
       return null;

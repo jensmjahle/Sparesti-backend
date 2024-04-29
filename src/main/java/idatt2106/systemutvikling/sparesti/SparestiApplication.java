@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableScheduling
 public class SparestiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SparestiApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SparestiApplication.class, args);
+  }
 
 }
