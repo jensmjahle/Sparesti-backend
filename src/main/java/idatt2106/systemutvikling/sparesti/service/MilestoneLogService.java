@@ -5,9 +5,7 @@ import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
 import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
@@ -55,8 +53,13 @@ public class MilestoneLogService {
    */
   public Page<MilestoneDTO> getMilestoneLogsByUsernamePaginated(String username, Pageable pageable) {
     try {
+      Pageable sortedPageable = PageRequest.of(
+              pageable.getPageNumber(),
+              pageable.getPageSize(),
+              Sort.by("completionDate").descending());
+
       Page<MilestoneLogDAO> milestoneLogDAOs =
-              milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username, pageable);
+              milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username, sortedPageable);
 
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneLogDAO milestoneDAO : milestoneLogDAOs) {
