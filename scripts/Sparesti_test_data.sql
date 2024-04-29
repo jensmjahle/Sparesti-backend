@@ -78,7 +78,12 @@ INSERT INTO achievement (achievement_description, achievement_title) VALUES
     ("Fullført 10 milestone", "10 milestone"),
     ("Fullført din første challenge", "1 challenge"),
     ("Fullført 5 challenge", "5 challenge"),
-    ("Fullført 10 challenge", "10 challenge");
+    ("Fullført 10 challenge", "10 challenge"),
+    ('Spar 1000NOK', 'Spar totalt 1000NOK på alle dine sparemål og utfordringer'),
+    ('Spar 5000NOK', 'Spar totalt 5000NOK på alle dine sparemål og utfordringer'),
+    ('Spar 10000NOK', 'Spar totalt 10000NOK på alle dine sparemål og utfordringer');
+
+
 
 /*
 	username varchar(255) NOT NULL,
@@ -89,3 +94,12 @@ INSERT INTO user_achievements (username, achievement_id) VALUES
     ("JohnSmith12", 4),
     ("AliceLearn64", 1),
     ("AliceLearn64", 4);
+
+INSERT INTO conditions (achievement_id, quantity, condition_type)
+VALUES (7, 1000, 'SAVINGS');
+
+INSERT INTO conditions (achievement_id, quantity, condition_type)
+VALUES (8, 50000, 'SAVINGS');
+
+INSERT INTO conditions (achievement_id, quantity, condition_type)
+VALUES (9, 10000, 'SAVINGS');

@@ -11,7 +11,7 @@ import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.logging.Logger;
 
 
 @Service
@@ -19,6 +19,8 @@ public class ConditionService {
   private final MilestoneLogRepository milestoneLogRepository;
   private final MilestoneRepository milestoneRepository;
   private final ChallengeLogRepository challengeLogRepository;
+  private final Logger logger = Logger.getLogger(ConditionService.class.getName());
+
 
   public ConditionService(MilestoneLogRepository milestoneLogRepository, MilestoneRepository milestoneRepository, ChallengeLogRepository challengeLogRepository) {
     this.milestoneLogRepository = milestoneLogRepository;
@@ -44,23 +46,23 @@ public class ConditionService {
   }
 
   private boolean isMilestonesConditionMet(ConditionDAO condition) {
-    return condition.getQuantity() == milestoneLogRepository.count();
+    return condition.getQuantity() <= milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername()).size();
   }
 
   private boolean isChallengesConditionMet(ConditionDAO condition) {
-    List<ChallengeLogDAO> challengeLogDAOS = challengeLogRepository.findAll();
+    List<ChallengeLogDAO> challengeLogDAOS = challengeLogRepository.findChallengeLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
     Long count = 0L;
     for (ChallengeLogDAO challengeLogDAO : challengeLogDAOS) {
-      if (Objects.equals(challengeLogDAO.getGoalSum(), challengeLogDAO.getChallengeAchievedSum())) {
+      if (challengeLogDAO.getGoalSum() <= challengeLogDAO.getChallengeAchievedSum()) {
         count++;
       }
     }
-    return Objects.equals(condition.getQuantity(), count);
+    return condition.getQuantity() <= count;
   }
 
   private boolean isSavingsConditionMet(ConditionDAO condition) {
-    List<MilestoneLogDAO> milestoneLogDAOS = milestoneLogRepository.findAll();
-    List<MilestoneDAO> milestoneDAOS = milestoneRepository.findAll();
+    List<MilestoneLogDAO> milestoneLogDAOS = milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
+    List<MilestoneDAO> milestoneDAOS = milestoneRepository.findMilestoneDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
     Long total = 0L;
     for (MilestoneLogDAO milestoneLogDAO : milestoneLogDAOS) {
       total += milestoneLogDAO.getMilestoneAchievedSum();
@@ -69,6 +71,6 @@ public class ConditionService {
     for (MilestoneDAO milestoneDAO : milestoneDAOS) {
       total += milestoneDAO.getMilestoneCurrentSum();
     }
-    return Objects.equals(condition.getQuantity(), total);
+    return condition.getQuantity() <= total;
   }
 }
