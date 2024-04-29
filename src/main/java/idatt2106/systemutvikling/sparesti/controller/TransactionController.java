@@ -47,9 +47,4 @@ public class TransactionController {
 
     return ResponseEntity.ok().body(dtos);
   }
-
-  @PostMapping
-  public void performTransaction() {
-
-  }
 }
