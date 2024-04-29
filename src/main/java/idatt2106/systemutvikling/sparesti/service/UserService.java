@@ -9,10 +9,12 @@ import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
 import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
-import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import idatt2106.systemutvikling.sparesti.repository.*;
+
 import java.util.Objects;
 import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,26 +23,25 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-
-  private final UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
   private final CustomerServiceInterface customerService;
   private final AccountServiceInterface accountService;
   private final JWTService jwtService;
+
   private final MilestoneService milestoneService;
   private final MilestoneLogService milestoneLogService;
-  private final Logger logger = Logger.getLogger(UserService.class.getName());
-  private final PasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService, PasswordEncoder passwordEncoder) {
-    this.userRepository = userRepository;
-    this.customerService = customerService;
-    this.jwtService = jwtService;
-    this.accountService = accountService;
-    this.milestoneService = milestoneService;
-    this.milestoneLogService = milestoneLogService;
-    this.passwordEncoder = passwordEncoder;
-  }
+  private final UserRepository userRepository;
+  private final ManualSavingRepository dbSaving;
+  private final MilestoneRepository dbMilestone;
+  private final MilestoneLogRepository dbMilestoneLog;
+  private final ChallengeLogRepository dbChallenge;
+  private final ChallengeRepository dbChallengeLog;
+
+  private final Logger logger = Logger.getLogger(UserService.class.getName());
+
 
   /**
    * Method to get a user by username from the database.
