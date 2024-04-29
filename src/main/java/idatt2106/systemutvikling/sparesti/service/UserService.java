@@ -30,8 +30,7 @@ public class UserService {
   private final MilestoneService milestoneService;
   private final MilestoneLogService milestoneLogService;
   private final Logger logger = Logger.getLogger(UserService.class.getName());
-  @Autowired
-  private PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
   @Autowired
   public UserService(UserRepository userRepository, CustomerServiceInterface customerService, JWTService jwtService, AccountServiceInterface accountService, MilestoneService milestoneService, MilestoneLogService milestoneLogService, PasswordEncoder passwordEncoder) {
