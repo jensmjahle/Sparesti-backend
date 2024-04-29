@@ -64,6 +64,12 @@ public class MilestoneController {
     return ResponseEntity.ok(milestoneService.updateMilestoneDTO(CurrentUserService.getCurrentUsername(), milestoneDTO));
   }
 
+  @PutMapping("/edit")
+  public ResponseEntity<MilestoneDTO> editMilestone(@RequestBody MilestoneDTO milestoneDTO){
+    logger.info("Received request to edit milestone");
+    return ResponseEntity.ok(milestoneService.editMilestone(CurrentUserService.getCurrentUsername(), milestoneDTO));
+  }
+
   @PostMapping ("/inject")
   public ResponseEntity<?> manualInjectionIntoMilestone(@RequestBody ManualSavingDTO dto) {
 
