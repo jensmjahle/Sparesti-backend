@@ -27,7 +27,7 @@ public class UserCredentialsController {
     return ResponseEntity.ok(userService.createUser(user));
   }
 
-  @PostMapping("/updatePassword")
+  @PutMapping("/updatePassword")
   public ResponseEntity<String> updatePassword(@RequestBody UserCredentialsDTO userCredentialsDTO) {
     logger.info(
         "Received request to update password for user with username: " + userCredentialsDTO.getUsername() + ".");
