@@ -30,7 +30,6 @@ public class TransactionController {
             .map(TransactionMapper::toDTO)
             .toList();
 
-
     return ResponseEntity.ok().body(body);
   }
 }

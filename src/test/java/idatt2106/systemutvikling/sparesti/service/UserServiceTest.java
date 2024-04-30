@@ -2,8 +2,8 @@ package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
-import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
+import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorException;
 import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
 import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
@@ -16,6 +16,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
@@ -27,10 +30,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class UserServiceTest {
+class UserServiceTest {
 
   @Mock
   private UserRepository userRepository;
@@ -58,10 +60,21 @@ public class UserServiceTest {
   @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
+    passwordEncoder = mock(PasswordEncoder.class);
     userService = new UserService(passwordEncoder, customerService, accountService, jwtService, milestoneService, milestoneLogService, userRepository, null, null, null, null, null);
     when(jwtService.extractUsernameFromToken(anyString())).thenReturn("testUser");
     when(customerService.hasTwoAccounts(anyString())).thenReturn(true);
     when(milestoneLogService.getMilestoneLogsByUsername(anyString())).thenReturn(Collections.emptyList()); // return an empty list
+    mockCurrentUsername();
+  }
+
+  private void mockCurrentUsername() {
+    // Create a mock Authentication object with the specified username
+    Authentication authentication = new UsernamePasswordAuthenticationToken("testUser", null);
+
+    // Set the mock Authentication object into SecurityContextHolder
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    securityContext.setAuthentication(authentication);
   }
 
   @AfterEach
@@ -71,7 +84,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO() {
+  void testGetUserDTO() {
     // Arrange
     String username = "testUser";
     UserDAO userDAO = new UserDAO();
@@ -86,7 +99,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO() {
+  void testUpdateUserDTO() {
     String token = "token";
     String username = "username";
     UserDAO userDAO = new UserDAO();
@@ -102,7 +115,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenEmailIsUpdated() {
+  void testUpdateUserDTO_whenEmailIsUpdated() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = new UserDTO();
@@ -124,7 +137,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenEmailIsAlreadyInUse() {
+  void testUpdateUserDTO_whenEmailIsAlreadyInUse() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = new UserDTO();
@@ -149,7 +162,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenBirthDateIsUpdated() {
+  void testUpdateUserDTO_whenBirthDateIsUpdated() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = new UserDTO();
@@ -170,7 +183,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenUsernameIsUpdated() {
+  void testUpdateUserDTO_whenUsernameIsUpdated() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = new UserDTO();
@@ -191,7 +204,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenUserExists() {
+  void testUpdateUserDTO_whenUserExists() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = new UserDTO();
@@ -211,7 +224,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenUserDoesNotExist() {
+  void testUpdateUserDTO_whenUserDoesNotExist() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = new UserDTO();
@@ -230,7 +243,7 @@ public class UserServiceTest {
 
 
   @Test
-  public void testCreateUser() {
+  void testCreateUser() {
     UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
     userCredentialsDTO.setUsername("username");
     userCredentialsDTO.setPassword("password");
@@ -242,7 +255,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenTokenIsNull() {
+  void testUpdateUserDTO_whenTokenIsNull() {
     // Arrange
     String token = null;
     UserDTO updatedUserDTO = new UserDTO();
@@ -255,7 +268,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenUserDTOIsNull() {
+  void testUpdateUserDTO_whenUserDTOIsNull() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = null;
@@ -268,7 +281,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetTotalAmountSavedByUser() {
+  void testGetTotalAmountSavedByUser() {
     // Arrange
     String username = "testUser";
     MilestoneDTO milestoneDTO = new MilestoneDTO();
@@ -284,7 +297,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testUpdateUserDTO_whenEmailAlreadyExists() {
+  void testUpdateUserDTO_whenEmailAlreadyExists() {
     // Arrange
     String token = "token";
     UserDTO updatedUserDTO = new UserDTO();
@@ -307,7 +320,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO_whenUserDoesNotExist() {
+  void testGetUserDTO_whenUserDoesNotExist() {
     // Arrange
     String username = "nonExistentUser";
     when(userRepository.findByUsername(username)).thenReturn(null);
@@ -323,7 +336,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO_whenUserPropertiesAreNull() {
+  void testGetUserDTO_whenUserPropertiesAreNull() {
     // Arrange
     String username = "testUser";
     UserDAO userDAO = new UserDAO();
@@ -339,7 +352,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO_whenSomeUserPropertiesAreNull() {
+  void testGetUserDTO_whenSomeUserPropertiesAreNull() {
     // Arrange
     String username = "testUser";
     UserDAO userDAO = new UserDAO();
@@ -356,7 +369,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO_whenUserPropertiesAreNotNull() {
+  void testGetUserDTO_whenUserPropertiesAreNotNull() {
     // Arrange
     String username = "testUser";
     UserDAO userDAO = new UserDAO();
@@ -373,7 +386,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO_whenCheckingAccountsThrowsException() {
+  void testGetUserDTO_whenCheckingAccountsThrowsException() {
     // Arrange
     String username = "testUser";
     UserDAO userDAO = new UserDAO();
@@ -390,7 +403,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO_whenUserIsConnectedToBank() {
+  void testGetUserDTO_whenUserIsConnectedToBank() {
     // Arrange
     String username = "testUser";
     UserDAO userDAO = new UserDAO();
@@ -410,7 +423,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetUserDTO_whenUserNotFoundExceptionOccurs() {
+  void testGetUserDTO_whenUserNotFoundExceptionOccurs() {
     // Arrange
     String username = "testUser";
     UserDAO userDAO = new UserDAO();
@@ -423,7 +436,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void moreTestUpdateUserDTO() {
+  void moreTestUpdateUserDTO() {
     // Arrange
     String token = "testToken";
     String username = "testUser";
@@ -458,7 +471,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testCreateUser_whenUsernameAlreadyInUse() {
+  void testCreateUser_whenUsernameAlreadyInUse() {
     // Arrange
     UserCredentialsDTO user = new UserCredentialsDTO();
     user.setUsername("testUser");
@@ -470,7 +483,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testCreateUser_whenPasswordIsInvalid() {
+  void testCreateUser_whenPasswordIsInvalid() {
     // Arrange
     UserCredentialsDTO user = new UserCredentialsDTO();
     user.setUsername("testUser");
@@ -483,7 +496,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testCreateUser_whenUsernameOrEmailAlreadyInUse() {
+  void testCreateUser_whenUsernameOrEmailAlreadyInUse() {
     // Arrange
     UserCredentialsDTO user = new UserCredentialsDTO();
     user.setUsername("testUser");
@@ -498,7 +511,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetTotalAmountSavedByAllUsers() {
+  void testGetTotalAmountSavedByAllUsers() {
     // Arrange
     List<UserDAO> users = new ArrayList<>();
     UserDAO user1 = new UserDAO();
@@ -531,7 +544,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void testGetTotalAmountSavedByAllUsers_whenExceptionThrown() {
+  void testGetTotalAmountSavedByAllUsers_whenExceptionThrown() {
     // Arrange
     // Mock userRepository to throw an exception
     when(userRepository.findAll()).thenThrow(new RuntimeException("Test exception"));
@@ -543,4 +556,98 @@ public class UserServiceTest {
     assertNull(totalAmountSaved); // Method should return null in case of an exception
   }
 
+  @Test
+  void testUpdatePassword_Success() {
+    // Mock CurrentUserService
+    //when(CurrentUserService.getCurrentUsername()).thenReturn("testuser");
+
+    // Mock UserRepository
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testuser");
+    userDAO.setPassword(passwordEncoder.encode("oldpassword")); // Set the current encoded password
+    when(userRepository.findByUsername("testuser")).thenReturn(userDAO);
+
+    when(passwordEncoder.matches("oldpassword", userDAO.getPassword())).thenReturn(true);
+    when(passwordEncoder.encode("newpassword")).thenReturn("encodednewpassword");
+
+    UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+    userCredentialsDTO.setPassword("oldpassword");
+    userCredentialsDTO.setNewPassword("newpassword");
+
+    when(userRepository.findByUsername(CurrentUserService.getCurrentUsername())).thenReturn(userDAO);
+    String result = userService.updatePassword(userCredentialsDTO);
+
+    verify(userRepository, times(1)).findByUsername(CurrentUserService.getCurrentUsername());
+    verify(passwordEncoder, times(1)).encode("newpassword");
+    verify(userRepository, times(1)).save(userDAO);
+
+    assertEquals("Password updated", result);
+    assertEquals("encodednewpassword", userDAO.getPassword());
+  }
+
+  @Test
+  void testUpdatePassword_InvalidPassword() {
+    // Prepare test data with invalid old password
+    UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+    userCredentialsDTO.setPassword("wrongpassword");
+    userCredentialsDTO.setNewPassword("newpassword");
+
+    // Mock UserRepository
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testuser");
+    userDAO.setPassword(passwordEncoder.encode("oldpassword")); // Set the current encoded password
+    when(userRepository.findByUsername("testuser")).thenReturn(userDAO);
+    when(userRepository.findByUsername(CurrentUserService.getCurrentUsername())).thenReturn(userDAO);
+
+    // Mock PasswordEncoder
+    when(passwordEncoder.matches("wrongpassword", userDAO.getPassword())).thenReturn(false);
+
+    // Call the method and assert the expected exception
+    assertThrows(InvalidCredentialsException.class, () -> userService.updatePassword(userCredentialsDTO));
+  }
+
+  @Test
+  void testUpdatePassword_InvalidPasswordIsNull() {
+    // Prepare test data with invalid old password
+    UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+    userCredentialsDTO.setPassword("oldpassword");
+    userCredentialsDTO.setNewPassword(null);
+
+    // Mock UserRepository
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testuser");
+    userDAO.setPassword(passwordEncoder.encode("oldpassword")); // Set the current encoded password
+    when(userRepository.findByUsername("testuser")).thenReturn(userDAO);
+    when(userRepository.findByUsername(CurrentUserService.getCurrentUsername())).thenReturn(userDAO);
+    when(passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())).thenReturn(true);
+    // Mock PasswordEncoder
+    when(passwordEncoder.matches("wrongpassword", userDAO.getPassword())).thenReturn(false);
+
+    // Call the method and assert the expected exception
+    assertThrows(InvalidCredentialsException.class, () -> userService.updatePassword(userCredentialsDTO));
+  }
+
+  @Test
+  void testUpdatePassword_InvalidNewPassword() {
+    // Prepare test data with valid old password and invalid new password
+    UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+    userCredentialsDTO.setPassword("oldpassword");
+    userCredentialsDTO.setNewPassword("short");
+
+    // Mock UserDAO
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testuser");
+    userDAO.setPassword(passwordEncoder.encode("oldpassword")); // Mocked encoded password
+    when(userRepository.findByUsername("testuser")).thenReturn(userDAO);
+    when(userRepository.findByUsername(CurrentUserService.getCurrentUsername())).thenReturn(userDAO);
+    when(passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())).thenReturn(true);
+
+    // Mock PasswordEncoder behavior
+    String encodedNewPassword = "encodednewpassword";
+    when(passwordEncoder.encode("newpassword")).thenReturn(encodedNewPassword); // Mock encoding behavior
+
+    // Call the method and assert the expected exception
+    assertThrows(InvalidCredentialsException.class, () -> userService.updatePassword(userCredentialsDTO));
+
+    }
 }

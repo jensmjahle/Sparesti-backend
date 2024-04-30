@@ -61,6 +61,10 @@ public class MilestoneLogService {
       Page<MilestoneLogDAO> milestoneLogDAOs =
               milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username, sortedPageable);
 
+      if (milestoneLogDAOs == null) {
+        return Page.empty();
+      }
+
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneLogDAO milestoneDAO : milestoneLogDAOs) {
         milestoneDTOS.add(MilestoneMapper.DAOLogToDTO(milestoneDAO));
@@ -69,7 +73,7 @@ public class MilestoneLogService {
       return new PageImpl<>(milestoneDTOS, pageable, milestoneLogDAOs.getTotalElements());
     } catch (Exception e) {
       logger.severe("Error when getting milestones: " + e.getMessage());
-      return null;
+      return Page.empty(); // Return an empty Page object if an exception is caught
     }
   }
 
