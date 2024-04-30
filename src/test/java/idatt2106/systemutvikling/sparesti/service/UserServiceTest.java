@@ -4,11 +4,19 @@ import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
+import idatt2106.systemutvikling.sparesti.dto.UserDTO;
+import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorException;
+import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
+import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
+import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
+import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +25,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.when;
 
 class UserServiceTest {
 
@@ -68,6 +80,12 @@ class UserServiceTest {
     // Set the mock Authentication object into SecurityContextHolder
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
+  }
+
+  @AfterEach
+  public void tearDown() {
+    SecurityContextHolder.clearContext();
+    userRepository.deleteAll();
   }
 
   @Test
@@ -304,6 +322,243 @@ class UserServiceTest {
 
     // Assert
     assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+  }
+
+  @Test
+  void testGetUserDTO_whenUserDoesNotExist() {
+    // Arrange
+    String username = "nonExistentUser";
+    when(userRepository.findByUsername(username)).thenReturn(null);
+
+    // Act
+    try {
+      userService.getUserDTO(username);
+      fail("Expected an exception to be thrown");
+    } catch (Exception e) {
+      // Assert
+      assertEquals("User not found", e.getMessage());
+    }
+  }
+
+  @Test
+  void testGetUserDTO_whenUserPropertiesAreNull() {
+    // Arrange
+    String username = "testUser";
+    UserDAO userDAO = new UserDAO();
+    // Don't set any properties of userDAO
+    when(userRepository.findByUsername(username)).thenReturn(userDAO);
+
+    // Act
+    UserDTO result = userService.getUserDTO(username);
+
+    // Assert
+    assertNull(result.getUsername());
+    // Add more assertions to check that the other properties of result are null
+  }
+
+  @Test
+  void testGetUserDTO_whenSomeUserPropertiesAreNull() {
+    // Arrange
+    String username = "testUser";
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername(username);
+    // Don't set any other properties of userDAO
+    when(userRepository.findByUsername(username)).thenReturn(userDAO);
+
+    // Act
+    UserDTO result = userService.getUserDTO(username);
+
+    // Assert
+    assertEquals(username, result.getUsername());
+    // Add more assertions to check that the other properties of result are null
+  }
+
+  @Test
+  void testGetUserDTO_whenUserPropertiesAreNotNull() {
+    // Arrange
+    String username = "testUser";
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername(username);
+    // Set other properties of userDAO
+    when(userRepository.findByUsername(username)).thenReturn(userDAO);
+
+    // Act
+    UserDTO result = userService.getUserDTO(username);
+
+    // Assert
+    assertEquals(username, result.getUsername());
+    // Add more assertions to check that the other properties of result are as expected
+  }
+
+  @Test
+  void testGetUserDTO_whenCheckingAccountsThrowsException() {
+    // Arrange
+    String username = "testUser";
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername(username);
+    when(userRepository.findByUsername(username)).thenReturn(userDAO);
+    when(accountService.findAccountsNumbersByUsername(username)).thenThrow(new BankConnectionErrorException());
+
+    // Act
+    UserDTO result = userService.getUserDTO(username);
+
+    // Assert
+    assertNotNull(result);
+    assertFalse(result.getIsConnectedToBank());
+  }
+
+  @Test
+  void testGetUserDTO_whenUserIsConnectedToBank() {
+    // Arrange
+    String username = "testUser";
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername(username);
+    userDAO.setCurrentAccount(123456789L); // replace with actual account number
+    userDAO.setSavingsAccount(987654321L); // replace with actual account number
+    when(userRepository.findByUsername(username)).thenReturn(userDAO);
+    when(customerService.hasTwoAccounts(username)).thenReturn(true);
+    when(accountService.findAccountsByUsername(username)).thenReturn(Arrays.asList(new AccountDAO(), new AccountDAO())); // replace with actual accounts
+    when(accountService.findAccountsNumbersByUsername(username)).thenReturn(Arrays.asList(123456789L, 987654321L));
+
+    // Act
+    UserDTO result = userService.getUserDTO(username);
+
+    // Assert
+    assertTrue(result.getIsConnectedToBank());
+  }
+
+  @Test
+  void testGetUserDTO_whenUserNotFoundExceptionOccurs() {
+    // Arrange
+    String username = "testUser";
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername(username);
+    when(userRepository.findByUsername(username)).thenReturn(userDAO);
+    when(customerService.hasTwoAccounts(username)).thenThrow(new RuntimeException("Test exception"));
+
+    // Act and Assert
+    assertThrows(UserNotFoundException.class, () -> userService.getUserDTO(username));
+  }
+
+  @Test
+  void moreTestUpdateUserDTO() {
+    // Arrange
+    String token = "testToken";
+    String username = "testUser";
+    UserDAO existingUser = new UserDAO();
+    existingUser.setUsername(username);
+    when(jwtService.extractUsernameFromToken(token)).thenReturn(username);
+    when(userRepository.findByUsername(username)).thenReturn(existingUser);
+
+    UserDTO updatedUserDTO = new UserDTO();
+    updatedUserDTO.setProfilePictureBase64("testProfilePicture");
+    updatedUserDTO.setCurrentAccount(12121212121L);
+    updatedUserDTO.setSavingsAccount(21212121212L);
+    updatedUserDTO.setMonthlyIncome(1000L);
+    updatedUserDTO.setMonthlySavings(200L);
+    updatedUserDTO.setMonthlyFixedExpenses(300L);
+    updatedUserDTO.setFirstName("testFirstName");
+    updatedUserDTO.setLastName("testLastName");
+
+    // Act
+    ResponseEntity<String> response = userService.updateUserDTO(token, updatedUserDTO);
+
+    // Assert
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("testProfilePicture", new String(existingUser.getProfilePicture()));
+    assertEquals(12121212121L, existingUser.getCurrentAccount());
+    assertEquals(21212121212L, existingUser.getSavingsAccount());
+    assertEquals(1000L, existingUser.getMonthlyIncome());
+    assertEquals(200L, existingUser.getMonthlySavings());
+    assertEquals(300L, existingUser.getMonthlyFixedExpenses());
+    assertEquals("testFirstName", existingUser.getFirstName());
+    assertEquals("testLastName", existingUser.getLastName());
+  }
+
+  @Test
+  void testCreateUser_whenUsernameAlreadyInUse() {
+    // Arrange
+    UserCredentialsDTO user = new UserCredentialsDTO();
+    user.setUsername("testUser");
+    user.setPassword("testPassword");
+    when(userRepository.findByUsername(user.getUsername())).thenReturn(new UserDAO());
+
+    // Act and Assert
+    assertThrows(ConflictException.class, () -> userService.createUser(user));
+  }
+
+  @Test
+  void testCreateUser_whenPasswordIsInvalid() {
+    // Arrange
+    UserCredentialsDTO user = new UserCredentialsDTO();
+    user.setUsername("testUser");
+    user.setPassword("short"); // password is less than 8 characters
+    when(userRepository.findByUsername(user.getUsername())).thenReturn(null);
+    when(passwordEncoder.encode(user.getPassword())).thenReturn(user.getPassword()); // Return the original password when encoding
+
+    // Act and Assert
+    assertThrows(InvalidCredentialsException.class, () -> userService.createUser(user));
+  }
+
+  @Test
+  void testCreateUser_whenUsernameOrEmailAlreadyInUse() {
+    // Arrange
+    UserCredentialsDTO user = new UserCredentialsDTO();
+    user.setUsername("testUser");
+    user.setPassword("testPassword");
+    user.setEmail("testEmail");
+    when(userRepository.findByUsername(user.getUsername())).thenReturn(null);
+    when(userRepository.findByEmail(user.getEmail())).thenReturn(new UserDAO());
+    when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword"); // Ensure passwordEncoder.encode() returns a non-null value
+
+    // Act and Assert
+    assertThrows(ConflictException.class, () -> userService.createUser(user));
+  }
+
+  @Test
+  void testGetTotalAmountSavedByAllUsers() {
+    // Arrange
+    List<UserDAO> users = new ArrayList<>();
+    UserDAO user1 = new UserDAO();
+    user1.setUsername("user1");
+    UserDAO user2 = new UserDAO();
+    user2.setUsername("user2");
+    users.add(user1);
+    users.add(user2);
+
+    // Mock the behavior of userRepository to return the list of users
+    when(userRepository.findAll()).thenReturn(users);
+
+    // Create MilestoneDTOs with desired amounts
+    MilestoneDTO milestoneDTO1 = new MilestoneDTO();
+    milestoneDTO1.setMilestoneCurrentSum(100L); // User1 has saved 100
+    MilestoneDTO milestoneDTO2 = new MilestoneDTO();
+    milestoneDTO2.setMilestoneCurrentSum(200L); // User2 has saved 200
+
+    // Mock the behavior of milestoneService and milestoneLogService to return the created MilestoneDTOs
+    when(milestoneService.getActiveMilestonesDTOsByUsername("user1")).thenReturn(Collections.singletonList(milestoneDTO1));
+    when(milestoneLogService.getMilestoneLogsByUsername("user1")).thenReturn(Collections.emptyList());
+    when(milestoneService.getActiveMilestonesDTOsByUsername("user2")).thenReturn(Collections.singletonList(milestoneDTO2));
+    when(milestoneLogService.getMilestoneLogsByUsername("user2")).thenReturn(Collections.emptyList());
+
+    // Act
+    Long totalAmountSaved = userService.getTotalAmountSavedByAllUsers();
+
+    // Assert
+    assertEquals(300L, totalAmountSaved); // Total amount should be 100 + 200
+  }
+
+  @Test
+  void testGetTotalAmountSavedByAllUsers_whenExceptionThrown() {
+    // Arrange
+    // Mock userRepository to throw an exception
+    when(userRepository.findAll()).thenThrow(new RuntimeException("Test exception"));
+
+    // Act
+    Long totalAmountSaved = userService.getTotalAmountSavedByAllUsers();
+
+    // Assert
+    assertNull(totalAmountSaved); // Method should return null in case of an exception
   }
 
   @Test

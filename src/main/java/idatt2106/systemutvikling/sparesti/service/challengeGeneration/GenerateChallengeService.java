@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -146,8 +145,8 @@ public class GenerateChallengeService {
     LocalDateTime endOfMonth = LocalDateTime.now().withDayOfMonth(1).plusMonths(1).withHour(0)
         .withMinute(0).withSecond(0);
     LocalDateTime today = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
-    List<Transaction> transactions = transactionService.getLatestExpensesForUserCategorized(
-        user.getUsername(), 0, 45);
+    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount(user.getUsername(),
+            TransactionService.DEFAULT_EXPENSES_TIME_SPAN);
     Map<TransactionCategory, Double> categoryExpenseRatio = getCategoryExpenseRatio(transactions);
     Map<TransactionCategory, Double> pastChallengesByCategoryRatio = challengeLogService.getChallengesByCategoryRatio(
         user.getUsername());
