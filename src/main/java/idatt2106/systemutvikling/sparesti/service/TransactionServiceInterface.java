@@ -10,18 +10,16 @@ public interface TransactionServiceInterface {
 
     /**
      * Retrieves all outgoing transactions for a specific account.
-     * @param accountNumber The account number of the account.
-     * @param page The page number in the pagination scheme.
-     * @param pageSize The size of each page in the pagination scheme.
-     * @return A List of a page of outgoing transactions from the specified account.
-     */
-    List<Transaction> getLatestExpensesForAccountNumber(Long accountNumber, int page, int pageSize);
-
-    /**
-     * Retrieves all outgoing transactions for a specific account.
-     * @param accountNumber The account number of the account.
+     * A transaction is considered outgoing when it moves currency from the specified account to any account
+     * not owned by the owner of the specified account. A transaction is not considered outgoing if it is an internal
+     * transaction; moving currency between accounts owned by the same user.
+     * The implementation of this method is expected to fetch all transactions from now until 'dateLimit'
+     * where the specified accountNumber is either the debtor or creditor. Then, it will filter out any transactions that
+     * are either internal or incoming (relative to the account's owner). This is the easiest form of implementation
+     * when connecting to a standard PSD2 API.
+     * @param accountNumber The account number of the specified account.
      * @param dateLimit Transactions older than this date will not be fetched.
-     * @return A List of outgoing transactions from the specified account.
+     * @return A List of transactions moving currency OUT of the specified account.
      */
     List<Transaction> getLatestExpensesForAccountNumber(Long accountNumber, Date dateLimit);
 

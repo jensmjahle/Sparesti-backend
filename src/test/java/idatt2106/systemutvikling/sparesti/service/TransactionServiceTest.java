@@ -3,6 +3,7 @@ package idatt2106.systemutvikling.sparesti.service;
 import idatt2106.systemutvikling.sparesti.dao.TransactionCategoryDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
+import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
@@ -129,10 +130,10 @@ class TransactionServiceTest {
     );
 
     when(UserRepository.findByUsername("JohnDoe")).thenReturn(user);
-    when(transactionSocket.getLatestExpensesForAccountNumber(12345L, 1, 10)).thenReturn(List.of(transaction));
+    when(transactionSocket.getLatestExpensesForAccountNumber(user.getCurrentAccount(), new Date(0L))).thenReturn(List.of(transaction));
 
 // Act
-    List<Transaction> transactions = transactionService.getLatestExpensesForUser("JohnDoe", 1, 10);
+    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount("JohnDoe", new Date(0L));
 
     // Assert
     assertEquals(1, transactions.size());
@@ -140,7 +141,7 @@ class TransactionServiceTest {
   }
 
   @Test
-  @DisplayName("Test getLatestExpensesForUser_Failure with null user")
+  @DisplayName("Test getLatestExpensesForUser_Failure throws UserNotFoundException")
   void getLatestExpensesForUser_Failure_NullUser() {
     // Arrange
     UserDAO user = new UserDAO();
@@ -149,11 +150,8 @@ class TransactionServiceTest {
 
     when(UserRepository.findByUsername("JohnDoe")).thenReturn(null);
 
-    // Act
-    List<Transaction> transactions = transactionService.getLatestExpensesForUser("JohnDoe", 1, 10);
-
     // Assert
-    assertNull(transactions);
+    assertThrows(UserNotFoundException.class, () -> transactionService.getLatestExpensesForUser_CheckingAccount("JohnDoe", new Date(0L)));
   }
 
   @Test
@@ -167,7 +165,7 @@ class TransactionServiceTest {
     when(UserRepository.findByUsername("JohnDoe")).thenReturn(user);
 
     // Act
-    List<Transaction> transactions = transactionService.getLatestExpensesForUser("JohnDoe", 1, 10);
+    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount("JohnDoe", new Date(0L));
 
     // Assert
     assertNull(transactions);
