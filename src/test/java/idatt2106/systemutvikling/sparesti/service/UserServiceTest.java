@@ -578,7 +578,7 @@ class UserServiceTest {
     String result = userService.updatePassword(userCredentialsDTO);
 
     verify(userRepository, times(1)).findByUsername(CurrentUserService.getCurrentUsername());
-    verify(passwordEncoder, times(2)).encode("newpassword");
+    verify(passwordEncoder, times(1)).encode("newpassword");
     verify(userRepository, times(1)).save(userDAO);
 
     assertEquals("Password updated", result);
@@ -607,11 +607,32 @@ class UserServiceTest {
   }
 
   @Test
+  void testUpdatePassword_InvalidPasswordIsNull() {
+    // Prepare test data with invalid old password
+    UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+    userCredentialsDTO.setPassword(null);
+    userCredentialsDTO.setNewPassword("newpassword");
+
+    // Mock UserRepository
+    UserDAO userDAO = new UserDAO();
+    userDAO.setUsername("testuser");
+    userDAO.setPassword(passwordEncoder.encode("oldpassword")); // Set the current encoded password
+    when(userRepository.findByUsername("testuser")).thenReturn(userDAO);
+    when(userRepository.findByUsername(CurrentUserService.getCurrentUsername())).thenReturn(userDAO);
+
+    // Mock PasswordEncoder
+    when(passwordEncoder.matches("wrongpassword", userDAO.getPassword())).thenReturn(false);
+
+    // Call the method and assert the expected exception
+    assertThrows(InvalidCredentialsException.class, () -> userService.updatePassword(userCredentialsDTO));
+  }
+
+  @Test
   void testUpdatePassword_InvalidNewPassword() {
     // Prepare test data with valid old password and invalid new password
     UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
     userCredentialsDTO.setPassword("oldpassword");
-    userCredentialsDTO.setNewPassword("newpassword");
+    userCredentialsDTO.setNewPassword("short");
 
     // Mock UserDAO
     UserDAO userDAO = new UserDAO();
@@ -619,6 +640,7 @@ class UserServiceTest {
     userDAO.setPassword(passwordEncoder.encode("oldpassword")); // Mocked encoded password
     when(userRepository.findByUsername("testuser")).thenReturn(userDAO);
     when(userRepository.findByUsername(CurrentUserService.getCurrentUsername())).thenReturn(userDAO);
+    when(passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())).thenReturn(true);
 
     // Mock PasswordEncoder behavior
     String encodedNewPassword = "encodednewpassword";

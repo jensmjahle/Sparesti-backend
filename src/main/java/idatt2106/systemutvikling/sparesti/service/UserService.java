@@ -233,12 +233,12 @@ public class UserService {
    */
   public String updatePassword(UserCredentialsDTO userCredentialsDTO) {
     UserDAO userDAO = userRepository.findByUsername(CurrentUserService.getCurrentUsername());
+    logger.info("potet most");
     if (!passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())
             || userCredentialsDTO.getNewPassword() == null) {
       throw new InvalidCredentialsException("Invalid password");
     }
-
-    if (passwordEncoder.encode(userCredentialsDTO.getNewPassword()).length() <= 8) {
+    if (userCredentialsDTO.getNewPassword().length() <= 8) {
       throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
     }
 
