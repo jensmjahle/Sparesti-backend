@@ -35,4 +35,8 @@ public class CurrentUserService {
                 .getAuthorities()
                 .contains(new SimpleGrantedAuthority(SecurityConfig.ROLE_COMPLETE));
     }
+
+    public Object getUserDetails () {
+        return SecurityContextHolder.getContext().getAuthentication().getDetails();
+    }
 }

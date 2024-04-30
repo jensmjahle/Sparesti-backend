@@ -3,7 +3,7 @@ package idatt2106.systemutvikling.sparesti.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import idatt2106.systemutvikling.sparesti.configuration.OpenAIRestTemplateConfig;
-import idatt2106.systemutvikling.sparesti.controller.TransactionController;
+import idatt2106.systemutvikling.sparesti.controller.TransactionControllerTest;
 import idatt2106.systemutvikling.sparesti.dto.PaginatedRequestDTO;
 import idatt2106.systemutvikling.sparesti.mockBank.service.MockBankAccountService;
 import idatt2106.systemutvikling.sparesti.mockBank.service.BankTransactionService;
@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TransactionController.class)
+@WebMvcTest(TransactionControllerTest.class)
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 @AutoConfigureDataJpa
 @Import({ SecurityConfig.class, TransactionService.class, BankTransactionService.class,

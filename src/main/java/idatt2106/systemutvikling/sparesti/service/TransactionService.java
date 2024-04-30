@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -24,6 +23,8 @@ import java.util.List;
 public class TransactionService {
 
   private static final boolean DISABLE_OPENAI_PROMPTS = true;
+
+  public static final Date DEFAULT_EXPENSES_TIME_SPAN = new Date(System.currentTimeMillis() - 30L *24*60*60*1000);
 
   private final TransactionServiceInterface transactionSocket;
   private final TransactionCategoryCacheService cacheService;
@@ -64,69 +65,54 @@ public class TransactionService {
     }
   }
 
-  public List<Transaction> getLatestExpensesForUser(String username, int page, int pageSize) {
-    UserDAO user = dbUser.findByUsername(username);
-
-    if (user == null) {
-      return null;
-    }
-
-    Long checkingAccount = user.getCurrentAccount();
-
-    if (checkingAccount == null) {
-      return null;
-    }
-
-    return transactionSocket.getLatestExpensesForAccountNumber(checkingAccount, page, pageSize);
-  }
 
   /**
-   * Retrieves the latest outgoing transactions for a given user, and makes sure to categorize them
-   * before returning them.
-   *
-   * @param username The username of the user, serving as the userId.
-   * @param page
-   * @param pageSize
-   * @return A list of the latest outgoing transactions.
+   * Retrieves the outgoing transactions for a specific account from the past 30 days.
+   * A transaction is considered outgoing when it moves
+   * currency from the specified account to any account not owned by the owner of the specified account.
+   * A transaction is not considered outgoing if it is an internal transaction; moving currency
+   * between accounts owned by the same user.
+   * @return A list of outgoing transactions for the specified account number.
    */
-  public List<Transaction> getLatestExpensesForUserCategorized(String username, int page,
-      int pageSize) {
-    List<Transaction> transactions = getLatestExpensesForUser(username, page, pageSize);
-
-    if (transactions == null) {
-      return null;
-    }
-
-    return categorizeTransactions(transactions);
+  public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount_Categorized() {
+    return getLatestExpensesForCurrentUser_CheckingAccount_Categorized(DEFAULT_EXPENSES_TIME_SPAN);
   }
 
 
 
-  public List<Transaction> getLatestExpensesFromCheckingAccountOfCurrentUserCategorized() {
-    List<Transaction> uncategorizedTransactions = getLatestExpensesFromCheckingAccountOfCurrentUser();
+    public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount_Categorized(Date dateLimit) {
+    List<Transaction> uncategorizedTransactions = getLatestExpensesForCurrentUser_CheckingAccount(dateLimit);
 
     List<Transaction> categorizedTransactions = categorizeTransactions(uncategorizedTransactions);
 
     return categorizedTransactions;
   }
 
-  public List<Transaction> getLatestExpensesFromCheckingAccountOfCurrentUser() {
+
+
+  /** Retrieves all outgoing transactions of the checking account of the current user, from the last 30 days.
+   * @param dateLimit Transactions older than this date will not be fetched.
+   * @return A list of transactions.
+   */
+  public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount(Date dateLimit) {
     String username = CurrentUserService.getCurrentUsername();
     if (username == null)
       throw new UserNotFoundException("'CurrentUserService.getCurrentUsername()' returned " + username +
               " while retrieving latest expenses");
 
-    return getLatestExpensesFromCheckingAccount(username);
+    return getLatestExpensesForUser_CheckingAccount(username, dateLimit);
   }
+
 
 
   /** Retrieves all outgoing transactions of the checking account of the specified user, from the last 30 days.
    * @param username The username of the user.
+   * @param dateLimit Transactions older than this date will not be fetched.
    * @throws org.springframework.security.core.userdetails.UsernameNotFoundException If a user with the specified
-   * username was not found in the database
-   * @return A List of transactions.
+   * username was not found in the database.
+   * @return A list of transactions.
    */
-  public List<Transaction> getLatestExpensesFromCheckingAccount(String username) {
+  public List<Transaction> getLatestExpensesForUser_CheckingAccount(String username, Date dateLimit) {
     UserDAO user = dbUser.findByUsername(username);
     if (user == null)
       throw new UserNotFoundException();
@@ -135,14 +121,25 @@ public class TransactionService {
     if (checkingAccount == null || checkingAccount == 0L)
       return null; // TODO: Throw exception?
 
-    Date oneMonthAgo = new Date(System.currentTimeMillis() - 30L *24*60*60*1000);
-
-    return getLatestExpensesForAccountNumber(checkingAccount, oneMonthAgo);
+    return getLatestExpensesForAccountNumber(checkingAccount, dateLimit);
   }
 
+
+
+  /**
+   * Retrieves all outgoing transactions for a specific account. A transaction is considered outgoing when it moves
+   * currency from the specified account to any account not owned by the owner of the specified account.
+   * A transaction is not considered outgoing if it is an internal transaction; moving currency
+   * between accounts owned by the same user.
+   * @param accountNumber The account number of the account to fetch expenses for.
+   * @param dateLimit Transactions older than this date will not be fetched.
+   * @return A list of outgoing transactions for the specified account number.
+   */
   public List<Transaction> getLatestExpensesForAccountNumber(Long accountNumber, Date dateLimit) {
     return transactionSocket.getLatestExpensesForAccountNumber(accountNumber, dateLimit);
   }
+
+
 
   /**
    * Sets the category field of all transactions in the given list of transactions. This function
@@ -174,6 +171,8 @@ public class TransactionService {
 
     return transactions;
   }
+
+
 
   public TransactionCategory categorizeTransaction(Transaction transaction) {
     try {
@@ -228,6 +227,8 @@ public class TransactionService {
       throw e;
     }
   }
+
+
 
   public boolean createSavingsTransferForCurrentUser(long amount) {
     String username = CurrentUserService.getCurrentUsername();
