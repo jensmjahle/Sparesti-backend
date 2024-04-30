@@ -66,7 +66,11 @@ public enum ChallengeTheme {
 
   public static List<ChallengeTheme> getAllThemesFromCategory(TransactionCategory category) {
     List<ChallengeTheme> allThemes = new ArrayList<>();
+    ChallengeTheme baseTheme = getBaseTheme(category);
     for (ChallengeTheme theme : ChallengeTheme.values()) {
+      if (theme.equals(baseTheme)) {
+        continue;
+      }
       if (theme.getExpenseCategory().equals(category)) {
         allThemes.add(theme);
       }
