@@ -4,19 +4,15 @@ import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
-import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorException;
 import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
 import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
-import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
-import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
