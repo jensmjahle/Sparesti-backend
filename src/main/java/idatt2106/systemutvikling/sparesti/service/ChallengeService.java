@@ -158,8 +158,11 @@ public class ChallengeService {
     return challengeLogDAO;
   }
 
-  public void deleteChallenge(Long challengeId) {
+  public void moveChallengeToLog(Long challengeId) {
+    ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
+    ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
     challengeRepository.delete(challengeRepository.findChallengeDAOByChallengeId(challengeId));
+    challengeLogRepository.save(challengeLogDAO);
   }
 
   /**

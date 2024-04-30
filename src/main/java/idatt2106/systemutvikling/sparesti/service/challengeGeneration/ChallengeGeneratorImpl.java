@@ -299,9 +299,10 @@ public class ChallengeGeneratorImpl {
       if (response.equals("NO_TITLE_DESCRIPTION")) {
         String title = theme.getStandardMessage();
         String description =
-            "Try to save " + Math.round(amount) + " NOK in " + ChronoUnit.DAYS.between(start, end)
-                + " days by reducing your " + theme.getExpenseCategory().getCategory()
-                + " expenses.";
+            "Prøv å spare " + Math.round(amount) + " NOK i løpet av " + ChronoUnit.DAYS.between(
+                start, end)
+                + " dager ved å redusere dine utgifter i kategorien " + theme.getExpenseCategory()
+                .getCategory();
         return new ChallengeTitleAndDescription(title, description);
       }
 
