@@ -237,8 +237,7 @@ public class UserService {
             || userCredentialsDTO.getNewPassword() == null) {
       throw new InvalidCredentialsException("Invalid password");
     }
-
-    if (passwordEncoder.encode(userCredentialsDTO.getNewPassword()).length() <= 8) {
+    if (userCredentialsDTO.getNewPassword().length() <= 8) {
       throw new InvalidCredentialsException("Password needs to be at least 8 characters long");
     }
 
