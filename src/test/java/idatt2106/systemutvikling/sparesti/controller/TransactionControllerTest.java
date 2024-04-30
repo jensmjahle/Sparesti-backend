@@ -13,6 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class TransactionControllerTest {
     private TransactionService transactionService;
 
     @Test
-    public void getLatestExpenses_allowsUsers() throws Exception {
+    public void getLatestExpenses_callsCorrectService() throws Exception {
         Long transactionId = 4729387L;
         Long accountNr = 79L;
         String transactionTitle = "Test transaction";
@@ -81,5 +82,26 @@ public class TransactionControllerTest {
         mvc.perform(get("/user/transaction/30-day-expenses"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(mapper.writeValueAsString(transactionDTOs)));
+    }
+
+
+
+    @Test
+    public void getLatestExpenses_returnsCorrectStatusWhenServiceReturnsNull() throws Exception {
+        given(transactionService.getLatestExpensesForCurrentUser_CheckingAccount_Categorized()).willReturn(null);
+
+        mvc.perform(get("/user/transaction/30-day-expenses"))
+                .andExpect(status().is4xxClientError());
+    }
+
+
+
+    @Test
+    public void getLatestExpenses_returnsCorrectStatusWhenNoExpensesWereFound() throws Exception {
+        given(transactionService.getLatestExpensesForCurrentUser_CheckingAccount_Categorized()).willReturn(new ArrayList<>());
+
+        mvc.perform(get("/user/transaction/30-day-expenses"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isNoContent());
     }
 }
