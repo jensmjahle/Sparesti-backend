@@ -1,10 +1,12 @@
 package idatt2106.systemutvikling.sparesti.mockBank.service;
 
+import idatt2106.systemutvikling.sparesti.mapper.TransactionMapper;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.mapper.MockBankTransactionMapper;
 import idatt2106.systemutvikling.sparesti.mockBank.repository.TransactionRepository;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
+import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import idatt2106.systemutvikling.sparesti.service.TransactionServiceInterface;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -42,14 +44,14 @@ public class BankTransactionService implements TransactionServiceInterface {
     CriteriaQuery<TransactionDAO> criteriaQuery = criteriaBuilder.createQuery(TransactionDAO.class);
     Root<TransactionDAO> root = criteriaQuery.from(TransactionDAO.class);
 
-    // A list of predicates each enforcing that the transactions creditor account is not equal the accounts owned by the user.
+    // A list of predicates each enforcing that the transaction's creditor account is not equal any of the accounts owned by the user.
     List<Predicate> creditorNotEqualOwnAccountList = allAccountsForUser
             .stream()
             .map(AccountDAO::getAccountNr)
             .map((Long a) -> { return criteriaBuilder.notEqual(root.get("creditorAccount"), a); })
             .toList();
 
-    // The predicate filtering out all accounts where the creditor is not equal
+    // The predicate filtering out all accounts where the creditor is equal one of the user's accounts.
     Predicate creditorAccountNotOwn = creditorNotEqualOwnAccountList.get(0);
     for (Predicate p : creditorNotEqualOwnAccountList)
       creditorAccountNotOwn = criteriaBuilder.and(creditorAccountNotOwn, p);
@@ -73,6 +75,26 @@ public class BankTransactionService implements TransactionServiceInterface {
             .stream()
             .map(MockBankTransactionMapper::toModel)
             .toList();
+  }
+
+  @Override
+  public List<Transaction> getLatestExpensesForAccountNumber(Long accountNumber, Date dateLimit) {
+    List<AccountDAO> allAccountsForUser = accountService.findOtherAccountsOwnedBySameUser(accountNumber);
+    List<Long> accounts = allAccountsForUser.stream().map(AccountDAO::getAccountNr).toList();
+
+    List<TransactionDAO> fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfter(accountNumber, dateLimit);
+
+    List<Transaction> filteredTransactions = fetchedTransactions.stream()
+            // Only allow transactions where the debtor is the parameter account.
+            .filter((TransactionDAO t) -> { return t.getDebtorAccount().equals(accountNumber); })
+            // Only allow transactions where the creditor account is not owned by the user
+            .filter((TransactionDAO t) -> { return accounts.stream().noneMatch((Long acId) -> { return t.getCreditorAccount().equals(acId); }); })
+            // Convert all transactions to model class Transaction
+            .map(MockBankTransactionMapper::toModel)
+
+            .toList(); // Done
+
+    return filteredTransactions;
   }
 
   /**

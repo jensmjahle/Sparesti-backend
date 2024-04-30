@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
@@ -27,8 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
@@ -62,6 +63,8 @@ public class UserServiceTest {
     when(jwtService.extractUsernameFromToken(anyString())).thenReturn("testUser");
     when(customerService.hasTwoAccounts(anyString())).thenReturn(true);
     when(milestoneLogService.getMilestoneLogsByUsername(anyString())).thenReturn(Collections.emptyList()); // return an empty list
+    Authentication authentication = new UsernamePasswordAuthenticationToken("testUser", null);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 
   @AfterEach
@@ -511,12 +514,17 @@ public class UserServiceTest {
     // Mock the behavior of userRepository to return the list of users
     when(userRepository.findAll()).thenReturn(users);
 
-    // Mock the behavior of milestoneLogService to return an empty list
-    when(milestoneLogService.getMilestoneLogsByUsername(anyString())).thenReturn(Collections.emptyList());
+    // Create MilestoneDTOs with desired amounts
+    MilestoneDTO milestoneDTO1 = new MilestoneDTO();
+    milestoneDTO1.setMilestoneCurrentSum(100L); // User1 has saved 100
+    MilestoneDTO milestoneDTO2 = new MilestoneDTO();
+    milestoneDTO2.setMilestoneCurrentSum(200L); // User2 has saved 200
 
-    // Mock the behavior of getTotalAmountSavedByUser to return a fixed amount
-    when(userService.getTotalAmountSavedByUser("user1")).thenReturn(100L);
-    when(userService.getTotalAmountSavedByUser("user2")).thenReturn(200L);
+    // Mock the behavior of milestoneService and milestoneLogService to return the created MilestoneDTOs
+    when(milestoneService.getActiveMilestonesDTOsByUsername("user1")).thenReturn(Collections.singletonList(milestoneDTO1));
+    when(milestoneLogService.getMilestoneLogsByUsername("user1")).thenReturn(Collections.emptyList());
+    when(milestoneService.getActiveMilestonesDTOsByUsername("user2")).thenReturn(Collections.singletonList(milestoneDTO2));
+    when(milestoneLogService.getMilestoneLogsByUsername("user2")).thenReturn(Collections.emptyList());
 
     // Act
     Long totalAmountSaved = userService.getTotalAmountSavedByAllUsers();
