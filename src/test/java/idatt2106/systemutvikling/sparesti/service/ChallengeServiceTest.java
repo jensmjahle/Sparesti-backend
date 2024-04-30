@@ -2,6 +2,8 @@ package idatt2106.systemutvikling.sparesti.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.dao.ChallengeLogDAO;
@@ -19,10 +21,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.data.domain.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -47,6 +46,38 @@ public class ChallengeServiceTest {
   }
 
   @Test
+  @DisplayName("Verify that ChallengeService::createChallenge cannot register challenges on other users")
+  public void createChallenge_CannotRegisterChallengesOnOtherUsers() {
+    String loggedInUsername = "Original user";
+    String targetUsername = "Other user";
+
+    ChallengeDTO dto = new ChallengeDTO(
+      451L,
+            targetUsername,
+      "Tricked you >:D",
+      "This is a challenge from \"Other user\"",
+      100_000_000L,
+      0L,
+      LocalDateTime.now(),
+      LocalDateTime.now().plusDays(2),
+      0,
+      true
+    );
+
+    try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
+      utilities.when(CurrentUserService::getCurrentUsername).thenReturn(loggedInUsername);
+      challengeService.createChallenge(dto);
+    }
+
+    ArgumentCaptor<ChallengeDAO> argumentCaptor = ArgumentCaptor.forClass(ChallengeDAO.class);
+    verify(challengeRepository, times(1)).save(argumentCaptor.capture());
+
+    ChallengeDAO argument = argumentCaptor.getValue();
+    assertNotEquals(targetUsername, argument.getUserDAO().getUsername());
+    assertEquals(loggedInUsername, argument.getUserDAO().getUsername());
+  }
+
+  @Test
   @DisplayName("Test getChallengesByActiveAndUsername returns a list of challenges")
   public void testGetChallengesByActiveAndUsername() {
     ChallengeDAO challenge = new ChallengeDAO();
@@ -57,7 +88,7 @@ public class ChallengeServiceTest {
     List<ChallengeDAO> challenges = List.of(challenge, challenge2);
 
     when(challengeRepository.findChallengeDAOByActiveAndUserDAO_Username(true,
-        "username")).thenReturn(challenges);
+            "username")).thenReturn(challenges);
 
     assertEquals(challenges, challengeService.getChallengesByActiveAndUsername("username", true));
   }
