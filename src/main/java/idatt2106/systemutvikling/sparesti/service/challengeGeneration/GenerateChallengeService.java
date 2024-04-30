@@ -145,8 +145,9 @@ public class GenerateChallengeService {
     LocalDateTime endOfMonth = LocalDateTime.now().withDayOfMonth(1).plusMonths(1).withHour(0)
         .withMinute(0).withSecond(0);
     LocalDateTime today = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
-    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount(user.getUsername(),
-            TransactionService.DEFAULT_EXPENSES_TIME_SPAN);
+    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount(
+        user.getUsername(),
+        TransactionService.DEFAULT_EXPENSES_TIME_SPAN);
     Map<TransactionCategory, Double> categoryExpenseRatio = getCategoryExpenseRatio(transactions);
     Map<TransactionCategory, Double> pastChallengesByCategoryRatio = challengeLogService.getChallengesByCategoryRatio(
         user.getUsername());
@@ -188,7 +189,7 @@ public class GenerateChallengeService {
     double totalPlannedSavings = 0;
 
     for (ChallengeDAO challenge : challenges) {
-      totalPlannedSavings += challenge.getCurrentSum();
+      totalPlannedSavings += challenge.getGoalSum() - challenge.getCurrentSum();
     }
     return totalPlannedSavings;
   }

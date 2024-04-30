@@ -153,6 +153,12 @@ public class ChallengeGeneratorImpl {
       double thisMonthTotalSavings, double monthlyPlannedSavings, long daysLeftInMonth,
       long daysInMonth) {
 
+    logger.severe("Monthly goal: " + monthlyGoal);
+    logger.severe("This month total savings: " + thisMonthTotalSavings);
+    logger.severe("Monthly planned savings: " + monthlyPlannedSavings);
+    logger.severe("Days left in month: " + daysLeftInMonth);
+    logger.severe("Days in month: " + daysInMonth);
+    
     double optimalAmount = (monthlyGoal / daysInMonth) * challengeDurationInDays;
     double amountToReachGoal =
         ((monthlyGoal - thisMonthTotalSavings - monthlyPlannedSavings) / daysLeftInMonth)

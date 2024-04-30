@@ -127,7 +127,7 @@ public class ChallengeService {
     challengeLogDAO.setChallengeTitle(challengeDAO.getChallengeTitle());
     challengeLogDAO.setChallengeDescription(challengeDAO.getChallengeDescription());
     challengeLogDAO.setGoalSum(challengeDAO.getGoalSum());
-    challengeLogDAO.setChallengeAchievedSum(challengeDAO.getCurrentSum());
+    challengeLogDAO.setChallengeAchievedSum(challengeDAO.getGoalSum());
     challengeLogDAO.setCompletionDate(LocalDateTime.now());
     challengeLogDAO.setUserDAO(challengeDAO.getUserDAO());
     challengeLogDAO.setTheme(challengeDAO.getTheme());
