@@ -610,8 +610,8 @@ class UserServiceTest {
   void testUpdatePassword_InvalidPasswordIsNull() {
     // Prepare test data with invalid old password
     UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
-    userCredentialsDTO.setPassword(null);
-    userCredentialsDTO.setNewPassword("newpassword");
+    userCredentialsDTO.setPassword("oldpassword");
+    userCredentialsDTO.setNewPassword(null);
 
     // Mock UserRepository
     UserDAO userDAO = new UserDAO();
@@ -619,7 +619,7 @@ class UserServiceTest {
     userDAO.setPassword(passwordEncoder.encode("oldpassword")); // Set the current encoded password
     when(userRepository.findByUsername("testuser")).thenReturn(userDAO);
     when(userRepository.findByUsername(CurrentUserService.getCurrentUsername())).thenReturn(userDAO);
-
+    when(passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())).thenReturn(true);
     // Mock PasswordEncoder
     when(passwordEncoder.matches("wrongpassword", userDAO.getPassword())).thenReturn(false);
 
