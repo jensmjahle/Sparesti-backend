@@ -127,7 +127,7 @@ public class ChallengeService {
     challengeLogDAO.setChallengeTitle(challengeDAO.getChallengeTitle());
     challengeLogDAO.setChallengeDescription(challengeDAO.getChallengeDescription());
     challengeLogDAO.setGoalSum(challengeDAO.getGoalSum());
-    challengeLogDAO.setChallengeAchievedSum(challengeDAO.getGoalSum());
+    challengeLogDAO.setChallengeAchievedSum(challengeDAO.getCurrentSum());
     challengeLogDAO.setCompletionDate(LocalDateTime.now());
     challengeLogDAO.setUserDAO(challengeDAO.getUserDAO());
     challengeLogDAO.setTheme(challengeDAO.getTheme());
@@ -152,6 +152,7 @@ public class ChallengeService {
   public ChallengeLogDAO completeChallenge(Long challengeId) {
     ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
     ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
+    challengeLogDAO.setChallengeAchievedSum(challengeLogDAO.getGoalSum());
     challengeRepository.delete(challengeDAO);
     challengeLogRepository.save(challengeLogDAO);
     return challengeLogDAO;
