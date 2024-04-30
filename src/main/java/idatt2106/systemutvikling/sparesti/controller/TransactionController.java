@@ -30,9 +30,6 @@ public class TransactionController {
             .map(TransactionMapper::toDTO)
             .toList();
 
-    if (transactions.isEmpty())
-      return ResponseEntity.noContent().build();
-
     return ResponseEntity.ok().body(body);
   }
 }

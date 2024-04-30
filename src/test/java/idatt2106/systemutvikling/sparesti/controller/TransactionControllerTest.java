@@ -102,6 +102,6 @@ public class TransactionControllerTest {
 
         mvc.perform(get("/user/transaction/30-day-expenses"))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 }
