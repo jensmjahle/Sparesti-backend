@@ -4,14 +4,18 @@ package idatt2106.systemutvikling.sparesti.service;
 import idatt2106.systemutvikling.sparesti.dao.TransactionCategoryDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
+import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mapper.KeywordMapper;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+
+import java.util.Date;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -94,6 +98,50 @@ public class TransactionService {
     }
 
     return categorizeTransactions(transactions);
+  }
+
+
+
+  public List<Transaction> getLatestExpensesFromCheckingAccountOfCurrentUserCategorized() {
+    List<Transaction> uncategorizedTransactions = getLatestExpensesFromCheckingAccountOfCurrentUser();
+
+    List<Transaction> categorizedTransactions = categorizeTransactions(uncategorizedTransactions);
+
+    return categorizedTransactions;
+  }
+
+  public List<Transaction> getLatestExpensesFromCheckingAccountOfCurrentUser() {
+    String username = CurrentUserService.getCurrentUsername();
+    if (username == null)
+      throw new UserNotFoundException("'CurrentUserService.getCurrentUsername()' returned " + username +
+              " while retrieving latest expenses");
+
+    return getLatestExpensesFromCheckingAccount(username);
+  }
+
+
+  /** Retrieves all outgoing transactions of the checking account of the specified user, from the last 30 days.
+   * @param username The username of the user.
+   * @throws org.springframework.security.core.userdetails.UsernameNotFoundException If a user with the specified
+   * username was not found in the database
+   * @return A List of transactions.
+   */
+  public List<Transaction> getLatestExpensesFromCheckingAccount(String username) {
+    UserDAO user = dbUser.findByUsername(username);
+    if (user == null)
+      throw new UserNotFoundException();
+
+    Long checkingAccount = user.getCurrentAccount();
+    if (checkingAccount == null || checkingAccount == 0L)
+      return null; // TODO: Throw exception?
+
+    Date oneMonthAgo = new Date(System.currentTimeMillis() - 30L *24*60*60*1000);
+
+    return getLatestExpensesForAccountNumber(checkingAccount, oneMonthAgo);
+  }
+
+  public List<Transaction> getLatestExpensesForAccountNumber(Long accountNumber, Date dateLimit) {
+    return transactionSocket.getLatestExpensesForAccountNumber(accountNumber, dateLimit);
   }
 
   /**

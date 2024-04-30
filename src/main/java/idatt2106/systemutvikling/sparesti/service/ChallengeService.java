@@ -80,7 +80,7 @@ public class ChallengeService {
     }
      */
 
-    for (int i = 0; i < challengeDAOS.getTotalElements(); i++) {
+    for (int i = 0; i < challengeDAOS.getContent().size(); i++) {
       challengeDTOS.add(ChallengeMapper.toDTO(challengeDAOS.getContent().get(i)));
     }
 
