@@ -75,10 +75,10 @@ INSERT INTO milestone_log (milestone_id, completion_date, milestone_achieved_sum
 */
 INSERT INTO achievement (achievement_description, achievement_title) VALUES
     ("Fullført din første milestone", "1 milestone"),
-    ("Fullført 5 milestone", "5 milestone"),
-    ("Fullført 10 milestone", "10 milestone"),
     ("Fullført din første challenge", "1 challenge"),
+    ("Fullført 5 milestone", "5 milestone"),
     ("Fullført 5 challenge", "5 challenge"),
+    ("Fullført 10 milestone", "10 milestone"),
     ("Fullført 10 challenge", "10 challenge"),
     ('Spar 1000NOK', 'Spar totalt 1000NOK på alle dine sparemål og utfordringer'),
     ('Spar 5000NOK', 'Spar totalt 5000NOK på alle dine sparemål og utfordringer'),
