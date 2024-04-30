@@ -16,10 +16,9 @@ public class ManualSavingService {
     private final UserRepository dbUser;
     private final ManualSavingRepository dbManualSaving;
 
-    public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount) {
+    public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount, String username) {
         ManualSavingDAO dao = new ManualSavingDAO();
 
-        String username = CurrentUserService.getCurrentUsername();
         if (username == null)
             return null;
 
