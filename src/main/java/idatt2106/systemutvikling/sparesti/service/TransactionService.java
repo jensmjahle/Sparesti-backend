@@ -24,6 +24,8 @@ public class TransactionService {
 
   private static final boolean DISABLE_OPENAI_PROMPTS = true;
 
+  public static final Date DEFAULT_EXPENSES_TIME_SPAN = new Date(System.currentTimeMillis() - 30L *24*60*60*1000);
+
   private final TransactionServiceInterface transactionSocket;
   private final TransactionCategoryCacheService cacheService;
   private final UserRepository dbUser;
@@ -73,9 +75,7 @@ public class TransactionService {
    * @return A list of outgoing transactions for the specified account number.
    */
   public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount_Categorized() {
-    final Date oneMonthAgo = new Date(System.currentTimeMillis() - 30L *24*60*60*1000);
-
-    return getLatestExpensesForCurrentUser_CheckingAccount_Categorized(oneMonthAgo);
+    return getLatestExpensesForCurrentUser_CheckingAccount_Categorized(DEFAULT_EXPENSES_TIME_SPAN);
   }
 
 
