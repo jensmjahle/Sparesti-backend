@@ -106,7 +106,10 @@ public class ChallengeLogService {
       for (ChallengeLogDAO challengeLog : challengeLogs) {
         TransactionCategory category = challengeLog.getTheme().getExpenseCategory();
 
-        logByCategoryRatio.merge(category, 1.0, Double::sum);
+        if (category != null) {
+          logByCategoryRatio.merge(category, 1.0, Double::sum);
+        }
+        //logByCategoryRatio.merge(category, 1.0, Double::sum);
 
       }
       for (Map.Entry<TransactionCategory, Double> entry : logByCategoryRatio.entrySet()) {
@@ -134,7 +137,10 @@ public class ChallengeLogService {
         if (challengeLog.isAccepted()) {
           TransactionCategory category = challengeLog.getTheme().getExpenseCategory();
 
-          logByCategoryAcceptedRatio.merge(category, 1.0, Double::sum);
+          if (category != null) {
+            logByCategoryAcceptedRatio.merge(category, 1.0, Double::sum);
+          }
+          // logByCategoryAcceptedRatio.merge(category, 1.0, Double::sum);
         }
         logByCategorySum.merge(challengeLog.getTheme().getExpenseCategory(),
             1.0, Double::sum);
