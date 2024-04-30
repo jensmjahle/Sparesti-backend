@@ -81,7 +81,7 @@ public class MilestoneController {
   public ResponseEntity<?> manualInjectionIntoMilestone(@RequestBody ManualSavingDTO dto) {
 
     // Create new record
-    ManualSavingDAO manualSavingDAO = manualSavingService.registerNewManualSavingDAO(dto.getMilestoneId(), dto.getAmount());
+    ManualSavingDAO manualSavingDAO = manualSavingService.registerNewManualSavingDAO(dto.getMilestoneId(), dto.getAmount(), CurrentUserService.getCurrentUsername());
 
     // If unsuccessful, return UNPROCESSABLE_ENTITY
     if (manualSavingDAO == null)
