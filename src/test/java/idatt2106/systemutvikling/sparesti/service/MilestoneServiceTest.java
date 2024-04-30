@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -46,7 +47,10 @@ public class MilestoneServiceTest {
   @DisplayName("Test getActiveMilestonesDTOsByUsernamePaginated returns a page of MilestoneDTOs")
   public void testGetActiveMilestonesDTOsByUsernamePaginated() {
 
-    Pageable pageable = PageRequest.of(0, 2);
+    Pageable pageable = PageRequest.of(
+            0,
+            2,
+            Sort.by("deadlineDate"));
 
     UserDAO user1 = new UserDAO();
     user1.setUsername("JohnSmith12");
