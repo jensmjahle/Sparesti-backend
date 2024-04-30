@@ -55,9 +55,14 @@ public class ManualSavingService {
     Date threshold = java.sql.Timestamp.valueOf(startOfMth);
     List<ManualSavingDAO> savingDAOS = dbManualSaving.findByUser_UsernameAndTimeOfTransferAfter(
         username, threshold);
+    if (savingDAOS == null) {
+      return 0;
+    }
     double total = 0;
     for (ManualSavingDAO dao : savingDAOS) {
-      total += dao.getAmount();
+      if (dao.getAmount() != null) {
+        total += dao.getAmount();
+      }
     }
     return total;
   }
