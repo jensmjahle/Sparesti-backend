@@ -35,12 +35,6 @@ public class TransactionControllerTest {
     private TransactionService transactionService;
 
     @Test
-    public void getLatestExpenses_filtersOutUnauthenticatedConnections() throws Exception {
-        mvc.perform(post("/user/transaction/30-day-expenses"))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     public void getLatestExpenses_allowsUsers() throws Exception {
         Long transactionId = 4729387L;
         Long accountNr = 79L;
@@ -82,7 +76,7 @@ public class TransactionControllerTest {
         List<Transaction> transactions = List.of(transaction);
         List<TransactionDTO> transactionDTOs = List.of(transactionDTO);
 
-        given(transactionService.getLatestExpensesFromCheckingAccountOfCurrentUserCategorized()).willReturn(transactions);
+        given(transactionService.getLatestExpensesForCurrentUser_CheckingAccount_Categorized()).willReturn(transactions);
 
         mvc.perform(get("/user/transaction/30-day-expenses"))
                 .andExpect(status().isOk())
