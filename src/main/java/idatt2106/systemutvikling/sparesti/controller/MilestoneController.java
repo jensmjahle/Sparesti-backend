@@ -76,6 +76,12 @@ public class MilestoneController {
     return ResponseEntity.ok(milestoneService.editMilestone(CurrentUserService.getCurrentUsername(), milestoneDTO));
   }
 
+  @DeleteMapping("/delete/{id}")
+  public void deleteMilestone(@PathVariable Long id) {
+    logger.info("Received request to delete milestone.");
+    milestoneService.deleteMilestone(CurrentUserService.getCurrentUsername(), id);
+  }
+
 
   @PostMapping("/inject")
   public ResponseEntity<?> manualInjectionIntoMilestone(@RequestBody ManualSavingDTO dto) {

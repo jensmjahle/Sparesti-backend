@@ -157,6 +157,18 @@ public class MilestoneService {
     }
   }
 
+  public void deleteMilestone(String username, Long milestoneId){
+    try {
+      MilestoneDAO milestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneId);
+      if(!Objects.equals(milestoneDAO.getUserDAO().getUsername(), username)){
+        return;
+      }
+      milestoneRepository.delete(milestoneDAO);
+    } catch (RuntimeException e){
+      logger.severe("Error when deleting milestone: "+e.getMessage());
+    }
+  }
+
 
   public MilestoneDTO editMilestone(String username, MilestoneDTO milestoneDTO){
     try {
