@@ -121,6 +121,10 @@ public class ChallengeLogService {
       Map<TransactionCategory, Double> logByCategoryRatio = new HashMap<>();
 
       for (ChallengeLogDAO challengeLog : challengeLogs) {
+        if (challengeLog.getTheme() == null) {
+          logger.warning("Category is null for challenge log " + challengeLog.getChallengeId());
+          continue;
+        }
         TransactionCategory category = challengeLog.getTheme().getExpenseCategory();
 
         logByCategoryRatio.merge(category, 1.0, Double::sum);
@@ -155,6 +159,10 @@ public class ChallengeLogService {
       Map<TransactionCategory, Double> logByCategorySum = new HashMap<>();
 
       for (ChallengeLogDAO challengeLog : challengeLogs) {
+        if (challengeLog.getTheme() == null) {
+          logger.warning("Category is null for challenge log " + challengeLog.getChallengeId());
+          continue;
+        }
         if (challengeLog.isAccepted()) {
           TransactionCategory category = challengeLog.getTheme().getExpenseCategory();
 
@@ -194,7 +202,9 @@ public class ChallengeLogService {
       for (ChallengeLogDAO challengeLog : challengeLogs) {
         ChallengeTheme theme = challengeLog.getTheme();
 
-        logByThemeRatio.merge(theme, 1.0, Double::sum);
+        if (theme != null) {
+          logByThemeRatio.merge(theme, 1.0, Double::sum);
+        }
 
       }
       for (Map.Entry<ChallengeTheme, Double> entry : logByThemeRatio.entrySet()) {

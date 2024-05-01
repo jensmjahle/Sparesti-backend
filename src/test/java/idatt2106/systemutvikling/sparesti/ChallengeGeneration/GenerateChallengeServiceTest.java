@@ -13,6 +13,7 @@ import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import idatt2106.systemutvikling.sparesti.service.ChallengeLogService;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
+import idatt2106.systemutvikling.sparesti.service.ManualSavingService;
 import idatt2106.systemutvikling.sparesti.service.OpenAIService;
 import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import idatt2106.systemutvikling.sparesti.service.challengeGeneration.ChallengeGeneratorImpl;
@@ -34,6 +35,8 @@ public class GenerateChallengeServiceTest {
 
   @Mock
   private ChallengeGeneratorImpl challengeGenerator;
+  @Mock
+  private ManualSavingService manualSavingService;
 
   @Mock
   private UserRepository userRepository;
@@ -89,6 +92,7 @@ public class GenerateChallengeServiceTest {
     user.setMonthlyIncome(5000L);
     user.setMonthlyFixedExpenses(2000L);
     when(userRepository.findAll()).thenReturn(Collections.singletonList(user));
+    when(manualSavingService.getThisMonthTotalManualSavings("testUser")).thenReturn(1000.0);
 
     generateChallengeService.generateWeeklyChallenges();
 
@@ -134,7 +138,8 @@ public class GenerateChallengeServiceTest {
   @Test
   public void testCalcAmount() throws Exception {
     // Arrange
-    ChallengeGeneratorImpl challengeGenerator = new ChallengeGeneratorImpl(openAIService, challengeRepository);
+    ChallengeGeneratorImpl challengeGenerator = new ChallengeGeneratorImpl(openAIService,
+        challengeRepository);
     int min = 10;
     int max = 500;
     int duration = 7;
@@ -145,11 +150,13 @@ public class GenerateChallengeServiceTest {
     long daysInMonth = 30L; // replace with actual value
 
     // Use reflection to access the private method
-    Method method = ChallengeGeneratorImpl.class.getDeclaredMethod("calcAmount", int.class, int.class, int.class, double.class, double.class, double.class, long.class, long.class);
+    Method method = ChallengeGeneratorImpl.class.getDeclaredMethod("calcAmount", int.class,
+        int.class, int.class, double.class, double.class, double.class, long.class, long.class);
     method.setAccessible(true); // This line is necessary if the method is private
 
     // Act
-    double result = (double) method.invoke(challengeGenerator, min, max, duration, mthSavGoal, thisMthTotSav, thisMthPLNDSav, daysToEndOfMonth, daysInMonth);
+    double result = (double) method.invoke(challengeGenerator, min, max, duration, mthSavGoal,
+        thisMthTotSav, thisMthPLNDSav, daysToEndOfMonth, daysInMonth);
 
     // Assert
     assertTrue(result >= min && result <= max);

@@ -8,6 +8,7 @@ import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorExceptio
 import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
 import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
+import idatt2106.systemutvikling.sparesti.mapper.Base64Mapper;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import idatt2106.systemutvikling.sparesti.repository.*;
 import lombok.AllArgsConstructor;
@@ -145,7 +146,7 @@ public class UserService {
     }
 
     if (Objects.nonNull(updatedUserDTO.getProfilePictureBase64())) {
-      existingUser.setProfilePicture(updatedUserDTO.getProfilePictureBase64().getBytes());
+      existingUser.setProfilePicture(Base64Mapper.toByteArray(updatedUserDTO.getProfilePictureBase64()));
     }
 
     if (Objects.nonNull(updatedUserDTO.getCurrentAccount())) {

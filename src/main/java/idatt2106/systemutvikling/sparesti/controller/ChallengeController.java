@@ -130,7 +130,7 @@ public class ChallengeController {
 
   @DeleteMapping("/delete/{challengeId}")
   @ResponseBody
-  public ResponseEntity<String> deleteChallenge(@PathVariable Long challengeId) {
+  public ResponseEntity<String> moveChallengeToLog(@PathVariable Long challengeId) {
     if (challengeId == null) {
       return ResponseEntity.badRequest().build();
     }
@@ -140,7 +140,7 @@ public class ChallengeController {
       return ResponseEntity.badRequest().body("You are not the owner of this challenge");
     }
 
-    challengeService.deleteChallenge(challengeId);
+    challengeService.moveChallengeToLog(challengeId);
 
     return ResponseEntity.ok().body("Challenge deleted");
   }

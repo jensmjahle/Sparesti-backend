@@ -32,38 +32,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class ChallengeControllerTests {
 
-    private static final ChallengeDTO TEST_CHALLENGE = new ChallengeDTO(
-            99L,
-            "Darth",
-            "Test",
-            "This is a test challenge",
-            100L,
-            0L,
-            LocalDateTime.now(),
-            LocalDateTime.now().plusDays(3),
-            0,
-            true
-    );
+  private static final ChallengeDTO TEST_CHALLENGE = new ChallengeDTO(
+      99L,
+      "Darth",
+      "Test",
+      "This is a test challenge",
+      100L,
+      0L,
+      LocalDateTime.now(),
+      LocalDateTime.now().plusDays(3),
+      0,
+      true
+  );
 
-    @Autowired
-    private MockMvc mvc;
+  @Autowired
+  private MockMvc mvc;
 
-    @MockBean
-    private ChallengeService challengeService;
+  @MockBean
+  private ChallengeService challengeService;
 
-    @MockBean
-    private MilestoneService milestoneService;
+  @MockBean
+  private MilestoneService milestoneService;
 
-    @Test
-    public void deleteChallenge_ReturnOkWhenAllIsWell() throws Exception {
-        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+  @Test
+  public void deleteChallenge_ReturnOkWhenAllIsWell() throws Exception {
+    final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
 
-        given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
-        doNothing().when(challengeService).deleteChallenge(challenge.getChallengeId());
+    given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
+    doNothing().when(challengeService).moveChallengeToLog(challenge.getChallengeId());
 
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(challenge.getUsername());
-            mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId())).andExpect(status().isOk());
-        }
+    try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(
+        CurrentUserService.class)) {
+      utilities.when(CurrentUserService::getCurrentUsername).thenReturn(challenge.getUsername());
+      mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId()))
+          .andExpect(status().isOk());
     }
+  }
 }
