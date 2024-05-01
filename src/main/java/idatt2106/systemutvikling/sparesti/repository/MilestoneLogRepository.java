@@ -62,5 +62,10 @@ public interface MilestoneLogRepository extends JpaRepository<MilestoneLogDAO, L
    */
   List<MilestoneLogDAO> findMilestoneLogDAOSByCompletionDateBefore(LocalDateTime completionDate);
 
+  /**
+   * Method to delete all milestone logs to a user.
+   *
+   * @param username the username of the user
+   */
   void deleteAllByUserDAO_Username(String username);
 }
