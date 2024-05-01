@@ -6,6 +6,9 @@ import idatt2106.systemutvikling.sparesti.model.Transaction;
 
 import java.util.Date;
 
+/**
+ * Mapper class for the Transaction entity.
+ */
 public class TransactionMapper {
 
     /**

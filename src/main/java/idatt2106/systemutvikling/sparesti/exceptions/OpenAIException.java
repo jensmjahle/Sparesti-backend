@@ -1,5 +1,9 @@
 package idatt2106.systemutvikling.sparesti.exceptions;
 
+
+/**
+ * Exception for when a user is not found.
+ */
 public class OpenAIException extends RuntimeException {
 
   /**

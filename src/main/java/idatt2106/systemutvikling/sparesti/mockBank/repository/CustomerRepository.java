@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository interface for the Customer entity.
+ */
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerDAO, String> {
 

@@ -3,6 +3,9 @@ package idatt2106.systemutvikling.sparesti.mapper;
 import java.util.Base64;
 import java.util.logging.Logger;
 
+/**
+ * Mapper class for converting images to base64 strings and vice versa.
+ */
 public class Base64Mapper {
   static Logger logger = Logger.getLogger(Base64Mapper.class.getName());
 

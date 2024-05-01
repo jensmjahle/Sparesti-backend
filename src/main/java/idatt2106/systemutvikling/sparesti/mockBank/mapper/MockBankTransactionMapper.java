@@ -4,6 +4,9 @@ import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 
+/**
+ * Mapper class for the Transaction entity.
+ */
 public class MockBankTransactionMapper {
 
     /**

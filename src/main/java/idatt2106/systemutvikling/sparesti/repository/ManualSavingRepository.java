@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Repository for the ManualSavingDAO entity.
+ */
 public interface ManualSavingRepository extends JpaRepository<ManualSavingDAO, Long> {
 
     /**

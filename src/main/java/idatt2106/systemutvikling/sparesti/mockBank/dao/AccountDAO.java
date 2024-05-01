@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data access object for the Account entity.
+ */
 @Entity
 @NoArgsConstructor
 @Getter

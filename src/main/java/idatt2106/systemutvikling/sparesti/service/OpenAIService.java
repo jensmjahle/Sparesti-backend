@@ -16,6 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Service class for handling the OpenAI API.
+ */
 @Service
 public class OpenAIService {
 

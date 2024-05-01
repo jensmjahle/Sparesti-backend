@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper class for UserDAO and UserDTO
  */
-
 @Component
 public class UserMapper {
 

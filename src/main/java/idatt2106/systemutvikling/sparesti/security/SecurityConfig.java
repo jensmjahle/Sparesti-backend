@@ -14,6 +14,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class for configuring the security of the application.
+ */
 @EnableWebSecurity
 @AllArgsConstructor
 @Configuration

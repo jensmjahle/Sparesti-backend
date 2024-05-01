@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for handling challenges.
+ */
 @Service
 @AllArgsConstructor
 public class ChallengeService {

@@ -1,5 +1,8 @@
 package idatt2106.systemutvikling.sparesti.exceptions;
 
+/**
+ * Exception for when a conflict occurs.
+ */
 public class ConflictException extends RuntimeException {
 
   /**

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service class for handling BankAccountServiceInterface.
+ */
 @Service
 @AllArgsConstructor
 public class BankAccountService {

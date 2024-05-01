@@ -4,6 +4,9 @@ import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mapper class for the Transaction entity.
+ */
 public class KeywordMapper {
 private static final Map<String, TransactionCategory> keywordCategoryMap = new HashMap<>();
 

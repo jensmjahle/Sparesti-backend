@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for the AchievementDAO entity.
+ */
 @Repository
 public interface AchievementRepository extends JpaRepository<AchievementDAO, String>{
 

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Model class for the ChatResponse entity.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

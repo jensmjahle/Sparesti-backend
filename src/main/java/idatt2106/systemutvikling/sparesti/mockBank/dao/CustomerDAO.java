@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Data access object for the Customer entity.
+ */
 @Entity
 @Getter
 @Setter

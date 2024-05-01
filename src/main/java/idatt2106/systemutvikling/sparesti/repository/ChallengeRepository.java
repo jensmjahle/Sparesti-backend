@@ -11,6 +11,9 @@ import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repository for the ChallengeDAO entity.
+ */
 @Repository
 public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
 

@@ -22,6 +22,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Service class for the BankTransaction entity.
+ */
 @Service
 @AllArgsConstructor
 public class BankTransactionService implements TransactionServiceInterface {

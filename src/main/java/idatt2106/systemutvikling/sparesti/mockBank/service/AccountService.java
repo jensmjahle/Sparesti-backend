@@ -10,6 +10,9 @@ import idatt2106.systemutvikling.sparesti.service.AccountServiceInterface;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for the Account entity.
+ */
 @Service
 public class AccountService implements AccountServiceInterface{
   private final AccountRepository accountRepository;

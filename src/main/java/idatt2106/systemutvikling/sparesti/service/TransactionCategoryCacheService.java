@@ -8,6 +8,9 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for handling the cache of transaction categories.
+ */
 @Service
 @AllArgsConstructor
 public class TransactionCategoryCacheService {

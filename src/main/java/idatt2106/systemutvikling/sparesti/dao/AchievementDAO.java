@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Data Access Object for Achievement
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

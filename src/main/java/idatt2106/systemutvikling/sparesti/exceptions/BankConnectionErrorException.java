@@ -1,5 +1,8 @@
 package idatt2106.systemutvikling.sparesti.exceptions;
 
+/**
+ * Exception for when a bank connection error occurs.
+ */
 public class BankConnectionErrorException extends RuntimeException {
 
   /**

@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data access object for the Transaction entity.
+ */
 @Entity
 @Getter
 @Setter

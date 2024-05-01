@@ -2,6 +2,9 @@ package idatt2106.systemutvikling.sparesti.enums;
 
 import lombok.Getter;
 
+/**
+ * Enum for the category of a transaction.
+ */
 @Getter
 public enum TransactionCategory {
   GROCERIES("Groceries"),

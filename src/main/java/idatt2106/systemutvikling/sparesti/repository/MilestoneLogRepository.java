@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repository for the MilestoneLogDAO entity.
+ */
 @Repository
 public interface MilestoneLogRepository extends JpaRepository<MilestoneLogDAO, Long> {
 
