@@ -79,7 +79,13 @@ public class TransactionService {
   }
 
 
-
+  /**
+   * Retrieves the outgoing transactions for a specific account from the past 30 days. The transactions are
+   * categorized using the OpenAI API.
+   *
+   * @param dateLimit Transactions older than this date will not be fetched.
+   * @return A list of outgoing transactions for the specified account number.
+   */
     public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount_Categorized(Date dateLimit) {
     List<Transaction> uncategorizedTransactions = getLatestExpensesForCurrentUser_CheckingAccount(dateLimit);
 
@@ -172,8 +178,13 @@ public class TransactionService {
     return transactions;
   }
 
-
-
+  /**
+   * Categorizes a transaction using the OpenAI API. If the transaction is not categorized, it is
+   * categorized as OTHER.
+   *
+   * @param transaction The transaction to categorize.
+   * @return The category of the transaction.
+   */
   public TransactionCategory categorizeTransaction(Transaction transaction) {
     try {
       logger.info(
@@ -228,8 +239,14 @@ public class TransactionService {
     }
   }
 
-
-
+  /**
+   * Creates a savings transfer for the current user. The transfer is made from the current account
+   * to the savings account. If the user does not have a savings account, the transfer is not made.
+   * The transfer is made with the title "Sparesti: Manual savings transfer towards savings goal".
+   *
+   * @param amount The amount to transfer.
+   * @return ResponseEntity<TransactionDTO> The ResponseEntity containing the created transaction DTO.
+   */
   public boolean createSavingsTransferForCurrentUser(long amount) {
     String username = CurrentUserService.getCurrentUsername();
     if (username == null) {

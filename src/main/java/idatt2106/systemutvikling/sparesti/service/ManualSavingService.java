@@ -16,6 +16,14 @@ public class ManualSavingService {
     private final UserRepository dbUser;
     private final ManualSavingRepository dbManualSaving;
 
+    /**
+     * Registers a new manual saving entry in the database. The entry is saved with the current time.
+     *
+     * @param milestoneId the milestone id to save the manual saving entry to
+     * @param amount the amount to save
+     * @param username the username of the user to save the manual saving entry for
+     * @return the saved ManualSavingDAO
+     */
     public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount, String username) {
         ManualSavingDAO dao = new ManualSavingDAO();
 
@@ -35,11 +43,20 @@ public class ManualSavingService {
         return dbManualSaving.save(dao);
     }
 
-
+    /**
+     * Removes a manual saving entry from the database.
+     *
+     * @param dao the manual saving entry to remove
+     */
     public void removeManualSavingEntry(ManualSavingDAO dao) {
         dbManualSaving.delete(dao);
     }
 
+    /**
+     * Removes a manual saving entry from the database.
+     *
+     * @param manualSavingId the id of the manual saving entry to remove
+     */
     public void removeManualSavingEntry(Long manualSavingId) {
         dbManualSaving.deleteById(manualSavingId);
     }

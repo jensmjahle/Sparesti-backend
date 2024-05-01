@@ -247,7 +247,11 @@ public class UserService {
   }
 
 
-
+  /**
+   * Method to delete the current user using CurrentUserService.
+   *
+   * @return {@code true} if the user was deleted, {@code false} otherwise.
+   */
   public boolean deleteCurrentUser() {
     String username = CurrentUserService.getCurrentUsername();
 

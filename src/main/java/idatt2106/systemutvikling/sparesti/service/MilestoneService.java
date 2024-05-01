@@ -39,7 +39,7 @@ public class MilestoneService {
   }
 
   /**
-   * Method to get all active milestones for a user.
+   * Method to get all active milestones for a user. The milestones are sorted by deadline date.
    *
    * @param username The username of the user to get milestones for.
    * @return List of MilestoneDTOs.
@@ -123,7 +123,8 @@ public class MilestoneService {
   }
 
   /**
-   * Method to get a milestone by its id.
+   * Method to get a specific milestone by its id.
+   * If the milestone is not found, null is returned.
    *
    * @param milestoneID the id of the milestone
    * @return the milestone
@@ -138,6 +139,14 @@ public class MilestoneService {
     }
   }
 
+  /**
+   * Method to update a milestone. If the milestone is completed, it will be deleted.
+   * If not, it will be updated. The milestone will be completed if the current sum is greater than or equal to the goal sum.
+   *
+   * @param username The username of the user to update the milestone for.
+   * @param milestoneDTO The milestone to update.
+   * @return The updated milestone.
+   */
   public MilestoneDTO updateMilestoneDTO(String username, MilestoneDTO milestoneDTO) {
     try {
       MilestoneDAO updatingMilestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDTO.getMilestoneId());
@@ -157,6 +166,13 @@ public class MilestoneService {
     }
   }
 
+  /**
+   * Method to delete a milestone. If the milestone is not found, null is returned.
+   *
+   * @param username The username of the user to delete the milestone for.
+   * @param milestoneDTO The milestone to delete.
+   * @return True if the milestone was deleted, false otherwise.
+   */
 
   public MilestoneDTO editMilestone(String username, MilestoneDTO milestoneDTO){
     try {
@@ -194,6 +210,14 @@ public class MilestoneService {
     }
   }
 
+  /**
+   * Method to increase the current sum of a milestone. If the milestone is completed, it will be deleted.
+   * If not, it will be updated. The milestone will be completed if the current sum is greater than or equal to the goal sum.
+   *
+   * @param milestoneId The id of the milestone to increase the current sum for.
+   * @param amount The amount to increase the current sum with.
+   * @return The updated milestone.
+   */
   public MilestoneDAO increaseMilestonesCurrentSum(Long milestoneId, Long amount) {
     MilestoneDAO milestone = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneId);
 
@@ -204,10 +228,24 @@ public class MilestoneService {
     return milestoneRepository.save(milestone);
   }
 
+  /**
+   * Method to decrease the current sum of a milestone. If the milestone is completed, it will be deleted.
+   * If not, it will be updated.
+   *
+   * @param milestoneId the id of the milestone to decrease the current sum for
+   * @param amount the amount to decrease the current sum with
+   * @return the updated milestone
+   */
   public MilestoneDAO decreaseMilestonesCurrentSum(Long milestoneId, Long amount) {
     return increaseMilestonesCurrentSum(milestoneId, -amount);
   }
 
+  /**
+   * Method to check if the deadline date of a milestone has elapsed.
+   * If the deadline date has elapsed, the milestone will be completed.
+   *
+   * @param milestoneDAOS the milestones to check
+   */
   public void hasMilestoneTimeElapsed(List<MilestoneDAO> milestoneDAOS) {
     LocalDateTime now = LocalDateTime.now();
       for (MilestoneDAO milestoneDAO : milestoneDAOS) {
