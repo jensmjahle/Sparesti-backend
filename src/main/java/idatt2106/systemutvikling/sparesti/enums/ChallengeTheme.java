@@ -51,6 +51,11 @@ public enum ChallengeTheme {
   private final String standardMessage;
   private final TransactionCategory expenseCategory;
 
+  /**
+   * Get all themes except the base themes.
+   *
+   * @return a list of all themes except the base themes
+   */
   public static List<ChallengeTheme> getAllThemes() {
     List<ChallengeTheme> allThemes = new ArrayList<>();
     for (ChallengeTheme theme : ChallengeTheme.values()) {
@@ -64,6 +69,12 @@ public enum ChallengeTheme {
     return allThemes;
   }
 
+  /**
+   * Get all themes from a specific category.
+   *
+   * @param category the category to get themes from
+   * @return a list of all themes from the specified category
+   */
   public static List<ChallengeTheme> getAllThemesFromCategory(TransactionCategory category) {
     List<ChallengeTheme> allThemes = new ArrayList<>();
     ChallengeTheme baseTheme = getBaseTheme(category);
@@ -78,6 +89,12 @@ public enum ChallengeTheme {
     return allThemes;
   }
 
+  /**
+   * Get the base theme for a specific category.
+   *
+   * @param category the category to get the base theme for
+   * @return the base theme for the specified category
+   */
   public static ChallengeTheme getBaseTheme(TransactionCategory category) {
     switch (category) {
       case GROCERIES -> {

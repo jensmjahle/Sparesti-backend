@@ -9,5 +9,11 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerDAO, String> {
 
+  /**
+   * Method to find a customer by its username.
+   *
+   * @param username the username of the customer
+   * @return the customer entity as CustomerDAO
+   */
   Optional<CustomerDAO> findByUsername(String username);
 }

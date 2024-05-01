@@ -12,7 +12,11 @@ public class OpenAIRestTemplateConfig {
   @Value("${openai.api.key}")
   private String openaiApiKey;
 
-
+  /**
+   * Configures a RestTemplate bean with the OpenAI API key as an Authorization header.
+   *
+   * @return a RestTemplate bean with the OpenAI API key as an Authorization header
+   */
   @Bean
   @Qualifier("openaiRestTemplate")
   public RestTemplate openaiRestTemplate() {

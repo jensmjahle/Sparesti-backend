@@ -11,6 +11,11 @@ public enum RecurringInterval {
 
   private final int seconds;
 
+  /**
+   * Constructor for RecurringInterval.
+   *
+   * @param seconds the interval in seconds
+   */
   RecurringInterval(int seconds) {
     this.seconds = seconds;
   }

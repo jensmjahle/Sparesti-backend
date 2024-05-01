@@ -21,12 +21,24 @@ public class UserCredentialsController {
     this.userService = userService;
   }
 
+  /**
+   * Method for creating a user.
+   *
+   * @param user the user to create
+   * @return the created user
+   */
   @RequestMapping("/create")
   public ResponseEntity<UserDTO> createUser(@RequestBody UserCredentialsDTO user) {
     logger.info("Received request to create user with username: " + user.getUsername() + ".");
     return ResponseEntity.ok(userService.createUser(user));
   }
 
+  /**
+   * Method for updating a user.
+   *
+   * @param userCredentialsDTO the user to update
+   * @return the updated user
+   */
   @PutMapping("/updatePassword")
   public ResponseEntity<String> updatePassword(@RequestBody UserCredentialsDTO userCredentialsDTO) {
     logger.info(

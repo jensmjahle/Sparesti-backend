@@ -6,7 +6,12 @@ import idatt2106.systemutvikling.sparesti.model.Transaction;
 
 public class MockBankTransactionMapper {
 
-
+    /**
+     * Method to map a TransactionDAO to a Transaction.
+     *
+     * @param dao the TransactionDAO to map
+     * @return the Transaction
+     */
     public static Transaction toModel(TransactionDAO dao) {
         return new Transaction(
                 dao.getTransactionId(),

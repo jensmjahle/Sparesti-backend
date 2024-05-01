@@ -25,6 +25,11 @@ public class UserController {
     this.userService = userService;
   }
 
+  /**
+   * Method for getting total savings for all users.
+   *
+   * @return total savings for all users
+   */
   @GetMapping("/get/totalSavings")
   public ResponseEntity<Long> getTotalSavingsForAllUsers() {
     logger.info("Received request to get total savings for all users.");
@@ -34,6 +39,11 @@ public class UserController {
     return ResponseEntity.ok(savings);
   }
 
+  /**
+   * Method for getting total savings for a user.
+   *
+   * @return total savings for a user
+   */
   @GetMapping("/get/savings")
   public ResponseEntity<Long> getUserTotalSavings() {
     logger.info("Received request to get user total savings.");
@@ -43,12 +53,22 @@ public class UserController {
     return ResponseEntity.ok(savings);
   }
 
+  /**
+   * Method for getting user information.
+   *
+   * @return user information
+   */
   @GetMapping("/get")
   public ResponseEntity<UserDTO> getUserDTO() {
     logger.info("Received request to get user information.");
     return ResponseEntity.ok(userService.getUserDTO(CurrentUserService.getCurrentUsername()));
   }
 
+  /**
+   * Method for deleting user information.
+   *
+   * @return response entity
+   */
   @Transactional
   @DeleteMapping("/delete")
   public ResponseEntity<String> deleteUserDTO() {
@@ -61,6 +81,13 @@ public class UserController {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found");
   }
 
+  /**
+   * Method for updating user information.
+   *
+   * @param token the token
+   * @param updatedUserDTO the updated user information
+   * @return response entity
+   */
   @PutMapping("/update")
   public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token,
       @RequestBody UserDTO updatedUserDTO) {

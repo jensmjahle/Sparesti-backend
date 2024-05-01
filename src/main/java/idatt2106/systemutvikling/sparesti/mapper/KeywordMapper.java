@@ -7,7 +7,7 @@ import java.util.Map;
 public class KeywordMapper {
 private static final Map<String, TransactionCategory> keywordCategoryMap = new HashMap<>();
 
-static {
+    static {
     //GROCERIES
     keywordCategoryMap.put("dagligvare", TransactionCategory.GROCERIES);
     keywordCategoryMap.put("matvarebutikk", TransactionCategory.GROCERIES);
@@ -113,11 +113,16 @@ static {
     keywordCategoryMap.put("bidrag", TransactionCategory.LOAN_DONATIONS);
     keywordCategoryMap.put("sponsing", TransactionCategory.LOAN_DONATIONS);
     keywordCategoryMap.put("skjønnsmidler", TransactionCategory.LOAN_DONATIONS);
-}
+    }
 
-public static TransactionCategory getCategory(String keyword) {
+    /**
+     * Method to get the category of a transaction based on a keyword.
+     *
+     * @param keyword the keyword to get the category of
+     * @return the category of the keyword
+     */
+    public static TransactionCategory getCategory(String keyword) {
     return keywordCategoryMap.getOrDefault(keyword.toLowerCase(), TransactionCategory.NOT_CATEGORIZED);
-
-}
+    }
 }
 

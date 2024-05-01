@@ -6,12 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * This class is responsible for holding the secrets that are used in the application.
- * The secrets are stored in the application.properties file.
- *
- * @ConfigurationProperties is used to make sure that Spring injects the properties into this class.
- * @Getter Lombok annotation to automatically generate getters.
- * @Setter Lombok annotation to automatically generate setters.
+ * Configuration class for the secret used to sign the JWT token and salt the password.
  */
 @ConfigurationProperties(prefix = "security.secret")
 @Getter

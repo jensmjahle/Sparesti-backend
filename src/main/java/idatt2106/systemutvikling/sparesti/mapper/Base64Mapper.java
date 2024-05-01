@@ -6,6 +6,12 @@ import java.util.logging.Logger;
 public class Base64Mapper {
   static Logger logger = Logger.getLogger(Base64Mapper.class.getName());
 
+  /**
+   * Converts an image to a base64 string.
+   *
+   * @param image the image to convert
+   * @return the base64 string
+   */
   public static String toBase64String(byte[] image) {
     logger.info("Converting image to base64 string");
     if (image != null) {
@@ -17,6 +23,12 @@ public class Base64Mapper {
     return null;
   }
 
+  /**
+   * Converts a base64 string to an image.
+   *
+   * @param base64String the base64 string to convert
+   * @return the image
+   */
   public static byte[] toByteArray(String base64String) {
     logger.info("Converting base64 string to image");
     if (base64String != null) {

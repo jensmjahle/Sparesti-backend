@@ -31,6 +31,13 @@ public class ChallengeMapper {
     dao.setActive(dto.isActive());
     return dao;
   }
+
+  /**
+   * Maps RecurringInterval to int
+   *
+   * @param recurring RecurringInterval to be mapped
+   * @return int
+   */
   private static RecurringInterval mapRecurringInterval(int recurring) {
     return switch (recurring) {
       case 0 -> RecurringInterval.NONE;
