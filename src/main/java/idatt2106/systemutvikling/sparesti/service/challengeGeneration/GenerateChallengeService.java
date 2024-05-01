@@ -10,6 +10,7 @@ import idatt2106.systemutvikling.sparesti.model.challengeGeneration.ChallengeDat
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import idatt2106.systemutvikling.sparesti.service.ChallengeLogService;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
+import idatt2106.systemutvikling.sparesti.service.ManualSavingService;
 import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class GenerateChallengeService {
   private final ChallengeService challengeService;
   private final ChallengeLogService challengeLogService;
   private final TransactionService transactionService;
+  private final ManualSavingService manualSavingService;
 
   /**
    * Generates one daily challenge for all users in the database. This method is called once a day
@@ -145,8 +147,9 @@ public class GenerateChallengeService {
     LocalDateTime endOfMonth = LocalDateTime.now().withDayOfMonth(1).plusMonths(1).withHour(0)
         .withMinute(0).withSecond(0);
     LocalDateTime today = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
-    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount(user.getUsername(),
-            TransactionService.DEFAULT_EXPENSES_TIME_SPAN);
+    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount(
+        user.getUsername(),
+        TransactionService.DEFAULT_EXPENSES_TIME_SPAN);
     Map<TransactionCategory, Double> categoryExpenseRatio = getCategoryExpenseRatio(transactions);
     Map<TransactionCategory, Double> pastChallengesByCategoryRatio = challengeLogService.getChallengesByCategoryRatio(
         user.getUsername());
@@ -177,6 +180,9 @@ public class GenerateChallengeService {
     for (ChallengeLogDAO challengeLog : challengeLogs) {
       totalSavings += challengeLog.getChallengeAchievedSum();
     }
+    double manualSavings = manualSavingService.getThisMonthTotalManualSavings(username);
+    totalSavings += manualSavings;
+
     return totalSavings;
   }
 
@@ -188,7 +194,7 @@ public class GenerateChallengeService {
     double totalPlannedSavings = 0;
 
     for (ChallengeDAO challenge : challenges) {
-      totalPlannedSavings += challenge.getCurrentSum();
+      totalPlannedSavings += challenge.getGoalSum() - challenge.getCurrentSum();
     }
     return totalPlannedSavings;
   }

@@ -288,6 +288,7 @@ public class ChallengeGeneratorImpl {
               + "Ensure that the title and description provide a reasonable level of difficulty based on these factors.\n"
               + "The title should be fun an encouraging and the description should be informative and motivating.\n"
               + "Title length should be between 10 and 45 characters and description length should be between 50 and 200 characters.\n"
+              + "Avoid using the theme in capital letters in the title and description. If you use it translate to norwegian and write it normally.\n"
               + "Only reply with the title and description on this format: Title;Description  \n"
               + "If you use any numbers round them to the nearest whole number. \n"
               + "If you are unable to generate a title and description, reply with 'NO_TITLE_DESCRIPTION'\n"
@@ -299,9 +300,10 @@ public class ChallengeGeneratorImpl {
       if (response.equals("NO_TITLE_DESCRIPTION")) {
         String title = theme.getStandardMessage();
         String description =
-            "Try to save " + Math.round(amount) + " NOK in " + ChronoUnit.DAYS.between(start, end)
-                + " days by reducing your " + theme.getExpenseCategory().getCategory()
-                + " expenses.";
+            "Prøv å spare " + Math.round(amount) + " NOK i løpet av " + ChronoUnit.DAYS.between(
+                start, end)
+                + " dager ved å redusere dine utgifter i kategorien " + theme.getExpenseCategory()
+                .getCategory();
         return new ChallengeTitleAndDescription(title, description);
       }
 

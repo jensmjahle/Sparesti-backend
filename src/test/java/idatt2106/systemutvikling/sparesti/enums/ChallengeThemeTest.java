@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static idatt2106.systemutvikling.sparesti.enums.ChallengeTheme.*;
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 
 class ChallengeThemeTest {
@@ -30,9 +31,10 @@ class ChallengeThemeTest {
 
   @Test
   void testGetAllThemesFromCategory() {
-    List<ChallengeTheme> groceryThemes = ChallengeTheme.getAllThemesFromCategory(TransactionCategory.GROCERIES);
+    List<ChallengeTheme> groceryThemes = ChallengeTheme.getAllThemesFromCategory(
+        TransactionCategory.GROCERIES);
     assertNotNull(groceryThemes);
-    assertEquals(4, groceryThemes.size());
+    assertEquals(3, groceryThemes.size());
   }
 
   @Test
@@ -40,10 +42,12 @@ class ChallengeThemeTest {
     ChallengeTheme groceriesBaseTheme = ChallengeTheme.getBaseTheme(TransactionCategory.GROCERIES);
     assertEquals(BASE_GROCERIES, groceriesBaseTheme);
 
-    ChallengeTheme entertainmentBaseTheme = ChallengeTheme.getBaseTheme(TransactionCategory.ENTERTAINMENT);
+    ChallengeTheme entertainmentBaseTheme = ChallengeTheme.getBaseTheme(
+        TransactionCategory.ENTERTAINMENT);
     assertEquals(ChallengeTheme.BASE_ENTERTAINMENT, entertainmentBaseTheme);
 
-    ChallengeTheme unknownCategoryBaseTheme = ChallengeTheme.getBaseTheme(TransactionCategory.NOT_CATEGORIZED);
+    ChallengeTheme unknownCategoryBaseTheme = ChallengeTheme.getBaseTheme(
+        TransactionCategory.NOT_CATEGORIZED);
     assertEquals(ChallengeTheme.BASE_OTHER, unknownCategoryBaseTheme);
   }
 }

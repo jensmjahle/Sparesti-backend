@@ -43,7 +43,8 @@ public class ChallengeService {
   public List<ChallengeDTO> getChallengesByUsername(String username, int page, int size) {
     Pageable pageable = PageRequest.of(page, size, Sort.by("expirationDate").descending());
 
-    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable);
+    List<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_Username(
+        username, pageable);
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
 
     /*
@@ -62,15 +63,15 @@ public class ChallengeService {
   public Page<ChallengeDTO> getActiveChallenges(String username, Pageable pageable) {
 
     Pageable sortedPageable = PageRequest.of(
-            pageable.getPageNumber(),
-            pageable.getPageSize(),
-            Sort.by("expirationDate").descending());
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        Sort.by("expirationDate").descending());
 
     hasChallengeTimeElapsed(
-            challengeRepository.findChallengeDAOSByUserDAO_Username(username, sortedPageable));
+        challengeRepository.findChallengeDAOSByUserDAO_Username(username, sortedPageable));
 
     Page<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
-            username, true, sortedPageable);
+        username, true, sortedPageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
 
@@ -90,15 +91,15 @@ public class ChallengeService {
   public Page<ChallengeDTO> getInactiveChallenges(String username, Pageable pageable) {
 
     Pageable sortedPageable = PageRequest.of(
-            pageable.getPageNumber(),
-            pageable.getPageSize(),
-            Sort.by("expirationDate").descending());
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        Sort.by("expirationDate").descending());
 
     hasChallengeTimeElapsed(
-            challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
+        challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
 
     Page<ChallengeDAO> challengeDAOS = challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive(
-            username, false, pageable);
+        username, false, pageable);
 
     List<ChallengeDTO> challengeDTOS = new ArrayList<>();
     for (ChallengeDAO challengeDAO : challengeDAOS) {
@@ -129,6 +130,7 @@ public class ChallengeService {
     challengeLogDAO.setChallengeAchievedSum(challengeDAO.getCurrentSum());
     challengeLogDAO.setCompletionDate(LocalDateTime.now());
     challengeLogDAO.setUserDAO(challengeDAO.getUserDAO());
+    challengeLogDAO.setTheme(challengeDAO.getTheme());
     return challengeLogDAO;
   }
 
@@ -150,13 +152,17 @@ public class ChallengeService {
   public ChallengeLogDAO completeChallenge(Long challengeId) {
     ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
     ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
+    challengeLogDAO.setChallengeAchievedSum(challengeLogDAO.getGoalSum());
     challengeRepository.delete(challengeDAO);
     challengeLogRepository.save(challengeLogDAO);
     return challengeLogDAO;
   }
 
-  public void deleteChallenge(Long challengeId) {
+  public void moveChallengeToLog(Long challengeId) {
+    ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
+    ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
     challengeRepository.delete(challengeRepository.findChallengeDAOByChallengeId(challengeId));
+    challengeLogRepository.save(challengeLogDAO);
   }
 
   /**
@@ -175,14 +181,15 @@ public class ChallengeService {
     }
   }
 
-  public List<ChallengeDAO> getChallengesStartedAfterDate(LocalDateTime startDate, String username) {
+  public List<ChallengeDAO> getChallengesStartedAfterDate(LocalDateTime startDate,
+      String username) {
     try {
       return challengeRepository.findChallengeDAOSByStartDateAfterAndUserDAO_Username(startDate,
-              username);
+          username);
     } catch (Exception e) {
       logger.severe("Failed to get challenges this month for user " + username + e.getMessage());
       throw new RuntimeException(
-              "Failed to get challenges this month for user " + username + e.getMessage());
+          "Failed to get challenges this month for user " + username + e.getMessage());
     }
   }
 }

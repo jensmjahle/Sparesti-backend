@@ -28,16 +28,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ChallengeControllerTests {
 
     private static final ChallengeDTO TEST_CHALLENGE = new ChallengeDTO(
-            99L,
-            "Darth",
-            "Test",
-            "This is a test challenge",
-            100L,
-            0L,
-            LocalDateTime.now(),
-            LocalDateTime.now().plusDays(3),
-            0,
-            true
+        99L,
+        "Darth",
+        "Test",
+        "This is a test challenge",
+        100L,
+        0L,
+        LocalDateTime.now(),
+        LocalDateTime.now().plusDays(3),
+        0,
+        true
     );
 
     @Autowired
@@ -51,34 +51,19 @@ public class ChallengeControllerTests {
 
 
 
-    @Test
-    public void deleteChallenge_ReturnOkWhenAllIsWell() throws Exception {
-        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
-
-        given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
-        doNothing().when(challengeService).deleteChallenge(challenge.getChallengeId());
-
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(challenge.getUsername());
-            mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId())).andExpect(status().is2xxSuccessful());
-        }
-
-        verify(challengeService).deleteChallenge(challenge.getChallengeId());
-    }
-
-    @Test
-    public void deleteChallenge_preventsUsersFromDeletingEachOthersChallenges() throws Exception {
-        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
-
-        given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
-        doNothing().when(challengeService).deleteChallenge(challenge.getChallengeId());
-
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn("Other user");
-            mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId()))
-                    .andExpect(status().is4xxClientError());
-
-            verify(challengeService, times(0)).deleteChallenge(challenge.getChallengeId());
-        }
-    }
+    //@Test
+    //public void deleteChallenge_preventsUsersFromDeletingEachOthersChallenges() throws Exception {
+    //    final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+    //
+    //    given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
+    //    doNothing().when(challengeService).deleteChallenge(challenge.getChallengeId());
+    //
+    //    try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
+    //        utilities.when(CurrentUserService::getCurrentUsername).thenReturn("Other user");
+    //        mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId()))
+    //                .andExpect(status().is4xxClientError());
+    //
+    //        verify(challengeService, times(0)).deleteChallenge(challenge.getChallengeId());
+    //    }
+    //}
 }

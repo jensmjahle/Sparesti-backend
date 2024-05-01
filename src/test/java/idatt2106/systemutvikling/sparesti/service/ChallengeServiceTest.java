@@ -181,17 +181,22 @@ public class ChallengeServiceTest {
     challenge2.setRecurringInterval(RecurringInterval.NONE);
 
     List<ChallengeDAO> challenges = List.of(challenge1, challenge2);
-    List<ChallengeDTO> challengeDTOs = List.of(ChallengeMapper.toDTO(challenge1), ChallengeMapper.toDTO(challenge2));
+    List<ChallengeDTO> challengeDTOs = List.of(ChallengeMapper.toDTO(challenge1),
+        ChallengeMapper.toDTO(challenge2));
 
     when(challengeRepository.findAll()).thenReturn(challenges);
 
     // ChallengeIds are equal
-    assertEquals(challengeDTOs.get(0).getChallengeId(), challengeService.getAllChallenges().get(0).getChallengeId());
-    assertEquals(challengeDTOs.get(1).getChallengeId(), challengeService.getAllChallenges().get(1).getChallengeId());
+    assertEquals(challengeDTOs.get(0).getChallengeId(),
+        challengeService.getAllChallenges().get(0).getChallengeId());
+    assertEquals(challengeDTOs.get(1).getChallengeId(),
+        challengeService.getAllChallenges().get(1).getChallengeId());
 
     // Usernames are equal
-    assertEquals(challengeDTOs.get(0).getUsername(), challengeService.getAllChallenges().get(0).getUsername());
-    assertEquals(challengeDTOs.get(1).getUsername(), challengeService.getAllChallenges().get(1).getUsername());
+    assertEquals(challengeDTOs.get(0).getUsername(),
+        challengeService.getAllChallenges().get(0).getUsername());
+    assertEquals(challengeDTOs.get(1).getUsername(),
+        challengeService.getAllChallenges().get(1).getUsername());
   }
 
   @Test
@@ -205,12 +210,12 @@ public class ChallengeServiceTest {
     challenge1.setUserDAO(user1);
     challenge1.setActive(true);
     challenge1.setRecurringInterval(RecurringInterval.NONE);
-    challenge1.setExpirationDate(LocalDateTime.of(2025, 1, 1, 1, 1,1));
+    challenge1.setExpirationDate(LocalDateTime.of(2025, 1, 1, 1, 1, 1));
     challenge1.setChallengeDescription("description");
     challenge1.setChallengeTitle("title");
     challenge1.setGoalSum(100L);
     challenge1.setCurrentSum(50L);
-    challenge1.setStartDate(LocalDateTime.of(2025, 1, 1, 1, 1,1));
+    challenge1.setStartDate(LocalDateTime.of(2025, 1, 1, 1, 1, 1));
     challenge1.setTheme(null);
 
     ChallengeLogDAO challengeLogDAO = new ChallengeLogDAO();
@@ -225,7 +230,8 @@ public class ChallengeServiceTest {
     when(challengeRepository.findChallengeDAOByChallengeId(1L)).thenReturn(challenge1);
     when(challengeRepository.save(challenge1)).thenReturn(challenge1);
 
-    assertEquals(challengeLogDAO.getChallengeId(), challengeService.createChallengeLog(challenge1).getChallengeId());
+    assertEquals(challengeLogDAO.getChallengeId(),
+        challengeService.createChallengeLog(challenge1).getChallengeId());
   }
 
   @Test
@@ -270,11 +276,12 @@ public class ChallengeServiceTest {
     when(challengeRepository.findChallengeDAOByChallengeId(1L)).thenReturn(challenge1);
     when(challengeRepository.save(challenge1)).thenReturn(challenge1);
 
-    assertEquals(challengeLogDAO.getChallengeId(), challengeService.completeChallenge(1L).getChallengeId());
+    assertEquals(challengeLogDAO.getChallengeId(),
+        challengeService.completeChallenge(1L).getChallengeId());
   }
 
   @Test
-  @DisplayName("Test deleteChallenge deletes a challenge")
+  @DisplayName("Test moveChallengeToLog deletes a challenge")
   void testDeleteChallenge() {
     UserDAO user1 = new UserDAO();
     user1.setUsername("JohnSmith12");
@@ -287,7 +294,7 @@ public class ChallengeServiceTest {
 
     when(challengeRepository.findChallengeDAOByChallengeId(1L)).thenReturn(challenge1);
 
-    challengeService.deleteChallenge(1L);
+    challengeService.moveChallengeToLog(1L);
 
     verify(challengeRepository, times(1)).delete(challenge1);
   }
@@ -313,11 +320,14 @@ public class ChallengeServiceTest {
     challenge2.setRecurringInterval(RecurringInterval.NONE);
 
     List<ChallengeDAO> challenges = List.of(challenge1, challenge2);
-    List<ChallengeDTO> challengeDTOs = List.of(ChallengeMapper.toDTO(challenge1), ChallengeMapper.toDTO(challenge2));
+    List<ChallengeDTO> challengeDTOs = List.of(ChallengeMapper.toDTO(challenge1),
+        ChallengeMapper.toDTO(challenge2));
 
-    when(challengeRepository.findChallengeDAOSByUserDAO_Username("JohnSmith12", pageable)).thenReturn(challenges);
+    when(challengeRepository.findChallengeDAOSByUserDAO_Username("JohnSmith12",
+        pageable)).thenReturn(challenges);
 
-    assertEquals(challengeDTOs.get(0).getChallengeId(), challengeService.getChallengesByUsername("JohnSmith12", 0, 2).get(0).getChallengeId());
+    assertEquals(challengeDTOs.get(0).getChallengeId(),
+        challengeService.getChallengesByUsername("JohnSmith12", 0, 2).get(0).getChallengeId());
   }
 
   @Test
@@ -331,11 +341,12 @@ public class ChallengeServiceTest {
     challenge1.setUserDAO(user1);
     challenge1.setActive(true);
     challenge1.setRecurringInterval(RecurringInterval.NONE);
-    challenge1.setExpirationDate(LocalDateTime.of(2023, 1, 1, 1, 1,1));
+    challenge1.setExpirationDate(LocalDateTime.of(2023, 1, 1, 1, 1, 1));
 
     List<ChallengeDAO> challenges = List.of(challenge1);
 
-    when(challengeRepository.findChallengeDAOSByUserDAO_Username("JohnSmith12")).thenReturn(challenges);
+    when(challengeRepository.findChallengeDAOSByUserDAO_Username("JohnSmith12")).thenReturn(
+        challenges);
 
     challengeService.hasChallengeTimeElapsed(challenges);
 
@@ -353,11 +364,12 @@ public class ChallengeServiceTest {
     challenge1.setUserDAO(user1);
     challenge1.setActive(true);
     challenge1.setRecurringInterval(RecurringInterval.NONE);
-    challenge1.setExpirationDate(LocalDateTime.of(2025, 1, 1, 1, 1,1));
+    challenge1.setExpirationDate(LocalDateTime.of(2025, 1, 1, 1, 1, 1));
 
     List<ChallengeDAO> challenges = List.of(challenge1);
 
-    when(challengeRepository.findChallengeDAOSByUserDAO_Username("JohnSmith12")).thenReturn(challenges);
+    when(challengeRepository.findChallengeDAOSByUserDAO_Username("JohnSmith12")).thenReturn(
+        challenges);
 
     challengeService.hasChallengeTimeElapsed(challenges);
 
@@ -389,13 +401,17 @@ public class ChallengeServiceTest {
     challenge3.setRecurringInterval(RecurringInterval.NONE);
 
     List<ChallengeDAO> challenges = List.of(challenge1, challenge2, challenge3);
-    List<ChallengeDTO> challengeDTOs = List.of(ChallengeMapper.toDTO(challenge1), ChallengeMapper.toDTO(challenge2));
+    List<ChallengeDTO> challengeDTOs = List.of(ChallengeMapper.toDTO(challenge1),
+        ChallengeMapper.toDTO(challenge2));
 
     Pageable pageable = PageRequest.of(0, 2, Sort.by("expirationDate").descending());
 
-    when(challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive("JohnSmith12", true, pageable)).thenReturn(new PageImpl<>(List.of(challenge1, challenge2), pageable, 2));
+    when(challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive("JohnSmith12", true,
+        pageable)).thenReturn(new PageImpl<>(List.of(challenge1, challenge2), pageable, 2));
 
-    assertEquals(challengeDTOs.get(0).getChallengeId(), challengeService.getActiveChallenges("JohnSmith12", pageable).getContent().get(0).getChallengeId());
+    assertEquals(challengeDTOs.get(0).getChallengeId(),
+        challengeService.getActiveChallenges("JohnSmith12", pageable).getContent().get(0)
+            .getChallengeId());
   }
 
   @Test
@@ -426,9 +442,12 @@ public class ChallengeServiceTest {
 
     Pageable pageable = PageRequest.of(0, 2, Sort.by("expirationDate").descending());
 
-    when(challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive("JohnSmith12", false, pageable)).thenReturn(new PageImpl<>(List.of(challenge1, challenge2), pageable, 2));
+    when(challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive("JohnSmith12", false,
+        pageable)).thenReturn(new PageImpl<>(List.of(challenge1, challenge2), pageable, 2));
 
-    assertEquals(challenge1.getChallengeId(), challengeService.getInactiveChallenges("JohnSmith12", pageable).getContent().get(0).getChallengeId());
+    assertEquals(challenge1.getChallengeId(),
+        challengeService.getInactiveChallenges("JohnSmith12", pageable).getContent().get(0)
+            .getChallengeId());
   }
 
 

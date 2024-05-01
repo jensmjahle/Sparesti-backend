@@ -242,17 +242,18 @@ public class TransactionService {
       return false;
     }
 
-    if (user.getSavingsAccount() == null) {
-      transactionSocket.createTransaction(
-          username,
-          username,
-          "Sparesti: Manual savings transfer towards savings goal",
-          user.getCurrentAccount(),
-          user.getSavingsAccount(),
-          amount,
-          "NOK");
+    if (user.getSavingsAccount() == null || user.getCurrentAccount() == null){
+      return false;
     }
 
+    transactionSocket.createTransaction(
+            username,
+            username,
+            "Sparesti: Manual savings transfer towards savings goal",
+            user.getCurrentAccount(),
+            user.getSavingsAccount(),
+            amount,
+            "NOK");
     return true;
   }
 }
