@@ -114,6 +114,17 @@ public class MilestoneController {
   }
 
   /**
+  * Method to delete a milestone by the id of the milestone.
+  *
+  * @param id the id of the milstone
+  */
+  @DeleteMapping("/delete/{id}")
+  public void deleteMilestone(@PathVariable Long id) {
+    logger.info("Received request to delete milestone.");
+    milestoneService.deleteMilestone(CurrentUserService.getCurrentUsername(), id);
+  }
+
+  /**
    * Method to manually inject money into a milestone. This will create a new manual saving record, update the milestone and perform a transaction.
    * If any of these steps fail, the changes will be rolled back. The user will be notified of the failure.
    * If successful, the user will be notified of the success.
