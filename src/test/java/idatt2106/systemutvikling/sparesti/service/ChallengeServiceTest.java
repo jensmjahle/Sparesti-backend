@@ -1,9 +1,9 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.dao.ChallengeLogDAO;
@@ -18,20 +18,29 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 
+@AutoConfigureMockMvc(addFilters = false)
+@TestPropertySource(locations = "classpath:application-integrationtest.properties")
+@DataJpaTest
 public class ChallengeServiceTest {
 
-  @Mock
+  @MockBean
   private ChallengeRepository challengeRepository;
 
-  @Mock
+  @MockBean
   private ChallengeLogRepository challengeLogRepository;
 
   @InjectMocks
@@ -39,10 +48,8 @@ public class ChallengeServiceTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.openMocks(this);
-    challengeRepository = Mockito.mock(ChallengeRepository.class);
-    challengeLogRepository = Mockito.mock(ChallengeLogRepository.class);
     ReflectionTestUtils.setField(challengeService, "challengeRepository", challengeRepository);
+    ReflectionTestUtils.setField(challengeService, "challengeLogRepository", challengeLogRepository);
   }
 
   @Test
@@ -64,7 +71,7 @@ public class ChallengeServiceTest {
       true
     );
 
-    try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
+    try (MockedStatic<CurrentUserService> utilities = mockStatic(CurrentUserService.class)) {
       utilities.when(CurrentUserService::getCurrentUsername).thenReturn(loggedInUsername);
       challengeService.createChallenge(dto);
     }
@@ -253,8 +260,8 @@ public class ChallengeServiceTest {
   }
 
   @Test
-  @DisplayName("Test completeChallenge completes a challenge")
-  void testCompleteChallenge() {
+  @DisplayName("Test archiveActiveChallenge completes a challenge")
+  void testArchiveActiveChallenge() {
     UserDAO user1 = new UserDAO();
     user1.setUsername("JohnSmith12");
 
@@ -273,11 +280,15 @@ public class ChallengeServiceTest {
     challengeLogDAO.setCompletionDate(LocalDateTime.now());
     challengeLogDAO.setUserDAO(user1);
 
-    when(challengeRepository.findChallengeDAOByChallengeId(1L)).thenReturn(challenge1);
-    when(challengeRepository.save(challenge1)).thenReturn(challenge1);
+    given(challengeRepository.findChallengeDAOByChallengeId(challenge1.getChallengeId())).willReturn(challenge1);
+    ArgumentCaptor<ChallengeLogDAO> challengeLogDAOCaptor = ArgumentCaptor.forClass(ChallengeLogDAO.class);
 
-    assertEquals(challengeLogDAO.getChallengeId(),
-        challengeService.completeChallenge(1L).getChallengeId());
+    // Act
+    challengeService.archiveActiveChallenge(challenge1.getChallengeId());
+    verify(challengeLogRepository, times(1)).save(challengeLogDAOCaptor.capture());
+
+    // Assert
+    assertEquals(challenge1.getChallengeId(), challengeLogDAOCaptor.getValue().getChallengeId());
   }
 
   @Test

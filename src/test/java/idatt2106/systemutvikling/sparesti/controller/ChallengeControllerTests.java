@@ -1,6 +1,8 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
+import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
+import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
@@ -47,6 +49,12 @@ public class ChallengeControllerTests {
     private ChallengeService challengeService;
 
     @MockBean
+    private ChallengeRepository challengeRepository;
+
+    @MockBean
+    private ChallengeLogRepository challengeLogRepository;
+
+    @MockBean
     private MilestoneService milestoneService;
 
 
@@ -64,6 +72,23 @@ public class ChallengeControllerTests {
     //                .andExpect(status().is4xxClientError());
     //
     //        verify(challengeService, times(0)).deleteChallenge(challenge.getChallengeId());
+    //    }
+    //}
+
+
+    //@Test
+    //public void completeChallenge_preventsUsersFromCompletingEachOthersChallenges() throws Exception {
+    //    final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+
+    //    given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
+    //    doNothing().when(challengeService).archiveActiveChallenge(challenge.getChallengeId());
+
+    //    try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
+    //        utilities.when(CurrentUserService::getCurrentUsername).thenReturn("Other user");
+    //        mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId()))
+    //                .andExpect(status().is4xxClientError());
+
+    //        verify(challengeRepository, times(0)).save(challenge.getChallengeId());
     //    }
     //}
 }

@@ -1,5 +1,6 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
+import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
@@ -93,38 +94,25 @@ public class ChallengeController {
   @ResponseBody
   public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") Long challengeId,
       @RequestParam("milestoneId") Long milestoneId) {
-    if (challengeId == null) {
-      return ResponseEntity.badRequest().build();
-    }
 
+    // Parameter validation
+    if (challengeId == null || milestoneId == null)
+      return ResponseEntity.badRequest().build();
+
+    // Verify ownership of the requested challenge
     if (!challengeService.getChallenge(challengeId).getUsername()
-        .equals(CurrentUserService.getCurrentUsername())) {
+        .equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body("You are not the owner of this challenge");
-    }
 
-    if (milestoneId == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
+    // Verify ownership of the requested milestone
     if (!milestoneService.getMilestoneDTOById(milestoneId).getUsername()
-        .equals(CurrentUserService.getCurrentUsername())) {
+        .equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body("You are not the owner of this milestone");
-    }
 
-    Long achievedSum = challengeService.getChallenge(challengeId).getGoalSum();
-    Long milestoneCurrentSum = milestoneService.getMilestoneDTOById(milestoneId)
-        .getMilestoneCurrentSum();
-    long targetSum = achievedSum + milestoneCurrentSum;
+    // Perform requested operation
+    challengeService.completeChallengeForCurrentUser(challengeId, milestoneId);
 
-    milestoneService.increaseMilestonesCurrentSum(milestoneId, achievedSum);
-
-    if (targetSum > milestoneService.getMilestoneDTOById(milestoneId)
-        .getMilestoneCurrentSum()) {
-      return ResponseEntity.badRequest().body("Could not transfer money to milestone");
-    }
-
-    challengeService.completeChallenge(challengeId);
-
+    // Return 200 OK
     return ResponseEntity.ok().body("Challenge completed");
   }
 
