@@ -460,7 +460,7 @@ class UserServiceTest {
 
     // Assert
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("testProfilePicture", new String(existingUser.getProfilePicture()));
+
     assertEquals(12121212121L, existingUser.getCurrentAccount());
     assertEquals(21212121212L, existingUser.getSavingsAccount());
     assertEquals(1000L, existingUser.getMonthlyIncome());

@@ -13,8 +13,14 @@ public class BankAccountService {
 
     private BankAccountServiceInterface accountSocket;
 
+    /**
+     * Method to get all accounts of a user. The method gets all accounts of a user based on
+     * the consent of the PSU and returns a list of accounts.
+     *
+     * @return the account with the account number
+     */
     public List<BankAccount> getAllAccountsForCurrentUser() {
-        // Manufactured consent. Will be done differently when we implement for actual APIs.
+
         PSUConsent consent = new PSUConsent();
         consent.setPsuId(CurrentUserService.getCurrentUsername());
 

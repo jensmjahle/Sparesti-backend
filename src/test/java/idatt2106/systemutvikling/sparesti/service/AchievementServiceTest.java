@@ -71,7 +71,7 @@ class AchievementServiceTest {
     when(userRepository.findByUsername(any(String.class))).thenReturn(user);
     // Act
     List<AchievementDAO> lockedAchievements = achievementService.getLockedAchievements(
-        user.getUsername());
+            user.getUsername());
 
     // Assert
     assertEquals(2, lockedAchievements.size());
@@ -160,3 +160,4 @@ class AchievementServiceTest {
     assertTrue(unlockedAchievements.isEmpty());
   }
 }
+

@@ -31,7 +31,10 @@ public class JWTService {
   }
 
   /**
-   * Generate a JWT token for the given user.
+   * Generate a JWT token for the given user. The token is valid for 6 minutes.
+   * The token is signed with the HMAC512 algorithm. The token contains the username and the role of the user.
+   * The role is either "complete" or "basic". A user is complete if they have two accounts.
+   *
    * @param username the username of the user
    * @return the generated token
    */
@@ -53,7 +56,10 @@ public class JWTService {
   }
 
   /**
-   * Method to extract username from token.
+   * Method to extract username from token. The token is validated with the HMAC512 algorithm.
+   * The token must be in the format "Bearer <token>". If the token is invalid, null is returned.
+   * Method extracts the username from the token as the subject.
+   *
    * @param token the token to extract username from
    * @return the username if the token is valid, null otherwise
    */
@@ -74,7 +80,9 @@ public class JWTService {
   }
 
   /**
-   * Method to validate token and get the DecodedJWT object.
+   * Method to validate token and get the DecodedJWT object. The token is validated with the HMAC512 algorithm.
+   * The token must be in the format "Bearer <token>". If the token is invalid, null is returned.
+   *
    * @param token the token to validate
    * @return boolean if the token is valid or not
    */
