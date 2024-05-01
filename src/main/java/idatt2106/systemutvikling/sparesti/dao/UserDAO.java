@@ -26,6 +26,7 @@ public class UserDAO {
     private String lastName;
     private LocalDate birthDate;
     @Lob
+    @Column(length=67000)
     private byte[] profilePicture;
     private Long monthlyIncome;
     private Long monthlySavings;
