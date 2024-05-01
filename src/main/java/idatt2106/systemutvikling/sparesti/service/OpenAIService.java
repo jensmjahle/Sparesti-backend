@@ -35,6 +35,13 @@ public class OpenAIService {
     this.restTemplate = restTemplate;
   }
 
+  /**
+   * Method to chat with OpenAI. This method sends a prompt to OpenAI and returns the response.
+   * The prompt should be a string that the AI can respond to.
+   *
+   * @param prompt the prompt to chat with
+   * @return the response from OpenAI
+   */
   public String chat(String prompt) {
     logger.info("Received request to chat with OpenAI.");
     try {

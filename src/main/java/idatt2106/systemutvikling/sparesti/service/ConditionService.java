@@ -28,6 +28,12 @@ public class ConditionService {
     this.challengeLogRepository = challengeLogRepository;
   }
 
+  /**
+   * Method to check if a condition is met. The method checks the condition type and calls the appropriate method.
+   *
+   * @param condition the condition to check
+   * @return true if the condition is met, false otherwise
+   */
   public boolean isConditionMet(ConditionDAO condition) {
     ConditionType type = condition.getConditionType();
     switch (type) {
@@ -45,10 +51,22 @@ public class ConditionService {
     }
   }
 
+  /**
+   * Method to check if the milestones condition is met. The method checks if the user has completed the required amount of milestones.
+   *
+   * @param condition the condition to check
+   * @return true if the condition is met, false otherwise
+   */
   private boolean isMilestonesConditionMet(ConditionDAO condition) {
     return condition.getQuantity() <= milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername()).size();
   }
 
+  /**
+   * Method to check if the challenges condition is met. The method checks if the user has completed the required amount of challenges.
+   *
+   * @param condition the condition to check
+   * @return true if the condition is met, false otherwise
+   */
   private boolean isChallengesConditionMet(ConditionDAO condition) {
     List<ChallengeLogDAO> challengeLogDAOS = challengeLogRepository.findChallengeLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
     Long count = 0L;
@@ -60,6 +78,12 @@ public class ConditionService {
     return condition.getQuantity() <= count;
   }
 
+  /**
+   * Method to check if the savings condition is met. The method checks if the user has saved the required amount of money.
+   *
+   * @param condition the condition to check
+   * @return true if the condition is met, false otherwise
+   */
   private boolean isSavingsConditionMet(ConditionDAO condition) {
     List<MilestoneLogDAO> milestoneLogDAOS = milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
     List<MilestoneDAO> milestoneDAOS = milestoneRepository.findMilestoneDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());

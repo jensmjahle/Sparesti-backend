@@ -18,9 +18,16 @@ public class ManualSavingService {
   private final UserRepository dbUser;
   private final ManualSavingRepository dbManualSaving;
 
-  public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount,
-      String username) {
-    ManualSavingDAO dao = new ManualSavingDAO();
+    /**
+     * Registers a new manual saving entry in the database. The entry is saved with the current time.
+     *
+     * @param milestoneId the milestone id to save the manual saving entry to
+     * @param amount the amount to save
+     * @param username the username of the user to save the manual saving entry for
+     * @return the saved ManualSavingDAO
+     */
+    public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount, String username) {
+        ManualSavingDAO dao = new ManualSavingDAO();
 
     if (username == null) {
       return null;
