@@ -20,11 +20,23 @@ public class CustomerService implements CustomerServiceInterface {
   private final CustomerRepository customerRepository;
   private final AccountRepository accountRepository;
 
+  /**
+   * Method to check if a customer exists in the database.
+   *
+   * @param username the username of the customer to check
+   * @return true if the customer exists, false otherwise
+   */
   @Override
   public boolean customerExists(String username) {
     return findCustomerByUsername(username) != null;
   }
 
+  /**
+   * Method to check if a customer has two accounts.
+   *
+   * @param username the username of the customer
+   * @return true if the customer has two accounts, false otherwise
+   */
   @Override
   public boolean hasTwoAccounts(String username) {
     Optional<CustomerDAO> customerOpt = customerRepository.findByUsername(username);
@@ -37,10 +49,15 @@ public class CustomerService implements CustomerServiceInterface {
     return accounts.size() >= 2;
   }
 
+  /**
+   * Method to find a customer by its username.
+   *
+   * @param username the username of the customer
+   * @return the customer entity as CustomerDAO
+   */
   public CustomerDAO findCustomerByUsername(String username) {
     Optional<CustomerDAO> customerDAOOptional = customerRepository.findByUsername(username);
     return customerDAOOptional.orElse(null);
   }
-
 
 }

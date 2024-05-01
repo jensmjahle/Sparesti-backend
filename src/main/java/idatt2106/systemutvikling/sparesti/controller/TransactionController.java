@@ -19,6 +19,11 @@ public class TransactionController {
 
   private final TransactionService transactionService;
 
+  /**
+   * Method for getting the latest transactions for the current user.
+   *
+   * @return the latest transactions for the current user
+   */
   @GetMapping("/30-day-expenses")
   public ResponseEntity<List<TransactionDTO>> getLatestExpenses_LastMonth_Categorized() {
     List<Transaction> transactions = transactionService.getLatestExpensesForCurrentUser_CheckingAccount_Categorized();

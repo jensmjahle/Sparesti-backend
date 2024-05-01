@@ -16,6 +16,11 @@ public enum TransactionCategory {
 
   private final String category;
 
+  /**
+   * Constructor for TransactionCategory.
+   *
+   * @param category the category of the transaction
+   */
   TransactionCategory(String category) {
     this.category = category;
   }

@@ -8,6 +8,12 @@ import java.util.Date;
 
 public class TransactionMapper {
 
+    /**
+     * Maps a TransactionDAO to a Transaction.
+     *
+     * @param t the TransactionDAO to map
+     * @return the Transaction
+     */
     public static TransactionDTO toDTO(Transaction t) {
         TransactionDTO dto = new TransactionDTO();
 
