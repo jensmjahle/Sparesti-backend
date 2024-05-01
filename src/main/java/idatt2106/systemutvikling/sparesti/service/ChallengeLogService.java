@@ -12,6 +12,9 @@ import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for handling ChallengeLogDAOs.
+ */
 @Service
 @AllArgsConstructor
 public class ChallengeLogService {

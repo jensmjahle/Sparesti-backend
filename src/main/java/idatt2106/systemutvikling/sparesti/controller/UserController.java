@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 
+/**
+ * Controller for handling user information.
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/users")

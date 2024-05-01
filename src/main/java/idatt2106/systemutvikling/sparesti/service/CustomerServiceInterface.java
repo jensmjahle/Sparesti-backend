@@ -2,6 +2,9 @@ package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.mockBank.dao.CustomerDAO;
 
+/**
+ * Interface for the CustomerService class.
+ */
 public interface CustomerServiceInterface {
 
     /**

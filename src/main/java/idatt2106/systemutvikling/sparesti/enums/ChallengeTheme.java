@@ -6,6 +6,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Enum for the theme of a challenge.
+ */
 @Getter
 @AllArgsConstructor
 public enum ChallengeTheme {

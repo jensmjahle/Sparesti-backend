@@ -3,6 +3,9 @@ package idatt2106.systemutvikling.sparesti.mapper;
 import idatt2106.systemutvikling.sparesti.dto.BankAccountDTO;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
 
+/**
+ * Mapper class for BankAccount and BankAccountDTO
+ */
 public class BankAccountMapper {
 
     /**

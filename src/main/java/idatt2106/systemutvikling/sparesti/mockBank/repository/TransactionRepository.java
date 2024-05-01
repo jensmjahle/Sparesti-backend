@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Repository interface for the Transaction entity.
+ */
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionDAO, Long> {
 

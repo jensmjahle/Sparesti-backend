@@ -3,6 +3,9 @@ package idatt2106.systemutvikling.sparesti.mockBank.mapper;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
 
+/**
+ * Mapper class for the BankAccount entity.
+ */
 public class MockBankAccountMapper {
 
     /**

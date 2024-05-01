@@ -19,6 +19,9 @@ import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 
 import java.util.List;
 
+/**
+ * Service class for handling Milestones.
+ */
 @Service
 public class MilestoneService {
 

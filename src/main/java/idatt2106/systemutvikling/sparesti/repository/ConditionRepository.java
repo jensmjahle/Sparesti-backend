@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for the ConditionDAO entity.
+ */
 @Repository
 public interface ConditionRepository extends JpaRepository<ConditionDAO, Long> {
 

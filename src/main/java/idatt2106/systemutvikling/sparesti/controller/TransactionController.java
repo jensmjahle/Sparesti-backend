@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Controller for handling transactions.
+ */
 @RestController
 @RequestMapping("/user/transaction")
 @AllArgsConstructor

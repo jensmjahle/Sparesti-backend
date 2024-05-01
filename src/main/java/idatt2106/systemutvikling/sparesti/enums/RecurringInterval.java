@@ -2,6 +2,9 @@ package idatt2106.systemutvikling.sparesti.enums;
 
 import lombok.Getter;
 
+/**
+ * Enum for the recurring interval of a transaction.
+ */
 @Getter
 public enum RecurringInterval {
   NONE(0),

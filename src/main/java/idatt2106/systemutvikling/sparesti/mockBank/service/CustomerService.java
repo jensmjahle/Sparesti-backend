@@ -13,6 +13,9 @@ import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for the Customer entity.
+ */
 @Service
 @AllArgsConstructor
 public class CustomerService implements CustomerServiceInterface {

@@ -5,6 +5,9 @@ import idatt2106.systemutvikling.sparesti.mockBank.dao.CustomerDAO;
 
 import java.util.List;
 
+/**
+ * Interface for the AccountService class.
+ */
 public interface AccountServiceInterface {
 
   /**

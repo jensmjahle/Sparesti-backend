@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class for running a garbage collection task on the database.
+ */
 @AllArgsConstructor
 @Component
 public class DatabaseGarbageCollectionTask {

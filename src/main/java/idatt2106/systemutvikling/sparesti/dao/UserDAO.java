@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data access object for User
+ */
 @Getter
 @Setter
 @NoArgsConstructor

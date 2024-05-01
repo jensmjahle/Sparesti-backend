@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class for filtering the request and setting the user context.
+ */
 @AllArgsConstructor
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
   private static final Logger LOGGER = LogManager.getLogger(JWTAuthorizationFilter.class);

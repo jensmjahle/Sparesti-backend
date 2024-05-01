@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for the BankAccount entity.
+ */
 @Service
 public class MockBankAccountService implements BankAccountServiceInterface {
   private final AccountRepository accountRepository;

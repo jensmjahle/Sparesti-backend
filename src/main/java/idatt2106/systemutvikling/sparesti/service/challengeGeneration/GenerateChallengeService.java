@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for generating challenges for users.
+ */
 @Service
 @AllArgsConstructor
 public class GenerateChallengeService {
