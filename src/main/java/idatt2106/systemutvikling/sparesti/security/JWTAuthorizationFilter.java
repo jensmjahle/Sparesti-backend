@@ -33,6 +33,19 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
   private SecretsConfig secrets;
 
+  /**
+   * Method to filter the request. This method is used to filter the request and check if the
+   * Authorization header contains a Bearer token. If the token is found, the token is validated and
+   * the user context is set. If the token is not found or the token is invalid, the request is
+   * passed to the next filter in the chain. If the token is valid, the user context is set and the
+   * request is passed to the next filter in the chain.
+   *
+   * @param request the http servlet request
+   * @param response the http servlet response
+   * @param filterChain the filter chain
+   * @throws ServletException if an error occurs
+   * @throws IOException if an error occurs
+   */
   @Override
   protected void doFilterInternal(
           HttpServletRequest request,
@@ -80,6 +93,14 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
+  /**
+   * Method to validate the token and get the JWT. This method is used to validate the token and get
+   * the JWT. The method removes quotes from the token and verifies the token using the HMAC512
+   * algorithm. If the verification fails, a warning is logged and null is returned.
+   *
+   * @param token the token to validate
+   * @return the decoded JWT
+   */
   public DecodedJWT validateTokenAndGetJwt(final String token) {
     // Remove quotes from token as it breaks the verification
     String tokenWithoutQuotes = token.replace("\"", "");
