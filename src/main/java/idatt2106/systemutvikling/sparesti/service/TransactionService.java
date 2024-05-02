@@ -164,10 +164,7 @@ public class TransactionService {
 
   public List<Transaction> getTransactionsCategorized(Date dateLimit, String username) {
     List<Transaction> transactions = getLatestExpensesForUser_CheckingAccount(username, dateLimit);
-    for (Transaction t : transactions) {
-      t.setCategory(categorizeTransaction(t));
-    }
-    return transactions;
+    return categorizeTransactions(transactions);
   }
 
   /**
