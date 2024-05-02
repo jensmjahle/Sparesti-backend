@@ -4,6 +4,7 @@ import idatt2106.systemutvikling.sparesti.dao.AchievementDAO;
 import idatt2106.systemutvikling.sparesti.dao.ConditionDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.AchievementDTO;
+import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.repository.AchievementRepository;
 import idatt2106.systemutvikling.sparesti.repository.ConditionRepository;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
@@ -16,9 +17,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AchievementServiceTest {
@@ -148,16 +147,10 @@ class AchievementServiceTest {
 
     // Mock the behavior of the repositories
     when(achievementRepository.findAll()).thenReturn(List.of(achievement));
-    when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenReturn(
-            new ArrayList<>());
+    when(conditionRepository.findAllByAchievementDAO_AchievementId(1L)).thenThrow(UserNotFoundException.class);
     when(userRepository.findByUsername(any(String.class))).thenReturn(null); // Mock user not found
 
-    // Call the method to test
-    List<AchievementDTO> unlockedAchievements = achievementService.checkForUnlockedAchievements(
-            "unknownUser");
-
-    // Verify the result
-    assertTrue(unlockedAchievements.isEmpty());
+    assertThrows(UserNotFoundException.class, () -> achievementService.checkForUnlockedAchievements("unknownUser"));
   }
 }
 
