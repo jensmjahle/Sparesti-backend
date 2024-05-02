@@ -1,13 +1,16 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
+import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
+import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -44,7 +46,7 @@ public class ChallengeControllerTests {
         LocalDateTime.now(),
         LocalDateTime.now().plusDays(3),
         0,
-        true
+        false
     );
 
     private static final MilestoneDTO TEST_MILESTONE = new MilestoneDTO(
@@ -69,140 +71,271 @@ public class ChallengeControllerTests {
     private MilestoneService milestoneService;
 
 
-    @Test
-    public void moveChallengeToLog_okWhenUserOwnsChallenge() throws Exception {
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            // Copy the default values used for testing
-            final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
-            final Long challengeId = challenge.getChallengeId();
 
-            // Set the currently logged-in user to the owner of the challenge and milestone
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(TEST_USERNAME);
+    private static MockedStatic<CurrentUserService> utilities;
 
-            // Stub the service call
-            doNothing().when(challengeService).moveChallengeToLog(challengeId);
+    @BeforeAll
+    public static void beforeAll() {
+        utilities = Mockito.mockStatic(CurrentUserService.class);
+    }
 
-            // Set return values of service layer functions
-            given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+    @AfterAll
+    public static void afterAll() {
+        utilities.close();
+    }
 
-            // Http request path
-            final String URI = "/user/challenge/delete/" + challengeId;
-
-            // Perform http request
-            mvc.perform(delete(URI)).andExpect(status().is2xxSuccessful());
-        }
+    private static void setUser(String username) {
+        utilities.when(CurrentUserService::getCurrentUsername).thenReturn(username);
     }
 
 
+
+
+
+
+    // ### getChallenge ###
+
+    @Test
+    public void getChallenge_forbiddenWhenChallengeIsNotOwnedByUser() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder()
+                .username(TEST_USERNAME_OTHER) // Set owner to another user
+                .build();
+        final Long challengeId = challenge.getChallengeId();
+
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(TEST_USERNAME);
+
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+
+        // Http request path
+        final String URI = "/user/challenge/" + challengeId;
+
+        // Perform http request
+        mvc.perform(get(URI)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void getChallenge_successWhenChallengeIsOwnedByUser() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+        final Long challengeId = challenge.getChallengeId();
+
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(challenge.getUsername());
+
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+
+        // Http request path
+        final String URI = "/user/challenge/" + challengeId;
+
+        // Perform http request
+        mvc.perform(get(URI)).andExpect(status().is2xxSuccessful());
+    }
+
+
+
+    // ### activateChallenge ###
+
+    @Test
+    public void activateChallenge_conflictWhenChallengeIsActive() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder()
+                .isActive(true) // Set challenge to ACTIVE
+                .build();
+        final ChallengeDAO challengeDAO = ChallengeMapper.toDAO(challenge);
+        final Long challengeId = challenge.getChallengeId();
+
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(challenge.getUsername());
+
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+        given(challengeService.activateChallenge(challengeId)).willReturn(challengeDAO);
+
+        // Http request path
+        final String URI = "/user/challenge/activate/" + challengeId;
+
+        // Perform http request
+        mvc.perform(post(URI)).andExpect(status().isConflict());
+    }
+
+    @Test
+    public void activateChallenge_forbiddenWhenChallengeIsNotOwnedByUser() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder()
+                .username(TEST_USERNAME_OTHER) // Set owner of challenge to another user
+                .build();
+        final ChallengeDAO challengeDAO = ChallengeMapper.toDAO(challenge);
+        final Long challengeId = challenge.getChallengeId();
+
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(TEST_USERNAME);
+
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+        given(challengeService.activateChallenge(challengeId)).willReturn(challengeDAO);
+
+        // Http request path
+        final String URI = "/user/challenge/activate/" + challengeId;
+
+        // Perform http request
+        mvc.perform(post(URI)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void activateChallenge_isOkWhen_challengeIsOwnedByUser_andChallengeIsNotActive() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+        final ChallengeDAO challengeDAO = ChallengeMapper.toDAO(challenge);
+        final Long challengeId = challenge.getChallengeId();
+
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(challenge.getUsername());
+
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+        given(challengeService.activateChallenge(challengeId)).willReturn(challengeDAO);
+
+        // Http request path
+        final String URI = "/user/challenge/activate/" + challengeId;
+
+        // Perform http request
+        mvc.perform(post(URI)).andExpect(status().isOk());
+    }
+
+
+
+    // ### completeChallenge ###
+
     @Test
     public void completeChallenge_okWhenUserOwnsBothMilestoneAndChallenge() throws Exception {
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            // Copy the default values used for testing
-            final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
-            final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().build();
-            final Long challengeId = challenge.getChallengeId();
-            final Long milestoneId = milestone.getMilestoneId();
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+        final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().build();
+        final Long challengeId = challenge.getChallengeId();
+        final Long milestoneId = milestone.getMilestoneId();
 
-            // Set the currently logged-in user to the owner of the challenge and milestone
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(TEST_USERNAME);
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(challenge.getUsername());
 
-            // Stub the service call
-            doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
+        // Stub the service call
+        doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
 
-            // Set return values of service layer functions
-            given(challengeService.getChallenge(challengeId)).willReturn(challenge);
-            given(milestoneService.getMilestoneDTOById(milestoneId)).willReturn(milestone);
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+        given(milestoneService.getMilestoneDTOById(milestoneId)).willReturn(milestone);
 
-            // Http request path
-            final String URI = String.format("/user/challenge/complete?challengeId=%d&milestoneId=%d",
-                    challengeId,
-                    milestoneId);
+        // Http request path
+        final String URI = String.format("/user/challenge/complete?challengeId=%d&milestoneId=%d",
+                challengeId,
+                milestoneId);
 
-            // Perform http request
-            mvc.perform(post(URI)).andExpect(status().isOk());
-        }
+        // Perform http request
+        mvc.perform(post(URI)).andExpect(status().isOk());
     }
 
     @Test
     public void completeChallenge_badRequestWhenUserDoesNotOwnChallenge() throws Exception {
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            // Copy the default values used for testing
-            final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().username("Other user").build();
-            final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().build();
-            final Long challengeId = challenge.getChallengeId();
-            final Long milestoneId = milestone.getMilestoneId();
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().username("Other user").build();
+        final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().build();
+        final Long challengeId = challenge.getChallengeId();
+        final Long milestoneId = milestone.getMilestoneId();
 
-            // Set the currently logged-in user to the owner of the challenge and milestone
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(TEST_USERNAME);
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(challenge.getUsername());
 
-            // Stub the service call
-            doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
+        // Stub the service call
+        doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
 
-            // Set return values of service layer functions
-            given(challengeService.getChallenge(challengeId)).willReturn(challenge);
-            given(milestoneService.getMilestoneDTOById(milestoneId)).willReturn(milestone);
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+        given(milestoneService.getMilestoneDTOById(milestoneId)).willReturn(milestone);
 
-            // Http request path
-            final String URI = String.format("/user/challenge/complete?challengeId=%d&milestoneId=%d",
-                    challengeId,
-                    milestoneId);
+        // Http request path
+        final String URI = String.format("/user/challenge/complete?challengeId=%d&milestoneId=%d",
+                challengeId,
+                milestoneId);
 
-            // Perform http request
-            mvc.perform(post(URI)).andExpect(status().isBadRequest());
-        }
+        // Perform http request
+        mvc.perform(post(URI)).andExpect(status().isForbidden());
     }
 
     @Test
-    public void completeChallenge_badRequestWhenUserDoesNotOwnMilestone() throws Exception {
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            // Copy the default values used for testing
-            final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
-            final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().username(TEST_USERNAME_OTHER).build();
-            final Long challengeId = challenge.getChallengeId();
-            final Long milestoneId = milestone.getMilestoneId();
+    public void completeChallenge_forbiddenWhenUserDoesNotOwnMilestone() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+        final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().username(TEST_USERNAME_OTHER).build();
+        final Long challengeId = challenge.getChallengeId();
+        final Long milestoneId = milestone.getMilestoneId();
 
-            // Set the currently logged-in user to the owner of the challenge and milestone
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(TEST_USERNAME);
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(challenge.getUsername());
 
-            // Stub the service call
-            doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
+        // Stub the service call
+        doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
 
-            // Set return values of service layer functions
-            given(challengeService.getChallenge(challengeId)).willReturn(challenge);
-            given(milestoneService.getMilestoneDTOById(milestoneId)).willReturn(milestone);
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+        given(milestoneService.getMilestoneDTOById(milestoneId)).willReturn(milestone);
 
-            // Http request path
-            final String URI = String.format("/user/challenge/complete?challengeId=%d&milestoneId=%d",
-                    challengeId,
-                    milestoneId);
+        // Http request path
+        final String URI = String.format("/user/challenge/complete?challengeId=%d&milestoneId=%d",
+                challengeId,
+                milestoneId);
 
-            // Perform http request
-            mvc.perform(post(URI)).andExpect(status().isBadRequest());
-        }
+        // Perform http request
+        mvc.perform(post(URI)).andExpect(status().isForbidden());
+    }
+
+
+
+    // ##### moveChallengeToLog ####
+
+    @Test
+    public void moveChallengeToLog_okWhenUserOwnsChallenge() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+        final Long challengeId = challenge.getChallengeId();
+
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(challenge.getUsername());
+
+        // Stub the service call
+        doNothing().when(challengeService).moveChallengeToLog(challengeId);
+
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+
+        // Http request path
+        final String URI = "/user/challenge/delete/" + challengeId;
+
+        // Perform http request
+        mvc.perform(delete(URI)).andExpect(status().is2xxSuccessful());
     }
 
     @Test
-    public void moveChallengeToLog_badRequestWhenUserDoesNotOwnChallenge() throws Exception {
-        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-            // Copy the default values used for testing
-            final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().username(TEST_USERNAME_OTHER).build();
-            final Long challengeId = challenge.getChallengeId();
+    public void moveChallengeToLog_forbiddenWhenUserDoesNotOwnChallenge() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().username(TEST_USERNAME_OTHER).build();
+        final Long challengeId = challenge.getChallengeId();
 
-            // Set the currently logged-in user to the owner of the challenge and milestone
-            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(TEST_USERNAME);
+        // Set the currently logged-in user to the owner of the challenge and milestone
+        setUser(TEST_USERNAME);
 
-            // Stub the service call
-            doNothing().when(challengeService).moveChallengeToLog(challengeId);
+        // Stub the service call
+        doNothing().when(challengeService).moveChallengeToLog(challengeId);
 
-            // Set return values of service layer functions
-            given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+        // Set return values of service layer functions
+        given(challengeService.getChallenge(challengeId)).willReturn(challenge);
 
-            // Http request path
-            final String URI = "/user/challenge/delete/" + challengeId;
+        // Http request path
+        final String URI = "/user/challenge/delete/" + challengeId;
 
-            // Perform http request
-            mvc.perform(delete(URI)).andExpect(status().is4xxClientError());
-        }
+        // Perform http request
+        mvc.perform(delete(URI)).andExpect(status().isForbidden());
     }
-
 }
