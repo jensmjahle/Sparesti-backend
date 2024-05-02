@@ -104,20 +104,16 @@ public class ChallengeController {
    */
   @PostMapping("/activate/{challengeId}")
   @ResponseBody
-  public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable Long challengeId) {
+  public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable @NonNull Long challengeId) {
 
-    if (challengeId == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    if (challengeService.getChallenge(challengeId).isActive()) {
+    // Verify that the challenge is inactive
+    if (challengeService.getChallenge(challengeId).isActive())
       return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
-    }
 
+    //
     if (!challengeService.getChallenge(challengeId).getUsername()
-        .equals(CurrentUserService.getCurrentUsername())) {
+        .equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
-    }
 
     return ResponseEntity.ok()
         .body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
@@ -160,16 +156,12 @@ public class ChallengeController {
    */
   @DeleteMapping("/delete/{challengeId}")
   @ResponseBody
-  public ResponseEntity<String> moveChallengeToLog(@PathVariable Long challengeId) {
-    if (challengeId == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    if (!challengeService.getChallenge(challengeId).getUsername()
-        .equals(CurrentUserService.getCurrentUsername())) {
+  public ResponseEntity<String> moveChallengeToLog(@PathVariable @NonNull Long challengeId) {
+    // Verify ownership of the challenge
+    if (!challengeService.getChallenge(challengeId).getUsername().equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body("You are not the owner of this challenge");
-    }
 
+    // Perform the service layer function
     challengeService.moveChallengeToLog(challengeId);
 
     return ResponseEntity.ok().body("Challenge deleted");
