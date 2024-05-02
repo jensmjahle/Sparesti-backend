@@ -22,6 +22,7 @@ stages:
   - build
   - test
   - package
+  - generate_javadoc
 
 before_script:
   - mvn clean
@@ -53,11 +54,19 @@ test:
 
 
 package:
-    stage: package
-    script:
-        - mvn clean package
-    dependencies:
-        - test
-    artifacts:
-        paths:
-        - target/*.jar
+  stage: package
+  script:
+    - mvn clean package
+  dependencies:
+    - test
+  artifacts:
+    paths:
+      - target/*.jar
+
+generate_javadoc:
+  stage: build
+  script:
+    - mvn javadoc:javadoc
+  artifacts:
+    paths:
+      - target/site/apidocs
