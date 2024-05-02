@@ -70,3 +70,5 @@ generate_javadoc:
   artifacts:
     paths:
       - target/site/apidocs
+  only:
+    - main
