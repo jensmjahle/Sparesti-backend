@@ -9,6 +9,7 @@ import idatt2106.systemutvikling.sparesti.mapper.KeywordMapper;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
@@ -25,10 +26,9 @@ import java.util.List;
 @AllArgsConstructor
 public class TransactionService {
 
+  public static final Date DEFAULT_EXPENSES_TIME_SPAN = new Date(
+      System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000);
   private static final boolean DISABLE_OPENAI_PROMPTS = true;
-
-  public static final Date DEFAULT_EXPENSES_TIME_SPAN = new Date(System.currentTimeMillis() - 30L *24*60*60*1000);
-
   private final TransactionServiceInterface transactionSocket;
   private final TransactionCategoryCacheService cacheService;
   private final UserRepository dbUser;
@@ -70,11 +70,11 @@ public class TransactionService {
 
 
   /**
-   * Retrieves the outgoing transactions for a specific account from the past 30 days.
-   * A transaction is considered outgoing when it moves
-   * currency from the specified account to any account not owned by the owner of the specified account.
-   * A transaction is not considered outgoing if it is an internal transaction; moving currency
-   * between accounts owned by the same user.
+   * Retrieves the outgoing transactions for a specific account from the past 30 days. A transaction
+   * is considered outgoing when it moves currency from the specified account to any account not
+   * owned by the owner of the specified account. A transaction is not considered outgoing if it is
+   * an internal transaction; moving currency between accounts owned by the same user.
+   *
    * @return A list of outgoing transactions for the specified account number.
    */
   public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount_Categorized() {
@@ -83,14 +83,16 @@ public class TransactionService {
 
 
   /**
-   * Retrieves the outgoing transactions for a specific account from the past 30 days. The transactions are
-   * categorized using the OpenAI API.
+   * Retrieves the outgoing transactions for a specific account from the past 30 days. The
+   * transactions are categorized using the OpenAI API.
    *
    * @param dateLimit Transactions older than this date will not be fetched.
    * @return A list of outgoing transactions for the specified account number.
    */
-    public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount_Categorized(Date dateLimit) {
-    List<Transaction> uncategorizedTransactions = getLatestExpensesForCurrentUser_CheckingAccount(dateLimit);
+  public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount_Categorized(
+      Date dateLimit) {
+    List<Transaction> uncategorizedTransactions = getLatestExpensesForCurrentUser_CheckingAccount(
+        dateLimit);
 
     List<Transaction> categorizedTransactions = categorizeTransactions(uncategorizedTransactions);
 
@@ -98,57 +100,75 @@ public class TransactionService {
   }
 
 
-
-  /** Retrieves all outgoing transactions of the checking account of the current user, from the last 30 days.
+  /**
+   * Retrieves all outgoing transactions of the checking account of the current user, from the last
+   * 30 days.
+   *
    * @param dateLimit Transactions older than this date will not be fetched.
    * @return A list of transactions.
    */
   public List<Transaction> getLatestExpensesForCurrentUser_CheckingAccount(Date dateLimit) {
     String username = CurrentUserService.getCurrentUsername();
-    if (username == null)
-      throw new UserNotFoundException("'CurrentUserService.getCurrentUsername()' returned " + username +
+    if (username == null) {
+      throw new UserNotFoundException(
+          "'CurrentUserService.getCurrentUsername()' returned " + username +
               " while retrieving latest expenses");
+    }
 
     return getLatestExpensesForUser_CheckingAccount(username, dateLimit);
   }
 
 
-
-  /** Retrieves all outgoing transactions of the checking account of the specified user, from the last 30 days.
-   * @param username The username of the user.
+  /**
+   * Retrieves all outgoing transactions of the checking account of the specified user, from the
+   * last 30 days.
+   *
+   * @param username  The username of the user.
    * @param dateLimit Transactions older than this date will not be fetched.
-   * @throws org.springframework.security.core.userdetails.UsernameNotFoundException If a user with the specified
-   * username was not found in the database.
    * @return A list of transactions.
+   * @throws org.springframework.security.core.userdetails.UsernameNotFoundException If a user with
+   *                                                                                 the specified
+   *                                                                                 username was
+   *                                                                                 not found in
+   *                                                                                 the database.
    */
-  public List<Transaction> getLatestExpensesForUser_CheckingAccount(String username, Date dateLimit) {
+  public List<Transaction> getLatestExpensesForUser_CheckingAccount(String username,
+      Date dateLimit) {
     UserDAO user = dbUser.findByUsername(username);
-    if (user == null)
+    if (user == null) {
       throw new UserNotFoundException();
+    }
 
     Long checkingAccount = user.getCurrentAccount();
-    if (checkingAccount == null || checkingAccount == 0L)
+    if (checkingAccount == null || checkingAccount == 0L) {
       return null; // TODO: Throw exception?
+    }
 
     return getLatestExpensesForAccountNumber(checkingAccount, dateLimit);
   }
 
 
-
   /**
-   * Retrieves all outgoing transactions for a specific account. A transaction is considered outgoing when it moves
-   * currency from the specified account to any account not owned by the owner of the specified account.
-   * A transaction is not considered outgoing if it is an internal transaction; moving currency
-   * between accounts owned by the same user.
+   * Retrieves all outgoing transactions for a specific account. A transaction is considered
+   * outgoing when it moves currency from the specified account to any account not owned by the
+   * owner of the specified account. A transaction is not considered outgoing if it is an internal
+   * transaction; moving currency between accounts owned by the same user.
+   *
    * @param accountNumber The account number of the account to fetch expenses for.
-   * @param dateLimit Transactions older than this date will not be fetched.
+   * @param dateLimit     Transactions older than this date will not be fetched.
    * @return A list of outgoing transactions for the specified account number.
    */
   public List<Transaction> getLatestExpensesForAccountNumber(Long accountNumber, Date dateLimit) {
     return transactionSocket.getLatestExpensesForAccountNumber(accountNumber, dateLimit);
   }
 
-
+  public List<Transaction> getTransactionsCategorized(Date dateLimit, String username) {
+    List<Transaction> transactions = getLatestExpensesForUser_CheckingAccount(username, dateLimit);
+    for (Transaction t : transactions) {
+      t.setCategory(categorizeTransaction(t));
+    }
+    return transactions;
+  }
 
   /**
    * Sets the category field of all transactions in the given list of transactions. This function
@@ -248,7 +268,8 @@ public class TransactionService {
    * The transfer is made with the title "Sparesti: Manual savings transfer towards savings goal".
    *
    * @param amount The amount to transfer.
-   * @return ResponseEntity<TransactionDTO> The ResponseEntity containing the created transaction DTO.
+   * @return ResponseEntity<TransactionDTO> The ResponseEntity containing the created transaction
+   * DTO.
    */
   public boolean createSavingsTransferForCurrentUser(long amount) {
     String username = CurrentUserService.getCurrentUsername();
@@ -262,18 +283,18 @@ public class TransactionService {
       return false;
     }
 
-    if (user.getSavingsAccount() == null || user.getCurrentAccount() == null){
+    if (user.getSavingsAccount() == null || user.getCurrentAccount() == null) {
       return false;
     }
 
     transactionSocket.createTransaction(
-            username,
-            username,
-            "Sparesti: Manual savings transfer towards savings goal",
-            user.getCurrentAccount(),
-            user.getSavingsAccount(),
-            amount,
-            "NOK");
+        username,
+        username,
+        "Sparesti: Manual savings transfer towards savings goal",
+        user.getCurrentAccount(),
+        user.getSavingsAccount(),
+        amount,
+        "NOK");
     return true;
   }
 }
