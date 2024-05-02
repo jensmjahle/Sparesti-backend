@@ -10,6 +10,11 @@ import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.CustomerServiceInterface;
 import idatt2106.systemutvikling.sparesti.service.JWTService;
 import idatt2106.systemutvikling.sparesti.service.PasswordService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -35,21 +40,31 @@ public class TokenController {
 
   @Autowired
   public TokenController(PasswordService passwordService, JWTService jwtService,
-      UserRepository userRepository) {
+                         UserRepository userRepository) {
     this.passwordService = passwordService;
     this.jwtService = jwtService;
     this.userRepository = userRepository;
   }
 
-  /**
-   * Endpoint for letting the user login. If login is successful, returns a JWT for use with secured
-   * endpoints. The user can log in by providing the correct login credentials. A user is considered
-   * as logged in when it has a token.
-   *
-   * @param loginRequest A DTO containing a correct username and password combination. Only the
-   *                     fields "username" and "password" is required.
-   * @return A JWT to use with secured endpoints.
-   */
+  @Operation(
+          summary = "Login",
+          description = "Login with username and password"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "201",
+                  description = "Login successful",
+                  content = {
+                          @Content(mediaType = "application/json",
+                                  schema = @Schema(implementation = String.class))
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "401",
+                  description = "Access denied, wrong credentials",
+                  content = @Content
+          )
+  })
   @PostMapping(value = "/login")
   @ResponseStatus(value = HttpStatus.CREATED)
   public ResponseEntity<String> login(final @RequestBody UserCredentialsDTO loginRequest) {
@@ -60,26 +75,26 @@ public class TokenController {
       if (userRepository.findByUsername(loginRequest.getUsername()) == null) {
         logger.warning("Access denied, wrong credentials: User does not exist.");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body("Access denied, wrong credentials: User does not exist.");
+                .body("Access denied, wrong credentials: User does not exist.");
       }
     } catch (Exception e) {
       logger.warning("Access denied, wrong credentials: " + e.getMessage());
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("Access denied, wrong credentials");
+              .body("Access denied, wrong credentials");
     }
 
     try {
       success = passwordService.correctPassword(loginRequest.getUsername(),
-          loginRequest.getPassword());
+              loginRequest.getPassword());
     } catch (Exception e) {
       logger.warning("Access denied, wrong credentials: " + e.getMessage());
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("Access denied, wrong credentials");
+              .body("Access denied, wrong credentials");
     }
 
     if (!success) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("Access denied, wrong credentials");
+              .body("Access denied, wrong credentials");
     }
 
     String token = jwtService.generateToken(loginRequest.getUsername());
@@ -87,21 +102,18 @@ public class TokenController {
     return ResponseEntity.ok().body(token);
   }
 
-  /**
-   * Delete the token for the user.
-   */
-  @DeleteMapping
-  @ResponseStatus(value = HttpStatus.OK)
-  public void deleteToken() {
-
-    logger.info("Received request to delete token.");
-  }
-
-  /**
-   * Refresh the JWT token.
-   *
-   * @return the refreshed token
-   */
+  @Operation(
+          summary = "Refresh token",
+          description = "Refresh"
+  )
+  @ApiResponse(
+          responseCode = "201",
+          description = "Token refreshed",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = String.class))
+          }
+  )
   @GetMapping(value = "/refresh")
   @ResponseStatus(value = HttpStatus.CREATED)
   public ResponseEntity<String> refreshToken() {
@@ -109,6 +121,5 @@ public class TokenController {
 
     return ResponseEntity.ok().body(jwtService.generateToken(CurrentUserService.getCurrentUsername()));
   }
-
 }
 

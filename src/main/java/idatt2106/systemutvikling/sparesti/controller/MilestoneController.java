@@ -5,6 +5,11 @@ import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dto.ManualSavingDTO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.service.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
@@ -36,105 +41,227 @@ public class MilestoneController {
 
   private final JWTService jwtService;
 
-  /**
-   * Method for getting the milestones for the current user.
-   *
-   * @param pageable The page to get
-   * @return the milestones for the current user
-   */
+  @Operation(
+      summary = "Get all milestones",
+      description = "Get all milestones for the current user"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestones found",
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
+  @Parameter(
+          name = "pageable",
+          description = "Pageable object for pagination",
+          required = true,
+          content = {
+              @Content(mediaType = "application/json",
+                      schema = @Schema(implementation = Pageable.class))
+          }
+  )
   @GetMapping("/user/paginated")
   public ResponseEntity<Page<MilestoneDTO>> getUserMilestonesPaginated(Pageable pageable) {
     logger.info("Received request to get paginated list of user milestones.");
     return ResponseEntity.ok(milestoneService.getActiveMilestonesDTOsByUsernamePaginated(CurrentUserService.getCurrentUsername(), pageable));
   }
 
-  /**
-   * Method for getting the milestones for the current user.
-   *
-   * @return the milestones for the current user
-   */
+  @Operation(
+      summary = "Get all milestones",
+      description = "Get all milestones for the current user"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestones found",
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
   @GetMapping("/user")
   public ResponseEntity<List<MilestoneDTO>> getUserMilestones() {
     logger.info("Received request to get list of user milestones.");
     return ResponseEntity.ok().body(milestoneService.getActiveMilestonesDTOsByUsername(CurrentUserService.getCurrentUsername()));
   }
 
-  /**
-   * Method for creating a milestone.
-   *
-   * @param milestoneDTO the milestone to create
-   */
+  @Operation(
+      summary = "Get all milestones",
+      description = "Get all milestones for the current user"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestones found",
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
+  @Parameter(
+      name = "pageable",
+      description = "Pageable object for pagination",
+      required = true,
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = Pageable.class))
+      }
+  )
   @PostMapping("/create")
   public void createMilestone(@RequestBody MilestoneDTO milestoneDTO) {
     logger.info("Received request to create milestone.");
     milestoneService.createMilestoneDTO(CurrentUserService.getCurrentUsername(), milestoneDTO);
   }
 
-  /**
-   * Method for getting a milestone by id.
-   *
-   * @param id the id of the milestone to get
-   * @return the milestone
-   */
+  @Operation(
+      summary = "Get milestone by id",
+      description = "Get milestone by id"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestone found",
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
+  @Parameter(
+      name = "id",
+      description = "Id of the milestone to get",
+      required = true,
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = Long.class))
+      }
+  )
   @GetMapping("/{id}")
   public ResponseEntity<MilestoneDTO> getMilestoneById(@PathVariable Long id) {
     logger.info("Received request to get milestone by id.");
     return ResponseEntity.ok(milestoneService.getMilestoneDTOById(id));
   }
 
-  /**
-   * Method for completing a milestone.
-   *
-   * @param milestoneId the id of the milestone to complete
-   */
+  @Operation(
+      summary = "Complete milestone",
+      description = "Complete milestone"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestone completed",
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
+  @Parameter(
+      name = "milestoneId",
+      description = "Id of the milestone to complete",
+      required = true,
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = Long.class))
+      }
+  )
   @PostMapping("/complete")
   public void completeMilestone(@RequestBody Long milestoneId) {
     logger.info("Received request to complete milestone.");
     milestoneService.completeMilestone(CurrentUserService.getCurrentUsername(), milestoneId);
   }
 
-  /**
-   * Method to update a milestone.
-   * @param milestoneDTO the milestone to update
-   * @return the updated milestone
-   */
+  @Operation(
+      summary = "Update milestone",
+      description = "Update milestone"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestone updated",
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
+  @Parameter(
+      name = "milestoneDTO",
+      description = "Milestone to update",
+      required = true,
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
   @PostMapping("/update")
   public ResponseEntity<MilestoneDTO> updateMilestone(@RequestBody MilestoneDTO milestoneDTO) {
     logger.info("Received request to update milestone.");
     return ResponseEntity.ok(milestoneService.updateMilestoneDTO(CurrentUserService.getCurrentUsername(), milestoneDTO));
   }
 
-  /**
-   * Method to edit a milestone.
-   *
-   * @param milestoneDTO the milestone to edit
-   * @return the edited milestone
-   */
+  @Operation(
+      summary = "Edit milestone",
+      description = "Edit milestone"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestone edited",
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
+  @Parameter(
+      name = "milestoneDTO",
+      description = "Milestone to edit",
+      required = true,
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = MilestoneDTO.class))
+      }
+  )
   @PutMapping("/edit")
   public ResponseEntity<MilestoneDTO> editMilestone(@RequestBody MilestoneDTO milestoneDTO){
     logger.info("Received request to edit milestone");
     return ResponseEntity.ok(milestoneService.editMilestone(CurrentUserService.getCurrentUsername(), milestoneDTO));
   }
 
-  /**
-  * Method to delete a milestone by the id of the milestone.
-  *
-  * @param id the id of the milstone
-  */
+  @Operation(
+      summary = "Delete milestone",
+      description = "Delete milestone with given id"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Milestone deleted"
+  )
+  @Parameter(
+      name = "id",
+      description = "Id of the milestone to delete",
+      required = true,
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = Long.class))
+      }
+  )
   @DeleteMapping("/delete/{id}")
   public void deleteMilestone(@PathVariable Long id) {
     logger.info("Received request to delete milestone.");
     milestoneService.deleteMilestone(CurrentUserService.getCurrentUsername(), id);
   }
 
-  /**
-   * Method to manually inject money into a milestone. This will create a new manual saving record, update the milestone and perform a transaction.
-   * If any of these steps fail, the changes will be rolled back. The user will be notified of the failure.
-   * If successful, the user will be notified of the success.
-   *
-   * @param dto the manual saving dto
-   * @return response entity
-   */
+
+  @Operation(
+      summary = "Inject manual saving into milestone",
+      description = "Inject manual saving into milestone"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Manual saving injected"
+  )
+  @Parameter(
+      name = "dto",
+      description = "Manual saving dto",
+      required = true,
+      content = {
+          @Content(mediaType = "application/json",
+                  schema = @Schema(implementation = ManualSavingDTO.class))
+      }
+  )
   @PostMapping("/inject")
   public ResponseEntity<?> manualInjectionIntoMilestone(@RequestBody ManualSavingDTO dto) {
 

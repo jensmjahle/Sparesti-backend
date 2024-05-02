@@ -1,11 +1,16 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
-import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
@@ -28,12 +33,24 @@ public class ChallengeController {
   private final MilestoneService milestoneService;
   private final Logger logger = Logger.getLogger(ChallengeController.class.getName());
 
-  /**
-   * Method for getting active challenges.
-   *
-   * @param pageable The page to get
-   * @return the active challenges
-   */
+  @Operation(
+          summary = "Get all active challenges",
+          description = "Get all active challenges for the current user"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "200",
+                  description = "Challenges found",
+                  content = {
+                          @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "400",
+                  description = "Invalid input for page number or page size",
+                  content = @io.swagger.v3.oas.annotations.media.Content
+          )}
+  )
   @GetMapping("/paginated/active")
   @ResponseBody
   public ResponseEntity<Page<ChallengeDTO>> getActiveChallenges(Pageable pageable) {
@@ -41,15 +58,34 @@ public class ChallengeController {
       throw new IllegalArgumentException("Pageable is not valid");
     }
     return ResponseEntity.ok().body(
-        challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
+            challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
-  /**
-   * Method for getting inactive challenges.
-   *
-   * @param pageable The page to get
-   * @return the inactive challenges
-   */
+  @Operation(
+          summary = "Get all inactive challenges",
+          description = "Get all inactive challenges for the current user"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "200",
+                  description = "Challenges found",
+                  content = {
+                          @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "400",
+                  description = "Invalid input for page number or page size",
+                  content = @io.swagger.v3.oas.annotations.media.Content
+          )}
+  )
+  @Parameter(
+          name = "pageable",
+          description = "The pageable object containing page number and page size",
+          content = {
+                  @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+          }
+  )
   @GetMapping("/paginated/inactive")
   @ResponseBody
   public ResponseEntity<Page<ChallengeDTO>> getInactiveChallenges(Pageable pageable) {
@@ -57,15 +93,34 @@ public class ChallengeController {
       return ResponseEntity.badRequest().build();
     }
     return ResponseEntity.ok().body(
-        challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
+            challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
-  /**
-   * Method for getting a challenge.
-   *
-   * @param challengeId The id of the challenge to get
-   * @return the challenge
-   */
+  @Operation(
+          summary = "Get challenge by id",
+          description = "Get challenge by id"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "200",
+                  description = "Challenge found",
+                  content = {
+                          @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "400",
+                  description = "Invalid input for challenge id",
+                  content = @io.swagger.v3.oas.annotations.media.Content
+          )}
+  )
+  @Parameter(
+          name = "challengeId",
+          description = "The id of the challenge",
+          content = {
+                  @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+          }
+  )
   @GetMapping("/{challengeId}")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> getChallenge(@PathVariable Long challengeId) {
@@ -74,18 +129,40 @@ public class ChallengeController {
     }
 
     if (!challengeService.getChallenge(challengeId).getUsername()
-        .equals(CurrentUserService.getCurrentUsername())) {
+            .equals(CurrentUserService.getCurrentUsername())) {
       return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
     }
 
     return ResponseEntity.ok().body(challengeService.getChallenge(challengeId));
   }
 
-  /**
-   * Method for creating a challenge.
-   *
-   * @param challengeDTO the challenge to create
-   */
+  @Operation(
+          summary = "Create challenge",
+          description = "Create a new challenge"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "201",
+                  description = "Challenge created",
+                  content = {
+                          @Content(mediaType = "application/json",
+                                  schema = @Schema(implementation = ChallengeDTO.class))
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "400",
+                  description = "Invalid input for challenge",
+                  content = @Content
+          )}
+  )
+  @Parameter(
+          name = "challengeDTO",
+          description = "The challenge to be created",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = ChallengeDTO.class))
+          }
+  )
   @PostMapping("/create")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> createChallenge(@RequestBody ChallengeDTO challengeDTO) {
@@ -93,15 +170,35 @@ public class ChallengeController {
       return ResponseEntity.badRequest().build();
     }
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ChallengeMapper.toDTO(challengeService.createChallenge(challengeDTO)));
+            .body(ChallengeMapper.toDTO(challengeService.createChallenge(challengeDTO)));
   }
 
-  /**
-   * Method for activating a challenge.
-   *
-   * @param challengeId The id of the challenge to activate
-   * @return the activated challenge
-   */
+  @Operation(
+          summary = "Activate challenge",
+          description = "Activate a challenge"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "200",
+                  description = "Challenge activated",
+                  content = {
+                          @Content(mediaType = "application/json",
+                                  schema = @Schema(implementation = ChallengeDTO.class))
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "400",
+                  description = "Invalid input for challenge id",
+                  content = @io.swagger.v3.oas.annotations.media.Content
+          )}
+  )
+  @Parameter(
+          name = "challengeId",
+          description = "The id of the challenge",
+          content = {
+                  @Content(mediaType = "application/json")
+          }
+  )
   @PostMapping("/activate/{challengeId}")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable @NonNull Long challengeId) {
@@ -116,16 +213,38 @@ public class ChallengeController {
       return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
 
     return ResponseEntity.ok()
-        .body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
+            .body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
   }
 
-  /**
-   * Method for completing a challenge.
-   *
-   * @param challengeId The id of the challenge to complete
-   * @param milestoneId The id of the milestone to complete
-   * @return the completed challenge
-   */
+  @Operation(
+          summary = "Complete challenge",
+          description = "Complete a challenge and transfer money to milestone, and log the challenge"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "200",
+                  description = "Challenge completed",
+                  content = {
+                          @Content(mediaType = "application/json",
+                                  schema = @Schema(implementation = String.class)
+                          )
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "400",
+                  description = "Invalid input for challenge id or milestone id",
+                  content = @io.swagger.v3.oas.annotations.media.Content
+          )}
+  )
+  @Parameter(
+          name = "challengeId",
+          description = "The id of the challenge",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = Long.class)
+                  )
+          }
+  )
   @PostMapping("/complete")
   @ResponseBody
   public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") @NonNull Long challengeId,
@@ -140,7 +259,6 @@ public class ChallengeController {
     if (!milestoneService.getMilestoneDTOById(milestoneId).getUsername()
         .equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body("You are not the owner of this milestone");
-
     // Perform requested operation
     challengeService.completeChallengeForCurrentUser(challengeId, milestoneId);
 
@@ -148,12 +266,32 @@ public class ChallengeController {
     return ResponseEntity.ok().body("Challenge completed");
   }
 
-  /**
-   * Method for deleting a challenge.
-   *
-   * @param challengeId The id of the challenge to delete
-   * @return the deleted challenge
-   */
+  @Operation(
+          summary = "Delete challenge",
+          description = "Delete a challenge"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(
+                  responseCode = "200",
+                  description = "Challenge deleted",
+                  content = {
+                          @Content(mediaType = "application/json",
+                                  schema = @Schema(implementation = ChallengeDTO.class))
+                  }
+          ),
+          @ApiResponse(
+                  responseCode = "400",
+                  description = "Invalid input for challenge id",
+                  content = @Content
+          )}
+  )
+  @Parameter(
+          name = "challengeId",
+          description = "The id of the challenge",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = ChallengeDTO.class)
+                  )})
   @DeleteMapping("/delete/{challengeId}")
   @ResponseBody
   public ResponseEntity<String> moveChallengeToLog(@PathVariable @NonNull Long challengeId) {
