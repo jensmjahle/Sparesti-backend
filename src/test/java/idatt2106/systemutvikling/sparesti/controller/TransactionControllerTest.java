@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class TransactionControllerTest {
 
+
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired

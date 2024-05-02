@@ -26,9 +26,10 @@ import java.util.List;
 @AllArgsConstructor
 public class TransactionService {
 
+  private static final int testInterval = 30;
   public static final Date DEFAULT_EXPENSES_TIME_SPAN = new Date(
-      System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000);
-  private static final boolean DISABLE_OPENAI_PROMPTS = true;
+      System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000 * testInterval);
+  private static final boolean DISABLE_OPENAI_PROMPTS = false;
   private final TransactionServiceInterface transactionSocket;
   private final TransactionCategoryCacheService cacheService;
   private final UserRepository dbUser;

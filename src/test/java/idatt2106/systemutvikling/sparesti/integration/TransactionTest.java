@@ -8,6 +8,7 @@ import idatt2106.systemutvikling.sparesti.dto.PaginatedRequestDTO;
 import idatt2106.systemutvikling.sparesti.mockBank.service.MockBankAccountService;
 import idatt2106.systemutvikling.sparesti.mockBank.service.BankTransactionService;
 import idatt2106.systemutvikling.sparesti.mockBank.service.CustomerService;
+import idatt2106.systemutvikling.sparesti.mockBank.service.MockDataConfig;
 import idatt2106.systemutvikling.sparesti.security.SecretsConfig;
 import idatt2106.systemutvikling.sparesti.security.SecurityConfig;
 import idatt2106.systemutvikling.sparesti.service.OpenAIService;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureDataJpa
 @Import({ SecurityConfig.class, TransactionService.class, BankTransactionService.class,
           MockBankAccountService.class, CustomerService.class, SecretsConfig.class, OpenAIService.class,
-          OpenAIRestTemplateConfig.class, TransactionCategoryCacheService.class })
+          OpenAIRestTemplateConfig.class, TransactionCategoryCacheService.class, MockDataConfig.class })
 public class TransactionTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
