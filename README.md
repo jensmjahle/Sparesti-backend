@@ -74,6 +74,31 @@ To run this program you need:
 > If you are not within the network of NTNU, you can run the backend locally by changing the
 > application.properties file in the resources folder to use a local database.
 
+### Database connection
+
+The default connection to the database is set up to use our database hosted within a virtual
+machine.
+This is the recommended way to run the project, as it is the most up-to-date version of the
+database.
+If you want to run the database locally, you can change the database connection to use a local
+database by following these steps:
+
+1. Navigate to root folder of the project
+2. Make sure you have docker installed and running
+3. Navigate to the scripts folder:
+   ```sh
+    cd scripts
+   ```
+4. Run the following command to start the database:
+   ```sh
+    cmd.exe /c run_database.cmd
+   ```
+5. The database should now be running on localhost:3306
+6. Change the database connection in the application.properties file in the resources folder to use
+   the local database by commenting out the current connection and uncommenting the LOCALHOST
+   connection.
+7. (OPTIONAL) Test data is located in the scripts folder and can be added to the database thu sql:
+
 ## Usage
 
 The backend provides several API endpoints that the frontend can use to interact with the
