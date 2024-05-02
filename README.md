@@ -97,7 +97,8 @@ database by following these steps:
 6. Change the database connection in the application.properties file in the resources folder to use
    the local database by commenting out the current connection and uncommenting the LOCALHOST
    connection.
-7. (OPTIONAL) Test data is located in the scripts folder and can be added to the database thu sql:
+7. (OPTIONAL) Test data is located in the scripts folder and can be added to the database through
+   sql:
 
 ## Usage
 
