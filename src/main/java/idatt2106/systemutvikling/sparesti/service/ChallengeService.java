@@ -242,7 +242,7 @@ public class ChallengeService {
     boolean success = transactionService.createSavingsTransferForCurrentUser(transferAmount);
 
     // Verify transaction success
-    if (success)
+    if (!success)
       throw new BankConnectionErrorException("Failed to transfer funds to savings");
 
 
