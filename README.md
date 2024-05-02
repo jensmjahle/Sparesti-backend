@@ -33,7 +33,7 @@ Asciinema for a more sophisticated method.
 
 ## Installation and execution
 
-> **Note:** The database and openAI API key will be deleted after May 2024, so the project will not
+> **Note:** The database and openAI API key will be deleted after June 2024, so the project will not
 > work as intended after this.
 
 ### Prerequisites
@@ -124,12 +124,12 @@ Jens Martin Jahle
 This project is currently finished and will not be maintained.
 There are no plans to continue development on this project in the future.
 
-The openAI API key will be invalidated after May 2024, so the project will not work as intended
+The openAI API key will be invalidated after June 2024, so the project will not work as intended
 after this.
 Feel free to change the API key located in the application.properties file to continue using the
 project.
 
-The database will be deleted after May 2024, so the project will not work as intended after this.
+The database will be deleted after June 2024, so the project will not work as intended after this.
 Feel free to change the database connection located in the application.properties file to continue
 using the project.
 
