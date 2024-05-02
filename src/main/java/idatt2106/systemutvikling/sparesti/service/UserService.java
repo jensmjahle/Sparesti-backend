@@ -8,6 +8,7 @@ import idatt2106.systemutvikling.sparesti.exceptions.BankConnectionErrorExceptio
 import idatt2106.systemutvikling.sparesti.exceptions.ConflictException;
 import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException;
 import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
+import idatt2106.systemutvikling.sparesti.mapper.Base64Mapper;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
 import idatt2106.systemutvikling.sparesti.repository.*;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+/**
+ * Service class for the services related to the User entity.
+ */
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -145,7 +149,7 @@ public class UserService {
     }
 
     if (Objects.nonNull(updatedUserDTO.getProfilePictureBase64())) {
-      existingUser.setProfilePicture(updatedUserDTO.getProfilePictureBase64().getBytes());
+      existingUser.setProfilePicture(Base64Mapper.toByteArray(updatedUserDTO.getProfilePictureBase64()));
     }
 
     if (Objects.nonNull(updatedUserDTO.getCurrentAccount())) {
@@ -247,7 +251,11 @@ public class UserService {
   }
 
 
-
+  /**
+   * Method to delete the current user using CurrentUserService.
+   *
+   * @return {@code true} if the user was deleted, {@code false} otherwise.
+   */
   public boolean deleteCurrentUser() {
     String username = CurrentUserService.getCurrentUsername();
 

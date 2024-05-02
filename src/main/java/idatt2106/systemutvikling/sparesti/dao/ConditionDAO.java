@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Access Object for Condition
+ */
 @Getter
 @Setter
 @NoArgsConstructor

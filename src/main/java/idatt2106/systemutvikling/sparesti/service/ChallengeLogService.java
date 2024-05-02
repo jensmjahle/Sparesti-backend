@@ -12,6 +12,9 @@ import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for handling ChallengeLogDAOs.
+ */
 @Service
 @AllArgsConstructor
 public class ChallengeLogService {
@@ -21,6 +24,7 @@ public class ChallengeLogService {
 
   /**
    * Method to get the challenge completion rate for a user based on the challenge logs.
+   * The completion rate is calculated by summing the achieved sum of all challenges and dividing it by the goal sum.
    *
    * @param username the username of the user
    * @return A double between 0 and 1 representing the challenge completion rate
@@ -51,6 +55,7 @@ public class ChallengeLogService {
 
   /**
    * Method to get the challenge acceptance rate for a user based on the challenge logs.
+   * The acceptance rate is calculated by summing the amount of accepted challenges and dividing it by the total amount of challenges.
    *
    * @param username the username of the user
    * @return A double between 0 and 1 representing the challenge acceptance rate
@@ -79,6 +84,14 @@ public class ChallengeLogService {
     }
   }
 
+  /**
+   * Method to get the challenge logs for a user based on the completion date and username.
+   * The method returns a list of challenge logs that have a completion date after the given start date.
+   *
+   * @param username username of the user
+   * @param startDate start date of the challenge
+   * @return list of challenge logs
+   */
   public List<ChallengeLogDAO> getChallengesByCompletionDateAfterAndUsername(String username,
       LocalDateTime startDate) {
     try {
@@ -96,6 +109,13 @@ public class ChallengeLogService {
     }
   }
 
+  /**
+   * Method to get a map of challenges by category ratio for a user. The ratio is calculated by dividing the amount of challenges
+   * in a category by the total amount of challenges. The method returns a map with the category as the key and the ratio as the value.
+   *
+   * @param username username of the user
+   * @return map of challenges by category ratio
+   */
   public Map<TransactionCategory, Double> getChallengesByCategoryRatio(String username) {
     try {
       List<ChallengeLogDAO> challengeLogs = challengeLogRepository
@@ -126,6 +146,13 @@ public class ChallengeLogService {
     }
   }
 
+  /**
+   * Method to get a map of challenges by category accepted ratio for a user. The ratio is calculated by dividing the amount of accepted challenges
+   * in a category by the total amount of challenges in that category. The method returns a map with the category as the key and the ratio as the value.
+   *
+   * @param username username of the user
+   * @return map of challenges by category accepted ratio
+   */
   public Map<TransactionCategory, Double> getChallengesByCategoryAcceptedRatio(String username) {
     try {
       List<ChallengeLogDAO> challengeLogs = challengeLogRepository
@@ -161,6 +188,13 @@ public class ChallengeLogService {
     }
   }
 
+  /**
+   * Method to get a map of challenges by theme ratio for a user. The ratio is calculated by dividing the amount of challenges
+   * in a theme by the total amount of challenges. The method returns a map with the theme as the key and the ratio as the value.
+   *
+   * @param username username of the user
+   * @return map of challenges by theme ratio
+   */
   public Map<ChallengeTheme, Double> getChallengesByThemeRatio(String username) {
     try {
       List<ChallengeLogDAO> challengeLogs = challengeLogRepository

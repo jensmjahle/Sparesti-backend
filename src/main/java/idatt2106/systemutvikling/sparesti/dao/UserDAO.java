@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data access object for User
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,6 +29,7 @@ public class UserDAO {
     private String lastName;
     private LocalDate birthDate;
     @Lob
+    @Column(length=67000)
     private byte[] profilePicture;
     private Long monthlyIncome;
     private Long monthlySavings;

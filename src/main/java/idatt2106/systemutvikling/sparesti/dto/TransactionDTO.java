@@ -12,6 +12,9 @@ import lombok.Setter;
 
 import java.util.Date;
 
+/**
+ * Data transfer object for Transaction
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -17,7 +17,10 @@ public class CurrentUserService {
     public static String KEY_USERNAME = "Username";
 
     /**
-     * @return the username of the currently authenticated user.
+     * Method to get the current username. If the user is not authenticated, null is returned.
+     * The username is stored in the SecurityContext of the token.
+     *
+     * @return the username of the current user
      */
     public static String getCurrentUsername() {
         if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
@@ -28,6 +31,12 @@ public class CurrentUserService {
         return (String) userDetails.get(KEY_USERNAME);
     }
 
+    /**
+     * Method to check if the current user is a complete user.
+     * A user is complete if they have two accounts.
+     *
+     * @return true if the user is complete, false otherwise
+     */
     public static boolean isCompleteUser() {
         return SecurityContextHolder
                 .getContext()
@@ -36,6 +45,12 @@ public class CurrentUserService {
                 .contains(new SimpleGrantedAuthority(SecurityConfig.ROLE_COMPLETE));
     }
 
+    /**
+     * Method to get the details of the current user.
+     * The details are stored in the SecurityContext of the token.
+     *
+     * @return the details of the current user
+     */
     public Object getUserDetails () {
         return SecurityContextHolder.getContext().getAuthentication().getDetails();
     }

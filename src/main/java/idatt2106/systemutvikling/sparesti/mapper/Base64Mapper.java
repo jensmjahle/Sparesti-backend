@@ -3,9 +3,18 @@ package idatt2106.systemutvikling.sparesti.mapper;
 import java.util.Base64;
 import java.util.logging.Logger;
 
+/**
+ * Mapper class for converting images to base64 strings and vice versa.
+ */
 public class Base64Mapper {
   static Logger logger = Logger.getLogger(Base64Mapper.class.getName());
 
+  /**
+   * Converts an image to a base64 string.
+   *
+   * @param image the image to convert
+   * @return the base64 string
+   */
   public static String toBase64String(byte[] image) {
     logger.info("Converting image to base64 string");
     if (image != null) {
@@ -17,6 +26,12 @@ public class Base64Mapper {
     return null;
   }
 
+  /**
+   * Converts a base64 string to an image.
+   *
+   * @param base64String the base64 string to convert
+   * @return the image
+   */
   public static byte[] toByteArray(String base64String) {
     logger.info("Converting base64 string to image");
     if (base64String != null) {

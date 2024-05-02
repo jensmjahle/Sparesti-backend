@@ -1,5 +1,8 @@
 package idatt2106.systemutvikling.sparesti.enums;
-// TODO: 17.04.2024 -  not complete
+
+/**
+ * Enum for the condition type of a challenge.
+ */
 public enum ConditionType {
   MILESTONES,
   CHALLENGES,

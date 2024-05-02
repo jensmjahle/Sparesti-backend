@@ -4,6 +4,9 @@ import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository for the UserDAO entity.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<UserDAO, String> {
 

@@ -11,11 +11,35 @@ import org.springframework.data.domain.Pageable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Repository interface for the Transaction entity.
+ */
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionDAO, Long> {
+
+  /**
+   * Method to find all transactions that belong to an account.
+   *
+   * @param accountDAO the account entity
+   * @return a list of transaction entities as TransactionDAO
+   */
   List<TransactionDAO> findTransactionDAOSByAccountDAO(AccountDAO accountDAO);
 
+  /**
+   * Method to find all transactions that belong to an account with a given account number.
+   *
+   * @param debtorAccountNumber the account number of the account
+   * @param pageable the page number
+   * @return a list of transaction entities as TransactionDAO
+   */
   List<TransactionDAO> findTransactionDAOByDebtorAccount(Long debtorAccountNumber, Pageable pageable);
 
+  /**
+   * Method to find all transactions that belong to an account with a given account number and a date limit.
+   *
+   * @param accountNr the account number of the account
+   * @param dateLimit the date limit
+   * @return a list of transaction entities as TransactionDAO
+   */
   List<TransactionDAO> findByAccountDAO_AccountNrAndTimeAfter(Long accountNr, Date dateLimit);
 }

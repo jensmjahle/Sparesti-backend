@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
+/**
+ * Controller for handling challenges.
+ */
 @RestController
 @RequestMapping("/user/challenge")
 @AllArgsConstructor
@@ -25,6 +28,12 @@ public class ChallengeController {
   private final MilestoneService milestoneService;
   private final Logger logger = Logger.getLogger(ChallengeController.class.getName());
 
+  /**
+   * Method for getting active challenges.
+   *
+   * @param pageable The page to get
+   * @return the active challenges
+   */
   @GetMapping("/paginated/active")
   @ResponseBody
   public ResponseEntity<Page<ChallengeDTO>> getActiveChallenges(Pageable pageable) {
@@ -35,6 +44,12 @@ public class ChallengeController {
         challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
+  /**
+   * Method for getting inactive challenges.
+   *
+   * @param pageable The page to get
+   * @return the inactive challenges
+   */
   @GetMapping("/paginated/inactive")
   @ResponseBody
   public ResponseEntity<Page<ChallengeDTO>> getInactiveChallenges(Pageable pageable) {
@@ -45,6 +60,12 @@ public class ChallengeController {
         challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
   }
 
+  /**
+   * Method for getting a challenge.
+   *
+   * @param challengeId The id of the challenge to get
+   * @return the challenge
+   */
   @GetMapping("/{challengeId}")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> getChallenge(@PathVariable Long challengeId) {
@@ -60,6 +81,11 @@ public class ChallengeController {
     return ResponseEntity.ok().body(challengeService.getChallenge(challengeId));
   }
 
+  /**
+   * Method for creating a challenge.
+   *
+   * @param challengeDTO the challenge to create
+   */
   @PostMapping("/create")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> createChallenge(@RequestBody ChallengeDTO challengeDTO) {
@@ -70,6 +96,12 @@ public class ChallengeController {
         .body(ChallengeMapper.toDTO(challengeService.createChallenge(challengeDTO)));
   }
 
+  /**
+   * Method for activating a challenge.
+   *
+   * @param challengeId The id of the challenge to activate
+   * @return the activated challenge
+   */
   @PostMapping("/activate/{challengeId}")
   @ResponseBody
   public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable Long challengeId) {
@@ -91,6 +123,13 @@ public class ChallengeController {
         .body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
   }
 
+  /**
+   * Method for completing a challenge.
+   *
+   * @param challengeId The id of the challenge to complete
+   * @param milestoneId The id of the milestone to complete
+   * @return the completed challenge
+   */
   @PostMapping("/complete")
   @ResponseBody
   public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") @NonNull Long challengeId,
@@ -113,6 +152,12 @@ public class ChallengeController {
     return ResponseEntity.ok().body("Challenge completed");
   }
 
+  /**
+   * Method for deleting a challenge.
+   *
+   * @param challengeId The id of the challenge to delete
+   * @return the deleted challenge
+   */
   @DeleteMapping("/delete/{challengeId}")
   @ResponseBody
   public ResponseEntity<String> moveChallengeToLog(@PathVariable Long challengeId) {

@@ -58,15 +58,15 @@ public class MilestoneServiceTest {
     MilestoneDAO milestoneDAO1 = new MilestoneDAO();
     milestoneDAO1.setMilestoneId(1L);
     milestoneDAO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO1.setUserDAO(user1);
 
     MilestoneDAO milestoneDAO2 = new MilestoneDAO();
     milestoneDAO2.setMilestoneId(2L);
     milestoneDAO2.setMilestoneTitle("Milestone Title 2");
-    milestoneDAO2.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO2.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO2.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO2.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO2.setUserDAO(user1);
 
     List<MilestoneDTO> milestoneDTOS = List.of(MilestoneMapper.toDTO(milestoneDAO1), MilestoneMapper.toDTO(milestoneDAO2));
@@ -89,15 +89,15 @@ public class MilestoneServiceTest {
     MilestoneDAO milestoneDAO1 = new MilestoneDAO();
     milestoneDAO1.setMilestoneId(1L);
     milestoneDAO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO1.setUserDAO(user1);
 
     MilestoneDAO milestoneDAO2 = new MilestoneDAO();
     milestoneDAO2.setMilestoneId(2L);
     milestoneDAO2.setMilestoneTitle("Milestone Title 2");
-    milestoneDAO2.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO2.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO2.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO2.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO2.setUserDAO(user1);
 
     List<MilestoneDTO> milestoneDTOS = List.of(MilestoneMapper.toDTO(milestoneDAO1), MilestoneMapper.toDTO(milestoneDAO2));
@@ -120,8 +120,8 @@ public class MilestoneServiceTest {
     MilestoneDAO milestoneDAO1 = new MilestoneDAO();
     milestoneDAO1.setMilestoneId(1L);
     milestoneDAO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO1.setUserDAO(user1);
 
     when(milestoneRepository.findMilestoneDAOByMilestoneIdAndUserDAO_Username(milestoneDAO1.getMilestoneId(), user1.getUsername())).thenReturn(milestoneDAO1);
@@ -140,8 +140,8 @@ public class MilestoneServiceTest {
     MilestoneDAO milestoneDAO1 = new MilestoneDAO();
     milestoneDAO1.setMilestoneId(1L);
     milestoneDAO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO1.setUserDAO(user1);
 
     MilestoneDTO milestoneDTO1 = MilestoneMapper.toDTO(milestoneDAO1);
@@ -162,8 +162,8 @@ public class MilestoneServiceTest {
     MilestoneDAO milestoneDAO1 = new MilestoneDAO();
     milestoneDAO1.setMilestoneId(1L);
     milestoneDAO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO1.setUserDAO(user1);
 
     when(milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDAO1.getMilestoneId())).thenReturn(milestoneDAO1);
@@ -181,8 +181,8 @@ public class MilestoneServiceTest {
     MilestoneDAO milestoneDAO1 = new MilestoneDAO();
     milestoneDAO1.setMilestoneId(1L);
     milestoneDAO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO1.setUserDAO(user1);
     milestoneDAO1.setMilestoneCurrentSum(0L);
     milestoneDAO1.setMilestoneGoalSum(200L);
@@ -190,8 +190,8 @@ public class MilestoneServiceTest {
     MilestoneDTO milestoneDTO1 = new MilestoneDTO();
     milestoneDTO1.setMilestoneId(1L);
     milestoneDTO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDTO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDTO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDTO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDTO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDTO1.setMilestoneCurrentSum(100L);
     milestoneDTO1.setMilestoneGoalSum(200L);
     milestoneDTO1.setUsername(user1.getUsername());
@@ -212,8 +212,8 @@ public class MilestoneServiceTest {
     MilestoneDAO milestoneDAO1 = new MilestoneDAO();
     milestoneDAO1.setMilestoneId(1L);
     milestoneDAO1.setMilestoneTitle("Milestone Title 1");
-    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
-    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0 ));
+    milestoneDAO1.setStartDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
+    milestoneDAO1.setDeadlineDate(LocalDateTime.of(2025, 1, 1, 12, 0, 0));
     milestoneDAO1.setUserDAO(user1);
     milestoneDAO1.setMilestoneCurrentSum(0L);
     milestoneDAO1.setMilestoneGoalSum(100L);
@@ -222,8 +222,8 @@ public class MilestoneServiceTest {
     MilestoneDTO milestoneDTO1 = new MilestoneDTO();
     milestoneDTO1.setMilestoneId(1L);
     milestoneDTO1.setMilestoneTitle("Milestone Title 2");
-    milestoneDTO1.setStartDate(LocalDateTime.of(2023, 1, 1, 12, 0, 0 ));
-    milestoneDTO1.setDeadlineDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0 ));
+    milestoneDTO1.setStartDate(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    milestoneDTO1.setDeadlineDate(LocalDateTime.of(2024, 1, 1, 12, 0, 0));
     milestoneDTO1.setMilestoneCurrentSum(100L);
     milestoneDTO1.setMilestoneGoalSum(200L);
     milestoneDTO1.setUsername(user1.getUsername());
@@ -268,7 +268,7 @@ public class MilestoneServiceTest {
 
   @Test
   @DisplayName("Test editMilestone returns unchanged milestoneDTO")
-public void testEditMilestoneReturnsUnchangedMilestoneDTO() {
+  public void testEditMilestoneReturnsUnchangedMilestoneDTO() {
     UserDAO user1 = new UserDAO();
     user1.setUsername("JohnSmith12");
 
@@ -407,5 +407,43 @@ public void testEditMilestoneReturnsUnchangedMilestoneDTO() {
     when(milestoneRepository.save(milestoneDAO1)).thenReturn(milestoneDAO1);
 
     assertEquals(milestoneDTO1.getMilestoneCurrentSum(), milestoneService.decreaseMilestonesCurrentSum(milestoneDAO1.getMilestoneId(), 50L).getMilestoneCurrentSum());
+  }
+
+  @Test
+  @DisplayName("Test decreaseMilestoneCurrentSum returns null when milestone is not found")
+  public void testDecreaseMilestoneCurrentSumReturnsNullWhenMilestoneIsNotFound() {
+    UserDAO user1 = new UserDAO();
+    user1.setUsername("JohnSmith12");
+
+    MilestoneDAO milestoneDAO1 = new MilestoneDAO();
+    milestoneDAO1.setMilestoneId(1L);
+    milestoneDAO1.setMilestoneTitle("Title");
+    milestoneDAO1.setMilestoneDescription("Description");
+    milestoneDAO1.setMilestoneCurrentSum(100L);
+    milestoneDAO1.setMilestoneGoalSum(100L);
+    milestoneDAO1.setUserDAO(user1);
+
+    when(milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDAO1.getMilestoneId())).thenReturn(null);
+
+    assertNull(milestoneService.decreaseMilestonesCurrentSum(milestoneDAO1.getMilestoneId(), 50L));
+  }
+
+  @Test
+  @DisplayName("Test deleteMilestone deletes milestone")
+  public void testDeleteMilestoneDeletesMilestone() {
+    UserDAO user1 = new UserDAO();
+    user1.setUsername("JohnSmith12");
+
+    MilestoneDAO milestoneDAO1 = new MilestoneDAO();
+    milestoneDAO1.setMilestoneId(1L);
+    milestoneDAO1.setMilestoneTitle("Title");
+    milestoneDAO1.setMilestoneDescription("Description");
+    milestoneDAO1.setUserDAO(user1);
+
+    when(milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDAO1.getMilestoneId())).thenReturn(milestoneDAO1);
+
+    milestoneService.deleteMilestone(user1.getUsername(), milestoneDAO1.getMilestoneId());
+
+    verify(milestoneRepository, times(1)).delete(milestoneDAO1);
   }
 }

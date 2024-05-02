@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repository for the MilestoneDAO entity.
+ */
 @Repository
 public interface MilestoneRepository extends JpaRepository<MilestoneDAO, Long> {
 
@@ -67,6 +70,10 @@ public interface MilestoneRepository extends JpaRepository<MilestoneDAO, Long> {
    */
   List<MilestoneDAO> findMilestoneDAOSByDeadlineDateBefore(LocalDateTime deadlineDate);
 
-
+  /**
+   * Method to delete all milestones to a user.
+   *
+   * @param username the username of the user
+   */
   void deleteAllByUserDAO_Username(String username);
 }

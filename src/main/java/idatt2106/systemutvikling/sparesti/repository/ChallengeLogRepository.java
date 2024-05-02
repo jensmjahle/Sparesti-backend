@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repository for the ChallengeLogDAO entity.
+ */
 @Repository
 public interface ChallengeLogRepository extends JpaRepository<ChallengeLogDAO, Long> {
 

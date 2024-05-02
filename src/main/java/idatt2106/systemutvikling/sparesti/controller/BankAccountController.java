@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller for handling bank accounts.
+ */
 @RestController
 @RequestMapping("/user/account")
 @AllArgsConstructor
@@ -22,9 +25,12 @@ public class BankAccountController {
   private final Logger logger = Logger.getLogger(BankAccountController.class.getName());
   private BankAccountService srvAccount;
 
-
+  /**
+   * Method for getting all bank accounts for the current user.
+   *
+   * @return all bank accounts for the current user
+   */
   @GetMapping
-  //todo: move logic to service layer
   public ResponseEntity<?> getAllBankAccounts() {
     List<BankAccount> accounts = srvAccount.getAllAccountsForCurrentUser();
 

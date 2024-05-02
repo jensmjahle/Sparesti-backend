@@ -43,12 +43,24 @@ public class AchievementMapper {
     return dto;
   }
 
+  /**
+   * Maps a list of AchievementDTO to a list of AchievementDAO.
+   *
+   * @param dtos List of AchievementDTO to be mapped
+   * @return List of AchievementDAO
+   */
   public static List<AchievementDAO> toDAOList(List<AchievementDTO> dtos) {
     List<AchievementDAO> daos = new ArrayList<>();
     for (AchievementDTO dto : dtos) daos.add(toDAO(dto));
     return daos;
   }
 
+  /**
+   * Maps a list of AchievementDAO to a list of AchievementDTO.
+   *
+   * @param daos List of AchievementDAO to be mapped
+   * @return List of AchievementDTO
+   */
   public static List<AchievementDTO> toDTOList(List<AchievementDAO> daos) {
     List<AchievementDTO> dtos = new ArrayList<>();
     for (AchievementDAO dao : daos) dtos.add(toDTO(dao));

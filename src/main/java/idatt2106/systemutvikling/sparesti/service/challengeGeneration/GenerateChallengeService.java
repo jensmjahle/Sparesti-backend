@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for generating challenges for users.
+ */
 @Service
 @AllArgsConstructor
 public class GenerateChallengeService {
@@ -126,6 +129,13 @@ public class GenerateChallengeService {
     }
   }
 
+  /**
+   * Initializes the ChallengeData object for a user. The ChallengeData object is used to generate
+   * challenges for the user.
+   *
+   * @param user The user to initialize the ChallengeData object for.
+   * @return The initialized ChallengeData object.
+   */
   public ChallengeData initializeChallengeData(UserDAO user) {
     List<ChallengeDAO> activeChallenges = challengeService.getChallengesByActiveAndUsername(
         user.getUsername(), true);
@@ -147,9 +157,8 @@ public class GenerateChallengeService {
     LocalDateTime endOfMonth = LocalDateTime.now().withDayOfMonth(1).plusMonths(1).withHour(0)
         .withMinute(0).withSecond(0);
     LocalDateTime today = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
-    List<Transaction> transactions = transactionService.getLatestExpensesForUser_CheckingAccount(
-        user.getUsername(),
-        TransactionService.DEFAULT_EXPENSES_TIME_SPAN);
+    List<Transaction> transactions = transactionService.getTransactionsCategorized(
+        TransactionService.DEFAULT_EXPENSES_TIME_SPAN, user.getUsername());
     Map<TransactionCategory, Double> categoryExpenseRatio = getCategoryExpenseRatio(transactions);
     Map<TransactionCategory, Double> pastChallengesByCategoryRatio = challengeLogService.getChallengesByCategoryRatio(
         user.getUsername());
@@ -167,6 +176,13 @@ public class GenerateChallengeService {
         pastChallengesByThemeRatio);
   }
 
+  /**
+   * Gets the total savings for a user this month. The total savings is the sum of the current sum
+   * of all active challenges and the achieved sum of all completed challenges this month.
+   *
+   * @param username The username of the user to get the total savings for.
+   * @return The total savings for the user this month.
+   */
   private double getThisMonthTotalSavings(String username) {
     List<ChallengeDAO> challenges = challengeService.getChallengesStartedAfterDate(
         LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0),
@@ -199,6 +215,14 @@ public class GenerateChallengeService {
     return totalPlannedSavings;
   }
 
+  /**
+   * Gets the ratio of expenses for each category in a list of transactions. The ratio is calculated
+   * by dividing the amount of expenses in a category by the total amount of expenses.
+   *
+   * @param transactions The list of transactions to get the category expense ratio for.
+   * @return A map with the category as the key and the ratio of expenses in that category as the
+   * value.
+   */
   private Map<TransactionCategory, Double> getCategoryExpenseRatio(List<Transaction> transactions) {
     Map<TransactionCategory, Double> categoryExpense = new HashMap<>();
     double totalExpenses = 0;

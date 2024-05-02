@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Model class for the Transaction entity.
+ */
 @Getter
 @Setter
 @ToString

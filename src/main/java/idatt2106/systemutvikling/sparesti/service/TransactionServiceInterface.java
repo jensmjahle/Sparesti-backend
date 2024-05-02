@@ -6,6 +6,9 @@ import idatt2106.systemutvikling.sparesti.model.Transaction;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Interface for the TransactionService class.
+ */
 public interface TransactionServiceInterface {
 
     /**

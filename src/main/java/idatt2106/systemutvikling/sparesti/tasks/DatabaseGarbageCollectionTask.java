@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class for running a garbage collection task on the database.
+ */
 @AllArgsConstructor
 @Component
 public class DatabaseGarbageCollectionTask {
@@ -15,6 +18,9 @@ public class DatabaseGarbageCollectionTask {
   private final Logger logger = Logger.getLogger(DatabaseGarbageCollectionTask.class.getName());
   private final TransactionCategoryCacheService transactionCategoryCacheService;
 
+  /**
+   * Task to run garbage collection on the database. Runs every day at 00.00.
+   */
   @Scheduled(cron = "${garbage.collection.cron.expression:0 0 0 * * *}")
   public void runGarbageCollection() {
     try {

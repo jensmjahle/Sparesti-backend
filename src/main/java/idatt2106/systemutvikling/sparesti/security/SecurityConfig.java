@@ -14,6 +14,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class for configuring the security of the application.
+ */
 @EnableWebSecurity
 @AllArgsConstructor
 @Configuration
@@ -26,6 +29,16 @@ public class SecurityConfig {
 
   private SecretsConfig secrets;
 
+  /**
+   * Configures the security filter chain. This method is used to configure the security filter
+   * chain. The method configures the security filter chain to disable csrf, set cors configuration,
+   * authorize http requests, set session management to stateless and add a JWT authorization filter
+   * before the UsernamePasswordAuthenticationFilter.
+   *
+   * @param http the http security object
+   * @return the security filter chain
+   * @throws Exception if an error occurs
+   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     CorsConfiguration corsConfiguration = new CorsConfiguration();

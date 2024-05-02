@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class for generating challenges.
+ */
 @Component
 @AllArgsConstructor
 public class GenerateChallengeTask {
