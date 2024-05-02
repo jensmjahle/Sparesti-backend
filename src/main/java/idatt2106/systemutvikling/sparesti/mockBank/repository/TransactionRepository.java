@@ -42,4 +42,12 @@ public interface TransactionRepository extends JpaRepository<TransactionDAO, Lon
    * @return a list of transaction entities as TransactionDAO
    */
   List<TransactionDAO> findByAccountDAO_AccountNrAndTimeAfter(Long accountNr, Date dateLimit);
+
+    /**
+   * Method to find all transactions that belong to an account with a given account number.
+   *
+   * @param accountNr the account number of the account
+   * @return a list of transaction entities as TransactionDAO
+   */
+  List<TransactionDAO> findByAccountDAO_AccountNr(Long accountNr);
 }
