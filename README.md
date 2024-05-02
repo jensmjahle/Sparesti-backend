@@ -156,6 +156,21 @@ which the backend runs)
 
 4. The test coverage report will be displayed in the web browser
 
+### Display java documentation:
+
+1. Navigate to the root folder of the project
+2. Navigate to the apidocs folder
+
+```sh
+ cd target/site/apidocs
+```
+
+3. Open the index.html file in a web browser
+
+```sh
+  start index.html
+  ```
+
 ### Additional information
 
 In TransactionService the attribute "testInterval" is used to determine the time limit for the
