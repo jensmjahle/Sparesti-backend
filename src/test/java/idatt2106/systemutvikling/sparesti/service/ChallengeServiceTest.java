@@ -373,7 +373,7 @@ public class ChallengeServiceTest {
     List<ChallengeDTO> challengeDTOs = List.of(ChallengeMapper.toDTO(challenge1),
         ChallengeMapper.toDTO(challenge2));
 
-    Pageable pageable = PageRequest.of(0, 2, Sort.by("expirationDate").descending());
+    Pageable pageable = PageRequest.of(0, 2, Sort.by("expirationDate").ascending());
 
     when(challengeRepository.findChallengeDAOSByUserDAO_UsernameAndActive("JohnSmith12", true,
         pageable)).thenReturn(new PageImpl<>(List.of(challenge1, challenge2), pageable, 2));

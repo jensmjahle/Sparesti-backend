@@ -88,7 +88,7 @@ public class ChallengeService {
     Pageable sortedPageable = PageRequest.of(
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        Sort.by("expirationDate").descending());
+        Sort.by("expirationDate").ascending());
 
     hasChallengeTimeElapsed(
         challengeRepository.findChallengeDAOSByUserDAO_Username(username, sortedPageable));
@@ -117,7 +117,7 @@ public class ChallengeService {
     Pageable sortedPageable = PageRequest.of(
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        Sort.by("expirationDate").descending());
+        Sort.by("expirationDate").ascending());
 
     hasChallengeTimeElapsed(
         challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
