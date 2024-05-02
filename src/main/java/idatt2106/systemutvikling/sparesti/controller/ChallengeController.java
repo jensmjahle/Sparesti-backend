@@ -113,8 +113,8 @@ public class ChallengeController {
                     }
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input for challenge id",
+                    responseCode = "403",
+                    description = "Lacking ownership of the specified challenge",
                     content = @io.swagger.v3.oas.annotations.media.Content
             )}
     )
@@ -136,7 +136,7 @@ public class ChallengeController {
         if (!challenge.getUsername().equals(CurrentUserService.getCurrentUsername()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
-        return ResponseEntity.ok().body(challengeService.getChallenge(challengeId));
+        return ResponseEntity.ok().body(challenge);
     }
 
     @Operation(
@@ -187,8 +187,13 @@ public class ChallengeController {
                     }
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input for challenge id",
+                    responseCode = "403",
+                    description = "Lacking ownership of the specified challenge",
+                    content = @io.swagger.v3.oas.annotations.media.Content
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "The challenge is already active",
                     content = @io.swagger.v3.oas.annotations.media.Content
             )}
     )
@@ -233,9 +238,9 @@ public class ChallengeController {
                     }
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input for challenge id or milestone id",
-                    content = @io.swagger.v3.oas.annotations.media.Content
+                    responseCode = "403",
+                    description = "Lacking ownership of the specified challenge or the specified milestone",
+                    content = @Content
             )}
     )
     @Parameter(
@@ -283,8 +288,8 @@ public class ChallengeController {
                     }
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input for challenge id",
+                    responseCode = "403",
+                    description = "Challenge with the specified challenge ID is not owned by the authenticated user",
                     content = @Content
             )}
     )
