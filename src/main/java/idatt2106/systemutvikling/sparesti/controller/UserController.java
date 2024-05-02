@@ -4,6 +4,11 @@ import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 
 import java.util.logging.Logger;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.transaction.Transactional;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +30,27 @@ public class UserController {
     this.userService = userService;
   }
 
+  @Operation(
+      summary = "Get total savings for all users",
+      description = "Get the total amount saved by all users"
+  )
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "Total savings found",
+              content = {
+                  @Content(mediaType = "application/json",
+                      schema = @Schema(implementation = Long.class))
+              }
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Internal server error",
+              content = @Content
+          )
+      }
+  )
   @GetMapping("/get/totalSavings")
   public ResponseEntity<Long> getTotalSavingsForAllUsers() {
     logger.info("Received request to get total savings for all users.");
@@ -34,6 +60,27 @@ public class UserController {
     return ResponseEntity.ok(savings);
   }
 
+  @Operation(
+      summary = "Get user total savings",
+      description = "Get the total amount saved by the current user"
+  )
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "User savings found",
+              content = {
+                  @Content(mediaType = "application/json",
+                      schema = @Schema(implementation = Long.class))
+              }
+          ),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Internal server error",
+              content = @Content
+          )
+      }
+  )
   @GetMapping("/get/savings")
   public ResponseEntity<Long> getUserTotalSavings() {
     logger.info("Received request to get user total savings.");
@@ -43,12 +90,46 @@ public class UserController {
     return ResponseEntity.ok(savings);
   }
 
+  @Operation(
+      summary = "Get user information",
+      description = "Get the information of the current user"
+  )
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "User information found",
+              content = {
+                  @Content(mediaType = "application/json",
+                      schema = @Schema(implementation = UserDTO.class))
+              }
+          )
+      }
+  )
   @GetMapping("/get")
   public ResponseEntity<UserDTO> getUserDTO() {
     logger.info("Received request to get user information.");
     return ResponseEntity.ok(userService.getUserDTO(CurrentUserService.getCurrentUsername()));
   }
 
+  @Operation(
+      summary = "Delete user information",
+      description = "Delete the information of the current user"
+  )
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "User deleted",
+              content = @Content
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "No user found",
+              content = @Content
+          )
+      }
+  )
   @Transactional
   @DeleteMapping("/delete")
   public ResponseEntity<String> deleteUserDTO() {
