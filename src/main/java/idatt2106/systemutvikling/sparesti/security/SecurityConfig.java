@@ -43,7 +43,7 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowedOrigins(
-        List.of("http://localhost:5173")); // specify your allowed origins
+        List.of("http://localhost:5173", "http://localhost:4173")); // specify your allowed origins
     corsConfiguration.setAllowedMethods(
         Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // specify your allowed methods
     corsConfiguration.setAllowCredentials(true);
