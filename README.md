@@ -154,3 +154,13 @@ which the backend runs)
   ```
 
 4. The test coverage report will be displayed in the web browser
+
+### Additional information
+
+In TransactionService the attribute "testInterval" is used to determine the time limit for the
+retrieval of transactions
+from the bank API. This attribute is set high to always retrieve the transactions from the bank API.
+This is done to
+ensure that the test transactions are always retrieved. In a real-world scenario, this attribute
+should not be present and removed from the codebase.
+The attribute is only used for testing purposes.
