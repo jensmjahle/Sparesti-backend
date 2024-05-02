@@ -4,15 +4,20 @@ import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mapper class for the Transaction entity.
+ */
 public class KeywordMapper {
-private static final Map<String, TransactionCategory> keywordCategoryMap = new HashMap<>();
 
-static {
+  private static final Map<String, TransactionCategory> keywordCategoryMap = new HashMap<>();
+
+  static {
     //GROCERIES
     keywordCategoryMap.put("dagligvare", TransactionCategory.GROCERIES);
     keywordCategoryMap.put("matvarebutikk", TransactionCategory.GROCERIES);
     keywordCategoryMap.put("matbutikk", TransactionCategory.GROCERIES);
     keywordCategoryMap.put("rema 1000", TransactionCategory.GROCERIES);
+    keywordCategoryMap.put("rema1000", TransactionCategory.GROCERIES);
     keywordCategoryMap.put("kiwi", TransactionCategory.GROCERIES);
     keywordCategoryMap.put("meny", TransactionCategory.GROCERIES);
     keywordCategoryMap.put("coop", TransactionCategory.GROCERIES);
@@ -29,6 +34,7 @@ static {
     keywordCategoryMap.put("kafeteria", TransactionCategory.RESTAURANT_AND_CAFE);
     keywordCategoryMap.put("restaurant", TransactionCategory.RESTAURANT_AND_CAFE);
     keywordCategoryMap.put("kafé", TransactionCategory.RESTAURANT_AND_CAFE);
+    keywordCategoryMap.put("kafe", TransactionCategory.RESTAURANT_AND_CAFE);
     keywordCategoryMap.put("mcdonald's", TransactionCategory.RESTAURANT_AND_CAFE);
     keywordCategoryMap.put("burger king", TransactionCategory.RESTAURANT_AND_CAFE);
     keywordCategoryMap.put("starbucks", TransactionCategory.RESTAURANT_AND_CAFE);
@@ -56,6 +62,7 @@ static {
     keywordCategoryMap.put("bysykkel", TransactionCategory.TRANSPORTATION);
     keywordCategoryMap.put("ryde", TransactionCategory.TRANSPORTATION);
     keywordCategoryMap.put("tier", TransactionCategory.TRANSPORTATION);
+    keywordCategoryMap.put("circle k", TransactionCategory.TRANSPORTATION);
 
     //SHOPPING
     keywordCategoryMap.put("shopping", TransactionCategory.SHOPPING);
@@ -69,6 +76,8 @@ static {
     keywordCategoryMap.put("sportsbutikk", TransactionCategory.SHOPPING);
     keywordCategoryMap.put("bokhandel", TransactionCategory.SHOPPING);
     keywordCategoryMap.put("gullsmed", TransactionCategory.SHOPPING);
+    keywordCategoryMap.put("komplett", TransactionCategory.SHOPPING);
+    keywordCategoryMap.put("boozt.com", TransactionCategory.SHOPPING);
 
     //ENTERTAINMENT
     keywordCategoryMap.put("entertainment", TransactionCategory.ENTERTAINMENT);
@@ -113,11 +122,17 @@ static {
     keywordCategoryMap.put("bidrag", TransactionCategory.LOAN_DONATIONS);
     keywordCategoryMap.put("sponsing", TransactionCategory.LOAN_DONATIONS);
     keywordCategoryMap.put("skjønnsmidler", TransactionCategory.LOAN_DONATIONS);
-}
+  }
 
-public static TransactionCategory getCategory(String keyword) {
-    return keywordCategoryMap.getOrDefault(keyword.toLowerCase(), TransactionCategory.NOT_CATEGORIZED);
-
-}
+  /**
+   * Method to get the category of a transaction based on a keyword.
+   *
+   * @param keyword the keyword to get the category of
+   * @return the category of the keyword
+   */
+  public static TransactionCategory getCategory(String keyword) {
+    return keywordCategoryMap.getOrDefault(keyword.toLowerCase(),
+        TransactionCategory.NOT_CATEGORIZED);
+  }
 }
 

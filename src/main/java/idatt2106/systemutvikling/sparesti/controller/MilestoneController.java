@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Controller for handling milestones.
+ */
 @RestController
 @RequestMapping(value = "/milestone")
 @EnableAutoConfiguration

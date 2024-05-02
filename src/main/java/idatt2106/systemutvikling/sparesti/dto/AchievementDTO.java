@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data transfer object for Achievement
+ */
 @Getter
 @Setter
 public class AchievementDTO {

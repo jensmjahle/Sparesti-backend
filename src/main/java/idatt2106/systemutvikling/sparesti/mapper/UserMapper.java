@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper class for UserDAO and UserDTO
  */
-
 @Component
 public class UserMapper {
 
@@ -18,7 +17,6 @@ public class UserMapper {
    * @param userDAO The `UserDAO` instance to be mapped.
    * @return A new `UserDTO` containing the relevant data from the `UserDAO`.
    */
-
   public static UserDTO toUserDTO(UserDAO userDAO) {
     UserDTO userDTO = new UserDTO();
 

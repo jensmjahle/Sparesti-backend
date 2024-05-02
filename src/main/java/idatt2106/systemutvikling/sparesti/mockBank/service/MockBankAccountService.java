@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for the BankAccount entity.
+ */
 @Service
 public class MockBankAccountService implements BankAccountServiceInterface {
   private final AccountRepository accountRepository;
@@ -25,16 +28,34 @@ public class MockBankAccountService implements BankAccountServiceInterface {
     this.customerService = customerService;
   }
 
+  /**
+   * Method to find an account by its account number, then return the account entity as AccountDAO.
+   *
+   * @param accountNumber the account number of the account
+   * @return the account entity as AccountDAO
+   */
   public AccountDAO findAccountByAccountNr(Long accountNumber) {
     Optional<AccountDAO> accountDAOOptional = accountRepository.findAccountDAOByAccountNr(accountNumber);
     return accountDAOOptional.orElseThrow(() -> new RuntimeException(accountNumber+" was not found"));
   }
 
+  /**
+   * Method to find all accounts that belong to a customer with a given username.
+   *
+   * @param username the username of the customer
+   * @return a list of account entities as AccountDAO
+   */
   public List<AccountDAO> findAccountsByUsername(String username) {
     CustomerDAO customer = customerService.findCustomerByUsername(username);
     return accountRepository.findAccountDAOSByCustomerDAO(customer);
   }
 
+  /**
+   * Method to find all account numbers that belong to a customer with a given username.
+   *
+   * @param accountNumber the account number of the account
+   * @return a list of account numbers
+   */
   public List<AccountDAO> findOtherAccountsOwnedBySameUser(@NonNull Long accountNumber) {
     AccountDAO originalAccount = accountRepository.findAccountDAOByAccountNr(accountNumber).orElse(null);
     if (originalAccount == null)
@@ -47,6 +68,12 @@ public class MockBankAccountService implements BankAccountServiceInterface {
     return accountRepository.findAccountDAOSByCustomerDAO(c);
   }
 
+  /**
+   * Method to find all account numbers that belong to a customer with a given username.
+   *
+   * @param consent the consent of the PSU user
+   * @return a list of account numbers
+   */
   public List<BankAccount> getAllAccountsOfUser(PSUConsent consent) {
     String username = consent.getPsuId();
 

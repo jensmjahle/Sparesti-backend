@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+/**
+ * Service class for the services related to the User entity.
+ */
 @Service
 @AllArgsConstructor
 public class UserService {

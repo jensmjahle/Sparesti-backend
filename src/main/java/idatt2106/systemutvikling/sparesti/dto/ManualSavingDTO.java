@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data transfer object for ManualSaving
+ */
 @Getter
 @Setter
 @NoArgsConstructor

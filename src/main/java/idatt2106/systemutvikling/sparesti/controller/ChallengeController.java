@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
+/**
+ * Controller for handling challenges.
+ */
 @RestController
 @RequestMapping("/user/challenge")
 @AllArgsConstructor

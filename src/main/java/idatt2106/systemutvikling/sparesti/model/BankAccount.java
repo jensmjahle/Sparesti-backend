@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Model class for the BankAccount entity.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

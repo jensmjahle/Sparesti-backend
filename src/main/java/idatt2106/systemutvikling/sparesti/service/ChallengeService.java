@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for handling challenges.
+ */
 @Service
 @AllArgsConstructor
 public class ChallengeService {
@@ -26,7 +29,8 @@ public class ChallengeService {
   private ChallengeLogRepository challengeLogRepository;
 
   /**
-   * Method to get a challenge by its id from the database and return it as a ChallengeDTO object to the frontend.
+   * Method to get a challenge by its id from the database and return it as a ChallengeDTO object to
+   * the frontend.
    *
    * @param challengeId the id of the challenge
    * @return the challenge with the given id
@@ -36,7 +40,8 @@ public class ChallengeService {
   }
 
   /**
-   * Method to get all challenges from the database and return them as a list of ChallengeDTO objects to the frontend.
+   * Method to get all challenges from the database and return them as a list of ChallengeDTO
+   * objects to the frontend.
    *
    * @return a list of all challenges
    */
@@ -52,11 +57,12 @@ public class ChallengeService {
   }
 
   /**
-   * Method to get all challenges by username. The challenges are sorted by expiration date. The method returns a list of ChallengeDTO objects to the frontend.
+   * Method to get all challenges by username. The challenges are sorted by expiration date. The
+   * method returns a list of ChallengeDTO objects to the frontend.
    *
    * @param username the username of the user
-   * @param page tells which page to get
-   * @param size tells how many challenges to get
+   * @param page     tells which page to get
+   * @param size     tells how many challenges to get
    * @return a list of challenges that belong to the user with the given username
    */
   public List<ChallengeDTO> getChallengesByUsername(String username, int page, int size) {
@@ -74,7 +80,8 @@ public class ChallengeService {
   }
 
   /**
-    * Method to get all active challenges by username. The challenges are sorted by expiration date. The method returns a list of ChallengeDTO objects to the frontend.
+   * Method to get all active challenges by username. The challenges are sorted by expiration date.
+   * The method returns a list of ChallengeDTO objects to the frontend.
    *
    * @param username the username of the user
    * @param pageable the pageable object
@@ -85,7 +92,7 @@ public class ChallengeService {
     Pageable sortedPageable = PageRequest.of(
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        Sort.by("expirationDate").descending());
+        Sort.by("expirationDate").ascending());
 
     hasChallengeTimeElapsed(
         challengeRepository.findChallengeDAOSByUserDAO_Username(username, sortedPageable));
@@ -103,7 +110,8 @@ public class ChallengeService {
   }
 
   /**
-   * Method to get all inactive challenges by username. The challenges are sorted by expiration date. The method returns a list of ChallengeDTO objects to the frontend.
+   * Method to get all inactive challenges by username. The challenges are sorted by expiration
+   * date. The method returns a list of ChallengeDTO objects to the frontend.
    *
    * @param username the username of the user
    * @param pageable the pageable object
@@ -114,7 +122,7 @@ public class ChallengeService {
     Pageable sortedPageable = PageRequest.of(
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        Sort.by("expirationDate").descending());
+        Sort.by("expirationDate").ascending());
 
     hasChallengeTimeElapsed(
         challengeRepository.findChallengeDAOSByUserDAO_Username(username, pageable));
@@ -131,7 +139,8 @@ public class ChallengeService {
   }
 
   /**
-   * Method to check if the time for a challenge has elapsed. If the time has elapsed, the challenge is saved as a challenge log and deleted from the database.
+   * Method to check if the time for a challenge has elapsed. If the time has elapsed, the challenge
+   * is saved as a challenge log and deleted from the database.
    *
    * @param challengeDAOS a list of challenges to check
    */
@@ -149,7 +158,8 @@ public class ChallengeService {
 
   /**
    * Method to create a challenge log from a challenge. The method returns a ChallengeLogDAO object.
-   * The challenge log is created with the current date and time. The challenge log is created with the same information as the challenge.
+   * The challenge log is created with the current date and time. The challenge log is created with
+   * the same information as the challenge.
    *
    * @param challengeDAO the challenge to create a challenge log from
    * @return the challenge log
@@ -168,8 +178,9 @@ public class ChallengeService {
   }
 
   /**
-   * Method to create a challenge. The method returns a ChallengeDAO object. The challenge is created with the current date and time.
-   * The challenge is created with the same information as the challengeDTO. The challenge is created with the current user as the owner.
+   * Method to create a challenge. The method returns a ChallengeDAO object. The challenge is
+   * created with the current date and time. The challenge is created with the same information as
+   * the challengeDTO. The challenge is created with the current user as the owner.
    *
    * @param challengeDTO the challenge to create
    * @return the challenge
@@ -184,8 +195,9 @@ public class ChallengeService {
   }
 
   /**
-   * Method to update a challenge. The method returns a ChallengeDAO object. The challenge is updated with the current date and time.
-   * The challenge is updated with the same information as the challengeDTO. The challenge is updated with the current user as the owner.
+   * Method to update a challenge. The method returns a ChallengeDAO object. The challenge is
+   * updated with the current date and time. The challenge is updated with the same information as
+   * the challengeDTO. The challenge is updated with the current user as the owner.
    *
    * @param challengeId the id of the challenge to activate
    * @return the activated challenge
@@ -197,8 +209,9 @@ public class ChallengeService {
   }
 
   /**
-   * Method to complete a challenge. The method returns a ChallengeLogDAO object. The challenge is completed with the current date and time.
-   * The challenge is completed with the same information as the challenge. The challenge is deleted from the database and saved as a challenge log.
+   * Method to complete a challenge. The method returns a ChallengeLogDAO object. The challenge is
+   * completed with the current date and time. The challenge is completed with the same information
+   * as the challenge. The challenge is deleted from the database and saved as a challenge log.
    *
    * @param challengeId the id of the challenge to complete
    * @return the completed challenge
@@ -213,8 +226,7 @@ public class ChallengeService {
   }
 
   /**
-   * Method to move a challenge from active challenges database
-   * to the complete challenge database.
+   * Method to move a challenge from active challenges database to the complete challenge database.
    *
    * @param challengeId the id of the challenge to delete
    */
@@ -242,12 +254,14 @@ public class ChallengeService {
   }
 
   /**
-   * Method to get all challenges by username that have started after a given date and time and are active
+   * Method to get all challenges by username that have started after a given date and time and are
+   * active
    *
    * @param username the username of the user
    * @return a list of challenges that belong to the user with the given username
    */
-  public List<ChallengeDAO> getChallengesStartedAfterDate(LocalDateTime startDate, String username) {
+  public List<ChallengeDAO> getChallengesStartedAfterDate(LocalDateTime startDate,
+      String username) {
     try {
       return challengeRepository.findChallengeDAOSByStartDateAfterAndUserDAO_Username(startDate,
           username);
@@ -255,6 +269,20 @@ public class ChallengeService {
       logger.severe("Failed to get challenges this month for user " + username + e.getMessage());
       throw new RuntimeException(
           "Failed to get challenges this month for user " + username + e.getMessage());
+    }
+  }
+
+  /**
+   * Moves all expired challenges to the challenge log.
+   */
+  public void moveExpiredChallengesToLog() {
+    List<ChallengeDAO> challenges = challengeRepository.findAll();
+    for (ChallengeDAO challenge : challenges) {
+      if (challenge.getExpirationDate().isBefore(LocalDateTime.now())) {
+        ChallengeLogDAO challengeLog = createChallengeLog(challenge);
+        challengeLogRepository.save(challengeLog);
+        challengeRepository.delete(challenge);
+      }
     }
   }
 }

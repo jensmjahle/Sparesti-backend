@@ -7,6 +7,9 @@ import org.springframework.lang.Nullable;
 
 import java.util.Date;
 
+/**
+ * Data Access Object for ManualSaving
+ */
 @Entity
 @Table(name = "manual_savings")
 @Getter

@@ -22,6 +22,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Service class for the BankTransaction entity.
+ */
 @Service
 @AllArgsConstructor
 public class BankTransactionService implements TransactionServiceInterface {
@@ -30,8 +33,13 @@ public class BankTransactionService implements TransactionServiceInterface {
   private final TransactionRepository transactionRepository;
   private final MockBankAccountService accountService;
 
-
-
+  /**
+   * Fetches the latest expenses for an account number.
+   *
+   * @param accountNumber The account number to fetch expenses for.
+   * @param dateLimit The date limit for the expenses.
+   * @return List<Transaction> The list of transactions.
+   */
   @Override
   public List<Transaction> getLatestExpensesForAccountNumber(Long accountNumber, Date dateLimit) {
     List<AccountDAO> allAccountsForUser = accountService.findOtherAccountsOwnedBySameUser(accountNumber);

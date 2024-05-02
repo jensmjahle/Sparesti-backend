@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+/**
+ * Service class for handling manual saving entries.
+ */
 @Service
 @AllArgsConstructor
 public class ManualSavingService {
@@ -47,15 +50,29 @@ public class ManualSavingService {
     return dbManualSaving.save(dao);
   }
 
-
+  /**
+   * Retrieves all manual saving entries for a user. The entries are sorted by time of transfer.
+   *
+   * @param dao the user to retrieve manual saving entries for
+   */
   public void removeManualSavingEntry(ManualSavingDAO dao) {
     dbManualSaving.delete(dao);
   }
 
+  /**
+   * Retrieves all manual saving entries for a user. The entries are sorted by time of transfer.
+   *
+   * @param manualSavingId the id of the manual saving entry to remove
+   */
   public void removeManualSavingEntry(Long manualSavingId) {
     dbManualSaving.deleteById(manualSavingId);
   }
 
+  /**
+   * Retrieves all manual saving entries for a user. The entries are sorted by time of transfer.
+   *
+   * @param username the username of the user to retrieve manual saving entries for
+   */
   public double getThisMonthTotalManualSavings(String username) {
     LocalDateTime startOfMth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0)
         .withSecond(0).withNano(0);

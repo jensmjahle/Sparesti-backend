@@ -25,6 +25,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
 
+/**
+ * Controller for handling tokens.
+ */
 @RestController
 @RequestMapping(value = "/auth")
 @EnableAutoConfiguration

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Model class for the Message entity.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

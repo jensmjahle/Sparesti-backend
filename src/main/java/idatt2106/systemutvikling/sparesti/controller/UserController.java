@@ -17,6 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 
+/**
+ * Controller for handling user information.
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/users")
@@ -142,6 +145,13 @@ public class UserController {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found");
   }
 
+  /**
+   * Method for updating user information.
+   *
+   * @param token the token
+   * @param updatedUserDTO the updated user information
+   * @return response entity
+   */
   @PutMapping("/update")
   public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token,
       @RequestBody UserDTO updatedUserDTO) {

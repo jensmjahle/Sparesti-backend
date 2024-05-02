@@ -5,6 +5,9 @@ import idatt2106.systemutvikling.sparesti.model.PSUConsent;
 
 import java.util.List;
 
+/**
+ * Interface for the BankAccountService class.
+ */
 public interface BankAccountServiceInterface {
 
     /**

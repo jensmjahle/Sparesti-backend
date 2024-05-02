@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Access Object for Milestone
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +29,7 @@ public class MilestoneDAO {
     private Long milestoneCurrentSum;
 
     @Lob
-    @Column(length = 10000)
+    @Column(length = 100000)
     private byte[] milestoneImage;
     private LocalDateTime deadlineDate;
     private LocalDateTime startDate;

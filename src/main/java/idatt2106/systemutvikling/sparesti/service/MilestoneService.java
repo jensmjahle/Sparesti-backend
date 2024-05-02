@@ -19,11 +19,13 @@ import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 
 import java.util.List;
 
+/**
+ * Service class for handling Milestones.
+ */
 @Service
 public class MilestoneService {
 
   private final MilestoneRepository milestoneRepository;
-
 
   private final UserRepository userRepository;
 
@@ -32,7 +34,8 @@ public class MilestoneService {
   private final MilestoneLogService milestoneLogService;
 
   @Autowired
-  public MilestoneService(MilestoneRepository milestoneRepository, UserRepository userRepository, MilestoneLogService milestoneLogService) {
+  public MilestoneService(MilestoneRepository milestoneRepository, UserRepository userRepository,
+      MilestoneLogService milestoneLogService) {
     this.milestoneRepository = milestoneRepository;
     this.userRepository = userRepository;
     this.milestoneLogService = milestoneLogService;
@@ -44,15 +47,17 @@ public class MilestoneService {
    * @param username The username of the user to get milestones for.
    * @return List of MilestoneDTOs.
    */
-  public Page<MilestoneDTO> getActiveMilestonesDTOsByUsernamePaginated(String username, Pageable pageable) {
+  public Page<MilestoneDTO> getActiveMilestonesDTOsByUsernamePaginated(String username,
+      Pageable pageable) {
     try {
       hasMilestoneTimeElapsed(milestoneRepository.findMilestoneDAOByUserDAO_Username(username));
       Pageable sortedPageable = PageRequest.of(
-              pageable.getPageNumber(),
-              pageable.getPageSize(),
-              Sort.by("deadlineDate"));
+          pageable.getPageNumber(),
+          pageable.getPageSize(),
+          Sort.by("deadlineDate"));
 
-      Page<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username, sortedPageable);
+      Page<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(
+          username, sortedPageable);
 
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneDAO milestoneDAO : milestoneDAOs) {
@@ -74,7 +79,8 @@ public class MilestoneService {
   public List<MilestoneDTO> getActiveMilestonesDTOsByUsername(String username) {
     try {
       hasMilestoneTimeElapsed(milestoneRepository.findMilestoneDAOByUserDAO_Username(username));
-      List<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(username);
+      List<MilestoneDAO> milestoneDAOs = milestoneRepository.findMilestoneDAOByUserDAO_Username(
+          username);
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneDAO milestoneDAO : milestoneDAOs) {
         milestoneDTOS.add(MilestoneMapper.toDTO(milestoneDAO));
@@ -94,7 +100,8 @@ public class MilestoneService {
    */
   public void completeMilestone(String username, Long milestoneId) {
     try {
-      MilestoneDAO milestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneIdAndUserDAO_Username(milestoneId, username);
+      MilestoneDAO milestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneIdAndUserDAO_Username(
+          milestoneId, username);
       MilestoneLogDAO milestoneLogDAO = MilestoneMapper.toLogDAO(milestoneDAO);
       milestoneLogService.completeMilestone(milestoneLogDAO);
       milestoneRepository.delete(milestoneDAO);
@@ -123,8 +130,7 @@ public class MilestoneService {
   }
 
   /**
-   * Method to get a specific milestone by its id.
-   * If the milestone is not found, null is returned.
+   * Method to get a specific milestone by its id. If the milestone is not found, null is returned.
    *
    * @param milestoneID the id of the milestone
    * @return the milestone
@@ -140,19 +146,22 @@ public class MilestoneService {
   }
 
   /**
-   * Method to update a milestone. If the milestone is completed, it will be deleted.
-   * If not, it will be updated. The milestone will be completed if the current sum is greater than or equal to the goal sum.
+   * Method to update a milestone. If the milestone is completed, it will be deleted. If not, it
+   * will be updated. The milestone will be completed if the current sum is greater than or equal to
+   * the goal sum.
    *
-   * @param username The username of the user to update the milestone for.
+   * @param username     The username of the user to update the milestone for.
    * @param milestoneDTO The milestone to update.
    * @return The updated milestone.
    */
   public MilestoneDTO updateMilestoneDTO(String username, MilestoneDTO milestoneDTO) {
     try {
-      MilestoneDAO updatingMilestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDTO.getMilestoneId());
+      MilestoneDAO updatingMilestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneId(
+          milestoneDTO.getMilestoneId());
       updatingMilestoneDAO.setMilestoneCurrentSum(milestoneDTO.getMilestoneCurrentSum());
 
-      if (updatingMilestoneDAO.getMilestoneCurrentSum() >= updatingMilestoneDAO.getMilestoneGoalSum()) {
+      if (updatingMilestoneDAO.getMilestoneCurrentSum()
+          >= updatingMilestoneDAO.getMilestoneGoalSum()) {
         completeMilestone(username, updatingMilestoneDAO.getMilestoneId());
       } else {
         milestoneRepository.save(updatingMilestoneDAO);
@@ -166,15 +175,15 @@ public class MilestoneService {
     }
   }
 
-  public void deleteMilestone(String username, Long milestoneId){
+  public void deleteMilestone(String username, Long milestoneId) {
     try {
       MilestoneDAO milestoneDAO = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneId);
-      if(!Objects.equals(milestoneDAO.getUserDAO().getUsername(), username)){
+      if (!Objects.equals(milestoneDAO.getUserDAO().getUsername(), username)) {
         return;
       }
       milestoneRepository.delete(milestoneDAO);
-    } catch (RuntimeException e){
-      logger.severe("Error when deleting milestone: "+e.getMessage());
+    } catch (RuntimeException e) {
+      logger.severe("Error when deleting milestone: " + e.getMessage());
     }
   }
 
@@ -182,16 +191,17 @@ public class MilestoneService {
   /**
    * Method to delete a milestone. If the milestone is not found, null is returned.
    *
-   * @param username The username of the user to delete the milestone for.
+   * @param username     The username of the user to delete the milestone for.
    * @param milestoneDTO The milestone to delete.
    * @return True if the milestone was deleted, false otherwise.
    */
 
-  public MilestoneDTO editMilestone(String username, MilestoneDTO milestoneDTO){
+  public MilestoneDTO editMilestone(String username, MilestoneDTO milestoneDTO) {
     try {
-      MilestoneDAO updatedMilestone = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneDTO.getMilestoneId());
+      MilestoneDAO updatedMilestone = milestoneRepository.findMilestoneDAOByMilestoneId(
+          milestoneDTO.getMilestoneId());
       UserDAO user = userRepository.findByUsername(username);
-      if(!Objects.equals(user.getUsername(), updatedMilestone.getUserDAO().getUsername())){
+      if (!Objects.equals(user.getUsername(), updatedMilestone.getUserDAO().getUsername())) {
         return null;
       }
       if (Objects.nonNull(milestoneDTO.getMilestoneTitle())) {
@@ -200,53 +210,56 @@ public class MilestoneService {
       if (Objects.nonNull(milestoneDTO.getMilestoneDescription())) {
         updatedMilestone.setMilestoneDescription(milestoneDTO.getMilestoneDescription());
       }
-      if( Objects.nonNull(milestoneDTO.getMilestoneImage())){
-        updatedMilestone.setMilestoneImage(Base64Mapper.toByteArray(milestoneDTO.getMilestoneImage()));
+      if (Objects.nonNull(milestoneDTO.getMilestoneImage())) {
+        updatedMilestone.setMilestoneImage(
+            Base64Mapper.toByteArray(milestoneDTO.getMilestoneImage()));
       }
-      if(Objects.nonNull(milestoneDTO.getMilestoneCurrentSum())){
+      if (Objects.nonNull(milestoneDTO.getMilestoneCurrentSum())) {
         updatedMilestone.setMilestoneCurrentSum(milestoneDTO.getMilestoneCurrentSum());
       }
-      if(Objects.nonNull(milestoneDTO.getMilestoneGoalSum())){
+      if (Objects.nonNull(milestoneDTO.getMilestoneGoalSum())) {
         updatedMilestone.setMilestoneGoalSum(milestoneDTO.getMilestoneGoalSum());
       }
-      if(Objects.nonNull(milestoneDTO.getStartDate())){
+      if (Objects.nonNull(milestoneDTO.getStartDate())) {
         updatedMilestone.setStartDate(milestoneDTO.getStartDate());
       }
-      if(Objects.nonNull(milestoneDTO.getDeadlineDate())){
+      if (Objects.nonNull(milestoneDTO.getDeadlineDate())) {
         updatedMilestone.setDeadlineDate(milestoneDTO.getDeadlineDate());
       }
       milestoneRepository.save(updatedMilestone);
       return MilestoneMapper.toDTO(updatedMilestone);
-    } catch (RuntimeException e){
-      logger.severe("Error when editing milestone: "+e.getMessage());
+    } catch (RuntimeException e) {
+      logger.severe("Error when editing milestone: " + e.getMessage());
       return null;
     }
   }
 
   /**
-   * Method to increase the current sum of a milestone. If the milestone is completed, it will be deleted.
-   * If not, it will be updated. The milestone will be completed if the current sum is greater than or equal to the goal sum.
+   * Method to increase the current sum of a milestone. If the milestone is completed, it will be
+   * deleted. If not, it will be updated. The milestone will be completed if the current sum is
+   * greater than or equal to the goal sum.
    *
    * @param milestoneId The id of the milestone to increase the current sum for.
-   * @param amount The amount to increase the current sum with.
+   * @param amount      The amount to increase the current sum with.
    * @return The updated milestone.
    */
   public MilestoneDAO increaseMilestonesCurrentSum(Long milestoneId, Long amount) {
     MilestoneDAO milestone = milestoneRepository.findMilestoneDAOByMilestoneId(milestoneId);
 
-    if (milestone == null)
+    if (milestone == null) {
       return null;
+    }
 
     milestone.setMilestoneCurrentSum(milestone.getMilestoneCurrentSum() + amount);
     return milestoneRepository.save(milestone);
   }
 
   /**
-   * Method to decrease the current sum of a milestone. If the milestone is completed, it will be deleted.
-   * If not, it will be updated.
+   * Method to decrease the current sum of a milestone. If the milestone is completed, it will be
+   * deleted. If not, it will be updated.
    *
    * @param milestoneId the id of the milestone to decrease the current sum for
-   * @param amount the amount to decrease the current sum with
+   * @param amount      the amount to decrease the current sum with
    * @return the updated milestone
    */
   public MilestoneDAO decreaseMilestonesCurrentSum(Long milestoneId, Long amount) {
@@ -254,19 +267,24 @@ public class MilestoneService {
   }
 
   /**
-   * Method to check if the deadline date of a milestone has elapsed.
-   * If the deadline date has elapsed, the milestone will be completed.
+   * Method to check if the deadline date of a milestone has elapsed. If the deadline date has
+   * elapsed, the milestone will be completed.
    *
    * @param milestoneDAOS the milestones to check
    */
   public void hasMilestoneTimeElapsed(List<MilestoneDAO> milestoneDAOS) {
     LocalDateTime now = LocalDateTime.now();
-      for (MilestoneDAO milestoneDAO : milestoneDAOS) {
-          if (!milestoneDAO.getDeadlineDate().isAfter(now)) {
-              Long milestoneId = milestoneDAO.getMilestoneId();
-              String username = milestoneDAO.getUserDAO().getUsername();
-              completeMilestone(username, milestoneId);
-          }
+    for (MilestoneDAO milestoneDAO : milestoneDAOS) {
+      if (!milestoneDAO.getDeadlineDate().isAfter(now)) {
+        Long milestoneId = milestoneDAO.getMilestoneId();
+        String username = milestoneDAO.getUserDAO().getUsername();
+        completeMilestone(username, milestoneId);
       }
+    }
+  }
+
+  public void moveExpiredMilestonesToLog() {
+    List<MilestoneDAO> milestones = milestoneRepository.findAll();
+    hasMilestoneTimeElapsed(milestones);
   }
 }
