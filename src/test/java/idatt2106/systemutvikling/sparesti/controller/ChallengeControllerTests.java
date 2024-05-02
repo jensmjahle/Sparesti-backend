@@ -1,5 +1,8 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -72,10 +77,15 @@ public class ChallengeControllerTests {
 
 
 
+    private static final ObjectMapper mapper = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .build();
+
     private static MockedStatic<CurrentUserService> utilities;
 
     @BeforeAll
     public static void beforeAll() {
+
         utilities = Mockito.mockStatic(CurrentUserService.class);
     }
 
@@ -90,6 +100,82 @@ public class ChallengeControllerTests {
 
 
 
+    // ### getActiveChallenges ###
+
+    @Test
+    public void getActiveChallenges_okWhenInvalidValues() throws Exception {
+        int page = -1;
+        int size = -1;
+
+        // Setup pageable object for use in response generation
+        Pageable pageable = Pageable.ofSize(20).withPage(0);
+
+        // Set authenticated username
+        setUser(TEST_USERNAME);
+
+        // Set return value of service layer
+        given(challengeService.getActiveChallenges(TEST_USERNAME, pageable)).willReturn(null);
+
+        // Http request path
+        final String URI = String.format("/user/challenge/paginated/active?page=%d&size=%d", page, size);
+
+        // Perform http request
+        mvc.perform(get(URI)).andExpect(status().isOk());
+
+        // Verify that the service layer function was called
+        verify(challengeService).getActiveChallenges(TEST_USERNAME, pageable);
+    }
+
+
+
+    // ### getInactiveChallenges ###
+
+    @Test
+    public void getInactiveChallenges_okWhenInvalidValues() throws Exception {
+        int page = -1;
+        int size = -1;
+
+        // Setup pageable object for use in response generation
+        Pageable pageable = Pageable.ofSize(20).withPage(0);
+
+        // Set authenticated username
+        setUser(TEST_USERNAME);
+
+        // Set return value of service layer
+        given(challengeService.getInactiveChallenges(TEST_USERNAME, pageable)).willReturn(null);
+
+        // Http request path
+        final String URI = String.format("/user/challenge/paginated/inactive?page=%d&size=%d", page, size);
+
+        // Perform http request
+        mvc.perform(get(URI)).andExpect(status().isOk());
+
+        // Verify that the service layer function was called
+        verify(challengeService).getInactiveChallenges(TEST_USERNAME, pageable);
+    }
+
+
+
+    // ### createChallenge ###
+
+    @Test
+    public void createChallenge_returnCreated() throws Exception {
+        // Copy the default values used for testing
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+        final String challengeJson = mapper.writeValueAsString(challenge);
+
+        // Set authenticated username
+        setUser(TEST_USERNAME);
+
+        // Set return value of service layer
+        given(challengeService.createChallenge(any(ChallengeDTO.class))).willReturn(ChallengeMapper.toDAO(challenge));
+
+        // Perform http request
+        mvc.perform(post("/user/challenge/create")
+                        .content(challengeJson)
+                        .contentType("application/json"))
+                .andExpect(status().isCreated());
+    }
 
 
 
@@ -238,15 +324,15 @@ public class ChallengeControllerTests {
     }
 
     @Test
-    public void completeChallenge_badRequestWhenUserDoesNotOwnChallenge() throws Exception {
+    public void completeChallenge_forbiddenWhenUserDoesNotOwnChallenge() throws Exception {
         // Copy the default values used for testing
-        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().username("Other user").build();
+        final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().username(TEST_USERNAME_OTHER).build();
         final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().build();
         final Long challengeId = challenge.getChallengeId();
         final Long milestoneId = milestone.getMilestoneId();
 
         // Set the currently logged-in user to the owner of the challenge and milestone
-        setUser(challenge.getUsername());
+        setUser(TEST_USERNAME);
 
         // Stub the service call
         doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
