@@ -4,6 +4,7 @@ import idatt2106.systemutvikling.sparesti.dao.AchievementDAO;
 import idatt2106.systemutvikling.sparesti.dao.ConditionDAO;
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.AchievementDTO;
+import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mapper.AchievementMapper;
 import idatt2106.systemutvikling.sparesti.repository.AchievementRepository;
 import idatt2106.systemutvikling.sparesti.repository.ConditionRepository;
@@ -87,8 +88,7 @@ public class AchievementService {
   public List<AchievementDTO> checkForUnlockedAchievements(String username) {
     UserDAO user = userRepository.findByUsername(username);
     if (user == null) {
-      // Handle the case when the user is not found
-      return new ArrayList<>();
+      throw new UserNotFoundException();
     }
     List<AchievementDTO> newAchievements = new ArrayList<>();
     List<AchievementDAO> lockedAchievement = getLockedAchievements(user.getUsername());
