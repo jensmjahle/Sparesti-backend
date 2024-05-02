@@ -16,6 +16,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -32,12 +33,14 @@ public class BankTransactionService implements TransactionServiceInterface {
   private final Logger logger = Logger.getLogger(BankTransactionService.class.getName());
   private final TransactionRepository transactionRepository;
   private final MockBankAccountService accountService;
+  private final MockDataConfig mockProperties;
 
   /**
-   * Fetches the latest expenses for an account number.
+   * Fetches the latest transactions for the specified account. For the sake of testing the method
+   * will return all transactions for the specified account not based of any date.
    *
-   * @param accountNumber The account number to fetch expenses for.
-   * @param dateLimit The date limit for the expenses.
+   * @param accountNumber The account number of the specified account.
+   * @param dateLimit Transactions older than this date will not be fetched.
    * @return List<Transaction> The list of transactions.
    */
   @Override
@@ -45,16 +48,17 @@ public class BankTransactionService implements TransactionServiceInterface {
     List<AccountDAO> allAccountsForUser = accountService.findOtherAccountsOwnedBySameUser(accountNumber);
     List<Long> accounts = allAccountsForUser.stream().map(AccountDAO::getAccountNr).toList();
 
-    List<TransactionDAO> fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfter(accountNumber, dateLimit);
+    List<TransactionDAO> fetchedTransactions;
+    if (mockProperties.isEnabled()) {
+      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNr(accountNumber);
+    } else {
+      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfter(accountNumber, dateLimit);
+    }
 
-      return fetchedTransactions.stream()
-            // Only allow transactions where the debtor is the parameter account.
-            .filter((TransactionDAO t) -> { return t.getDebtorAccount().equals(accountNumber); })
-            // Only allow transactions where the creditor account is not owned by the user
-            .filter((TransactionDAO t) -> { return accounts.stream().noneMatch((Long acId) -> { return t.getCreditorAccount().equals(acId); }); })
-            // Convert all transactions to model class Transaction
+    return fetchedTransactions.stream()
+            .filter((TransactionDAO t) -> t.getDebtorAccount().equals(accountNumber))
+            .filter((TransactionDAO t) -> accounts.stream().noneMatch((Long acId) -> t.getCreditorAccount().equals(acId)))
             .map(MockBankTransactionMapper::toModel)
-
             .toList();
   }
 
