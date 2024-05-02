@@ -6,6 +6,11 @@ import idatt2106.systemutvikling.sparesti.mapper.BankAccountMapper;
 import idatt2106.systemutvikling.sparesti.service.BankAccountService;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
 import java.util.logging.Logger;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +30,19 @@ public class BankAccountController {
   private final Logger logger = Logger.getLogger(BankAccountController.class.getName());
   private BankAccountService srvAccount;
 
-  /**
-   * Method for getting all bank accounts for the current user.
-   *
-   * @return all bank accounts for the current user
-   */
+
+  @Operation(
+      summary = "Get all bank accounts",
+      description = "Get all bank accounts for the current user"
+  )
+  @ApiResponse(
+      responseCode = "200",
+      description = "Bank accounts found",
+      content = {
+          @Content(mediaType = "application/json",
+          schema = @Schema(implementation = BankAccountDTO.class))
+      }
+  )
   @GetMapping
   public ResponseEntity<?> getAllBankAccounts() {
     List<BankAccount> accounts = srvAccount.getAllAccountsForCurrentUser();

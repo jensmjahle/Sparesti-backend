@@ -4,6 +4,11 @@ import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.JWTService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneLogService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,15 +32,30 @@ public class MilestoneLogController {
 
   public MilestoneLogController(MilestoneLogService milestoneLogService, JWTService jwtService) {
     this.milestoneLogService = milestoneLogService;
-      this.jwtService = jwtService;
+    this.jwtService = jwtService;
   }
 
-  /**
-   * Method for getting the milestones for the current user.
-   *
-   * @param pageable The page to get
-   * @return the milestones for the current user
-   */
+  @Operation(
+          summary = "Get user milestones",
+          description = "Get all milestones for the current user"
+  )
+  @ApiResponse(
+          responseCode = "200",
+          description = "Milestones found",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = MilestoneDTO.class))
+          }
+  )
+  @Parameter(
+          name = "pageable",
+          description = "The pageable object",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = Pageable.class)
+                  )
+          }
+  )
   @GetMapping("/user")
   public ResponseEntity<Page<MilestoneDTO>> getUserMilestones(Pageable pageable) {
     String username = CurrentUserService.getCurrentUsername();
@@ -43,12 +63,27 @@ public class MilestoneLogController {
     return ResponseEntity.ok(milestoneLogService.getMilestoneLogsByUsernamePaginated(username, pageable));
   }
 
-  /**
-   * Method for getting the milestones for the current user.
-   *
-   * @param milestoneLogId The id of the milestone to get
-   * @return the milestone for the current user
-   */
+  @Operation(
+          summary = "Get milestone by id",
+          description = "Get a milestone by its id"
+  )
+  @ApiResponse(
+          responseCode = "200",
+          description = "Milestone found",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = MilestoneDTO.class))
+          }
+  )
+  @Parameter(
+          name = "milestoneLogId",
+          description = "The id of the milestone",
+          content = {
+                  @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = Long.class)
+                  )
+          }
+  )
   @GetMapping("/id")
   public ResponseEntity<MilestoneDTO> getMilestoneLogById(@RequestBody Long milestoneLogId) {
     logger.info("Received request to get milestone by id.");
