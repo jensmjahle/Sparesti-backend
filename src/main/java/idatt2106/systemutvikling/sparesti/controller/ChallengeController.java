@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -200,20 +201,16 @@ public class ChallengeController {
   )
   @PostMapping("/activate/{challengeId}")
   @ResponseBody
-  public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable Long challengeId) {
+  public ResponseEntity<ChallengeDTO> activateChallenge(@PathVariable @NonNull Long challengeId) {
 
-    if (challengeId == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    if (challengeService.getChallenge(challengeId).isActive()) {
+    // Verify that the challenge is inactive
+    if (challengeService.getChallenge(challengeId).isActive())
       return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
-    }
 
+    //
     if (!challengeService.getChallenge(challengeId).getUsername()
-            .equals(CurrentUserService.getCurrentUsername())) {
+        .equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body(challengeService.getChallenge(challengeId));
-    }
 
     return ResponseEntity.ok()
             .body(ChallengeMapper.toDTO(challengeService.activateChallenge(challengeId)));
@@ -250,40 +247,22 @@ public class ChallengeController {
   )
   @PostMapping("/complete")
   @ResponseBody
-  public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") Long challengeId,
-                                                  @RequestParam("milestoneId") Long milestoneId) {
-    if (challengeId == null) {
-      return ResponseEntity.badRequest().build();
-    }
+  public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") @NonNull Long challengeId,
+                                                  @RequestParam("milestoneId") @NonNull Long milestoneId) {
 
+    // Verify ownership of the requested challenge
     if (!challengeService.getChallenge(challengeId).getUsername()
-            .equals(CurrentUserService.getCurrentUsername())) {
+        .equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body("You are not the owner of this challenge");
-    }
 
-    if (milestoneId == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
+    // Verify ownership of the requested milestone
     if (!milestoneService.getMilestoneDTOById(milestoneId).getUsername()
-            .equals(CurrentUserService.getCurrentUsername())) {
+        .equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body("You are not the owner of this milestone");
-    }
+    // Perform requested operation
+    challengeService.completeChallengeForCurrentUser(challengeId, milestoneId);
 
-    Long achievedSum = challengeService.getChallenge(challengeId).getGoalSum();
-    Long milestoneCurrentSum = milestoneService.getMilestoneDTOById(milestoneId)
-            .getMilestoneCurrentSum();
-    long targetSum = achievedSum + milestoneCurrentSum;
-
-    milestoneService.increaseMilestonesCurrentSum(milestoneId, achievedSum);
-
-    if (targetSum > milestoneService.getMilestoneDTOById(milestoneId)
-            .getMilestoneCurrentSum()) {
-      return ResponseEntity.badRequest().body("Could not transfer money to milestone");
-    }
-
-    challengeService.completeChallenge(challengeId);
-
+    // Return 200 OK
     return ResponseEntity.ok().body("Challenge completed");
   }
 
@@ -315,16 +294,12 @@ public class ChallengeController {
                   )})
   @DeleteMapping("/delete/{challengeId}")
   @ResponseBody
-  public ResponseEntity<String> moveChallengeToLog(@PathVariable Long challengeId) {
-    if (challengeId == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    if (!challengeService.getChallenge(challengeId).getUsername()
-            .equals(CurrentUserService.getCurrentUsername())) {
+  public ResponseEntity<String> moveChallengeToLog(@PathVariable @NonNull Long challengeId) {
+    // Verify ownership of the challenge
+    if (!challengeService.getChallenge(challengeId).getUsername().equals(CurrentUserService.getCurrentUsername()))
       return ResponseEntity.badRequest().body("You are not the owner of this challenge");
-    }
 
+    // Perform the service layer function
     challengeService.moveChallengeToLog(challengeId);
 
     return ResponseEntity.ok().body("Challenge deleted");

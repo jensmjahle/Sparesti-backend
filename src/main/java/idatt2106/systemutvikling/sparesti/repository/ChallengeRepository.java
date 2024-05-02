@@ -118,4 +118,8 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
 
 
   void deleteAllByUserDAO_Username(String username);
+
+
+
+  ChallengeDAO findByChallengeIdAndUserDAO_Username(Long id, String username);
 }

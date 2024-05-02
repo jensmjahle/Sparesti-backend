@@ -2,8 +2,8 @@ package idatt2106.systemutvikling.sparesti.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 
 /**
  * Data transfer object for Milestone
@@ -11,6 +11,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder=true)
 public class MilestoneDTO {
   @NotNull
 private Long milestoneId;
