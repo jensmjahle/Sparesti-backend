@@ -291,6 +291,7 @@ public class ChallengeGeneratorImpl {
               + "Avoid using the theme in capital letters in the title and description. If you use it translate to norwegian and write it normally.\n"
               + "Only reply with the title and description on this format: Title;Description  \n"
               + "If you use any numbers round them to the nearest whole number. \n"
+              + "Always include at least 10 emojis \n"
               + "If you are unable to generate a title and description, reply with 'NO_TITLE_DESCRIPTION'\n"
               + "Give your answer in norwegian\n"
               + "\n";

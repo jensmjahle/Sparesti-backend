@@ -122,6 +122,12 @@ public class KeywordMapper {
     keywordCategoryMap.put("bidrag", TransactionCategory.LOAN_DONATIONS);
     keywordCategoryMap.put("sponsing", TransactionCategory.LOAN_DONATIONS);
     keywordCategoryMap.put("skjønnsmidler", TransactionCategory.LOAN_DONATIONS);
+
+    //OTHER
+    keywordCategoryMap.put("club", TransactionCategory.OTHER);
+    keywordCategoryMap.put("studio 26", TransactionCategory.OTHER);
+    keywordCategoryMap.put("vinmonopolet", TransactionCategory.OTHER);
+    keywordCategoryMap.put("downtown", TransactionCategory.OTHER);
   }
 
   /**
