@@ -7,6 +7,7 @@ import idatt2106.systemutvikling.sparesti.service.ChallengeService;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.MilestoneService;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -92,12 +93,8 @@ public class ChallengeController {
 
   @PostMapping("/complete")
   @ResponseBody
-  public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") Long challengeId,
-      @RequestParam("milestoneId") Long milestoneId) {
-
-    // Parameter validation
-    if (challengeId == null || milestoneId == null)
-      return ResponseEntity.badRequest().build();
+  public ResponseEntity<String> completeChallenge(@RequestParam("challengeId") @NonNull Long challengeId,
+                                                  @RequestParam("milestoneId") @NonNull Long milestoneId) {
 
     // Verify ownership of the requested challenge
     if (!challengeService.getChallenge(challengeId).getUsername()

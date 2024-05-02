@@ -1,6 +1,7 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
+import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
 import idatt2106.systemutvikling.sparesti.service.ChallengeService;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -29,9 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class ChallengeControllerTests {
 
+    public static final String TEST_USERNAME = "Test user";
+
     private static final ChallengeDTO TEST_CHALLENGE = new ChallengeDTO(
         99L,
-        "Darth",
+            TEST_USERNAME,
         "Test",
         "This is a test challenge",
         100L,
@@ -42,6 +46,18 @@ public class ChallengeControllerTests {
         true
     );
 
+    private static final MilestoneDTO TEST_MILESTONE = new MilestoneDTO(
+            1L,
+            TEST_USERNAME,
+            "Test milestone",
+            "A milestone for testing",
+            100L,
+            0L,
+            "image.jpg",
+            LocalDateTime.now(),
+            LocalDateTime.now().plusDays(3)
+            );
+
     @Autowired
     private MockMvc mvc;
 
@@ -49,46 +65,36 @@ public class ChallengeControllerTests {
     private ChallengeService challengeService;
 
     @MockBean
-    private ChallengeRepository challengeRepository;
-
-    @MockBean
-    private ChallengeLogRepository challengeLogRepository;
-
-    @MockBean
     private MilestoneService milestoneService;
 
 
 
-    //@Test
-    //public void deleteChallenge_preventsUsersFromDeletingEachOthersChallenges() throws Exception {
-    //    final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
-    //
-    //    given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
-    //    doNothing().when(challengeService).deleteChallenge(challenge.getChallengeId());
-    //
-    //    try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-    //        utilities.when(CurrentUserService::getCurrentUsername).thenReturn("Other user");
-    //        mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId()))
-    //                .andExpect(status().is4xxClientError());
-    //
-    //        verify(challengeService, times(0)).deleteChallenge(challenge.getChallengeId());
-    //    }
-    //}
+    @Test
+    public void completeChallenge_okWhenUserOwnsBothMilestoneAndChallenge() throws Exception {
+        try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
+            // Copy the default values used for testing
+            final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+            final MilestoneDTO milestone = TEST_MILESTONE.toBuilder().build();
+            final Long challengeId = challenge.getChallengeId();
+            final Long milestoneId = milestone.getMilestoneId();
 
+            // Set the currently logged-in user to the owner of the challenge and milestone
+            utilities.when(CurrentUserService::getCurrentUsername).thenReturn(TEST_USERNAME);
 
-    //@Test
-    //public void completeChallenge_preventsUsersFromCompletingEachOthersChallenges() throws Exception {
-    //    final ChallengeDTO challenge = TEST_CHALLENGE.toBuilder().build();
+            // Stub the service call
+            doNothing().when(challengeService).completeChallengeForCurrentUser(challengeId, milestoneId);
 
-    //    given(challengeService.getChallenge(challenge.getChallengeId())).willReturn(challenge);
-    //    doNothing().when(challengeService).archiveActiveChallenge(challenge.getChallengeId());
+            // Set return values of service layer functions
+            given(challengeService.getChallenge(challengeId)).willReturn(challenge);
+            given(milestoneService.getMilestoneDTOById(milestoneId)).willReturn(milestone);
 
-    //    try (MockedStatic<CurrentUserService> utilities = Mockito.mockStatic(CurrentUserService.class)) {
-    //        utilities.when(CurrentUserService::getCurrentUsername).thenReturn("Other user");
-    //        mvc.perform(delete("/user/challenge/delete/" + challenge.getChallengeId()))
-    //                .andExpect(status().is4xxClientError());
+            // Http request path
+            final String URI = String.format("/user/challenge/complete?challengeId=%d&milestoneId=%d",
+                    challengeId,
+                    milestoneId);
 
-    //        verify(challengeRepository, times(0)).save(challenge.getChallengeId());
-    //    }
-    //}
+            // Perform http request
+            mvc.perform(post(URI)).andExpect(status().isOk());
+        }
+    }
 }
