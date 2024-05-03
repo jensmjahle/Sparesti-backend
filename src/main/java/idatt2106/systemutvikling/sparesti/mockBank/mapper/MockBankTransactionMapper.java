@@ -9,25 +9,25 @@ import idatt2106.systemutvikling.sparesti.model.Transaction;
  */
 public class MockBankTransactionMapper {
 
-    /**
-     * Method to map a TransactionDAO to a Transaction.
-     *
-     * @param dao the TransactionDAO to map
-     * @return the Transaction
-     */
-    public static Transaction toModel(TransactionDAO dao) {
-        return new Transaction(
-                dao.getTransactionId(),
-                dao.getAccountDAO().getAccountNr(),
-                dao.getTransactionTitle(),
-                dao.getTime(),
-                dao.getDebtorAccount(),
-                dao.getDebtorName(),
-                dao.getCreditorAccount(),
-                dao.getCreditorName(),
-                dao.getAmount(),
-                dao.getCurrency(),
-                TransactionCategory.NOT_CATEGORIZED
-        );
-    }
+  /**
+   * Method to map a TransactionDAO to a Transaction.
+   *
+   * @param dao the TransactionDAO to map
+   * @return the Transaction
+   */
+  public static Transaction toModel(TransactionDAO dao) {
+    return new Transaction(
+        dao.getTransactionId(),
+        dao.getAccountDAO().getAccountNr(),
+        dao.getTransactionTitle(),
+        dao.getTime(),
+        dao.getDebtorAccount(),
+        dao.getDebtorName(),
+        dao.getCreditorAccount(),
+        dao.getCreditorName(),
+        dao.getAmount(),
+        dao.getCurrency(),
+        TransactionCategory.NOT_CATEGORIZED
+    );
+  }
 }
