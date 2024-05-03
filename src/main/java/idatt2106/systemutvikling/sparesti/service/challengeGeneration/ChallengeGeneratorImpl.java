@@ -287,7 +287,7 @@ public class ChallengeGeneratorImpl {
               + "Consider factors such as the user's transaction history, the adjusted amount, the challenge theme, the weekdays of the challenge, and the duration of the challenge. "
               + "Ensure that the title and description provide a reasonable level of difficulty based on these factors.\n"
               + "The title should be fun an encouraging and the description should be informative and motivating.\n"
-              + "Title length should be between 10 and 45 characters and description length should be between 50 and 200 characters.\n"
+              + "Title length should be between 10 and 35 characters and description length should be between 50 and 200 characters.\n"
               + "Avoid using the theme in capital letters in the title and description. If you use it translate to norwegian and write it normally.\n"
               + "Only reply with the title and description on this format: Title;Description  \n"
               + "If you use any numbers round them to the nearest whole number. \n"
