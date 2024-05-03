@@ -106,6 +106,17 @@ The backend provides several API endpoints that the frontend can use to interact
 application. The API endpoints are documented using Swagger, and you can access the Swagger
 documentation by navigating to http://localhost:8080/swagger-ui/index.html in your web browser.
 
+#### Challenge Generation
+
+The max number of requested challenges per user is set to 3. This means that the backend will
+generate a maximum of 3 challenges for each user. The current implementation of the challenge
+generation rate is set to one minute. This means that the backend will generate a new challenge for
+the user every minute. This is done to ensure that the user always has a challenge to complete
+during development.
+In a real-world scenario, this rate should be adjusted to one hour. This can be done in
+application.properties by changing the value of the "
+generate.random.challenges.rate.in.milliseconds=60000" attribute to 3600000 instead.
+
 ## Authors and acknowledgment
 
 This project was made by the following students at NTNU:
@@ -142,30 +153,43 @@ which the backend runs)
 ### Display test coverage:
 
 1. Navigate to the root folder of the project
-2. Navigate to the jacoco folder
+
+2. Run the following command to generate the test coverage report:
+
+```sh
+ mvn test
+```
+
+3. Navigate to the jacoco folder
 
 ```sh
  cd target/site/jacoco
 ```
 
-3. Open the index.html file in a web browser
+4. Open the index.html file in a web browser
 
 ```sh
   start index.html
   ```
 
-4. The test coverage report will be displayed in the web browser
+5. The test coverage report will be displayed in the web browser
 
 ### Display java documentation:
 
 1. Navigate to the root folder of the project
-2. Navigate to the apidocs folder
+2. Run the following command to generate the java documentation:
+
+```sh
+ mvn javadoc:javadoc
+```
+
+3. Navigate to the apidocs folder
 
 ```sh
  cd target/site/apidocs
 ```
 
-3. Open the index.html file in a web browser
+4. Open the index.html file in a web browser
 
 ```sh
   start index.html
