@@ -11,7 +11,7 @@ import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.dto.ChallengeDTO;
 import idatt2106.systemutvikling.sparesti.enums.RecurringInterval;
 import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
-import idatt2106.systemutvikling.sparesti.mockbank.repository.TransactionRepository;
+import idatt2106.systemutvikling.sparesti.mockBank.repository.TransactionRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
 
