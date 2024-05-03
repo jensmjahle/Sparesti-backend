@@ -42,23 +42,13 @@ public class ChallengeController {
                     responseCode = "200",
                     description = "Challenges found",
                     content = {
-                            @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                            @Content(mediaType = "application/json")
                     }
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input for page number or page size",
-                    content = @io.swagger.v3.oas.annotations.media.Content
             )}
     )
     @GetMapping("/paginated/active")
     @ResponseBody
     public ResponseEntity<Page<ChallengeDTO>> getActiveChallenges(@NonNull Pageable pageable) {
-
-        // Parameter verification
-        if (pageable.getPageNumber() < 0 || pageable.getPageSize() < 0)
-            throw new IllegalArgumentException("Pageable is not valid");
-
         return ResponseEntity.ok().body(
                 challengeService.getActiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
     }
@@ -72,30 +62,20 @@ public class ChallengeController {
                     responseCode = "200",
                     description = "Challenges found",
                     content = {
-                            @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                            @Content(mediaType = "application/json")
                     }
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid input for page number or page size",
-                    content = @io.swagger.v3.oas.annotations.media.Content
             )}
     )
     @Parameter(
             name = "pageable",
             description = "The pageable object containing page number and page size",
             content = {
-                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                    @Content(mediaType = "application/json")
             }
     )
     @GetMapping("/paginated/inactive")
     @ResponseBody
     public ResponseEntity<Page<ChallengeDTO>> getInactiveChallenges(@NonNull Pageable pageable) {
-
-        // Parameter verification
-        if (pageable.getPageNumber() < 0 || pageable.getPageSize() < 0)
-            throw new IllegalArgumentException("Pageable is not valid");
-
         return ResponseEntity.ok().body(
                 challengeService.getInactiveChallenges(CurrentUserService.getCurrentUsername(), pageable));
     }
@@ -109,20 +89,20 @@ public class ChallengeController {
                     responseCode = "200",
                     description = "Challenge found",
                     content = {
-                            @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                            @Content(mediaType = "application/json")
                     }
             ),
             @ApiResponse(
                     responseCode = "403",
                     description = "Lacking ownership of the specified challenge",
-                    content = @io.swagger.v3.oas.annotations.media.Content
+                    content = @Content
             )}
     )
     @Parameter(
             name = "challengeId",
             description = "The id of the challenge",
             content = {
-                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                    @Content(mediaType = "application/json")
             }
     )
     @GetMapping("/{challengeId}")
@@ -189,12 +169,12 @@ public class ChallengeController {
             @ApiResponse(
                     responseCode = "403",
                     description = "Lacking ownership of the specified challenge",
-                    content = @io.swagger.v3.oas.annotations.media.Content
+                    content = @Content
             ),
             @ApiResponse(
                     responseCode = "409",
                     description = "The challenge is already active",
-                    content = @io.swagger.v3.oas.annotations.media.Content
+                    content = @Content
             )}
     )
     @Parameter(
