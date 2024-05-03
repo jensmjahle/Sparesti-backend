@@ -14,11 +14,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PSUConsent {
 
-    String consentId;
-    String psuId;
-    String validUntil;
+  String consentId;
+  String psuId;
+  String validUntil;
 
-    boolean accessAccounts;
-    boolean accessBalances;
-    boolean accessTransactions;
+  boolean accessAccounts;
+  boolean accessBalances;
+  boolean accessTransactions;
 }

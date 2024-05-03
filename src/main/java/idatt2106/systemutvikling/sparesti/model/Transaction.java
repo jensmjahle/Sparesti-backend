@@ -16,6 +16,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class Transaction {
+
   private Long transactionId;
   private Long accountNr;
   private String transactionTitle;
@@ -29,7 +30,9 @@ public class Transaction {
   private String currency;
   private TransactionCategory category;
 
-  public Transaction(Long transactionId, Long accountNr, String transactionTitle, Date time, Long debtorAccount, String debtorName, Long creditorAccount, String creditorName, Long amount, String currency) {
+  public Transaction(Long transactionId, Long accountNr, String transactionTitle, Date time,
+      Long debtorAccount, String debtorName, Long creditorAccount, String creditorName, Long amount,
+      String currency) {
     this.transactionId = transactionId;
     this.accountNr = accountNr;
     this.transactionTitle = transactionTitle;
