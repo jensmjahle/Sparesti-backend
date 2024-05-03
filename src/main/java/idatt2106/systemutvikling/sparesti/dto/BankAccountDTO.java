@@ -14,15 +14,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BankAccountDTO {
 
-    private Long accountNumber;
+  private Long accountNumber;
 
-    private String username;
+  private String username;
 
-    private Long balance;
+  private Long balance;
 
-    private String name;
+  private String name;
 
-    private String type;
+  private String type;
 
-    private String currency;
+  private String currency;
 }

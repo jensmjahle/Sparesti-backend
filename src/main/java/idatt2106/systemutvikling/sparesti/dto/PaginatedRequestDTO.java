@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PaginatedRequestDTO {
 
-    int pageNum;
+  int pageNum;
 
-    int pageSize;
+  int pageSize;
 }
