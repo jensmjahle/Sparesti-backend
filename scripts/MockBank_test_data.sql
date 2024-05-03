@@ -517,3 +517,8 @@ INSERT INTO mock_transaction (account_nr, transaction_title, time_stamp, debtor_
 (36987451238, "Overføring fra sparekonto", "2024-03-15 12:30:00", 78562345099, "Spare", 36987451238, "Bruks", +2000, "NOK"),
 (36987451238, "Salg av fond", "2024-03-30 12:30:00", 98765432103, "Fond", 36987451238, "Bruks", +10123, "NOK"),
 (36987451238, "Salg av fond", "2024-04-20 12:30:00", 98765432103, "Fond", 36987451238, "Bruks", +15123, "NOK");
+
+-- Removes 25% of the mock_transactions by timestamp
+DELETE FROM mock_transaction
+ORDER BY time_stamp
+LIMIT 59;
