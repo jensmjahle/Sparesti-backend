@@ -91,16 +91,11 @@ INSERT INTO milestone_log (milestone_id, completion_date, milestone_achieved_sum
 	badge tinyblob,
 */
 INSERT INTO achievement (achievement_title, achievement_description) VALUES
-    ("Fullfør din første sparemål", "Spar deg frem til ditt første sparemål!"),
-    ("Fullfør din første utfordringer", "Fullfør din aller første spareutfordring på vei mot et sparemål!"),
+    ("Fullfør 1 sparemål", "Spar deg frem til ditt første sparemål!"),
+    ("Fullfør 1 utfordring", "Fullfør din aller første spareutfordring på vei mot et sparemål!"),
     ("Fullfør 5 sparemål", "Kom i mål med fem av dine sparemål!"),
     ("Fullfør 5 utfordringer", "Fullfør fem spareutfordringer mot dine sparemål!"),
-    ("Fullfør 10 sparemål", "Kom i mål med ti av dine sparemål"),
-    ("Fullfør 10 utfordringer", "Fullfør ti spareutfordringer mot dine sparemål!"),
-    ('Spar 1000NOK', 'Spar totalt 1000NOK på alle dine sparemål og utfordringer'),
-    ('Spar 5000NOK', 'Spar totalt 5000NOK på alle dine sparemål og utfordringer'),
     ('Spar 10000NOK', 'Spar totalt 10000NOK på alle dine sparemål og utfordringer'),
-    ('Spar 50000NOK', 'Spar totalt 50000NOK på alle dine sparemål og utfordringer'),
     ('Spar 100000NOK', 'Spar totalt 100000NOK på alle dine sparemål og utfordringer');
 
 
@@ -121,10 +116,5 @@ VALUES
     (2, 1, "CHALLENGES"),
     (3, 5, "MILESTONES"),
     (4, 5, "CHALLENGES"),
-    (5, 10, "MILESTONES"),
-    (6, 10, "CHALLENGES"),
-    (7, 1000, "SAVINGS"),
-    (8, 50000, "SAVINGS"),
-    (9, 10000, "SAVINGS"),
-    (10, 50000, "SAVINGS"),
-    (11, 100000, "SAVINGS");
+    (5, 10000, "SAVINGS"),
+    (6, 100000, "SAVINGS");
