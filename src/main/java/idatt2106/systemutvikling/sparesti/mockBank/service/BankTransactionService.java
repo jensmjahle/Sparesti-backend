@@ -1,24 +1,16 @@
 package idatt2106.systemutvikling.sparesti.mockBank.service;
 
-import idatt2106.systemutvikling.sparesti.mapper.TransactionMapper;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.TransactionDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.mapper.MockBankTransactionMapper;
 import idatt2106.systemutvikling.sparesti.mockBank.repository.TransactionRepository;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
-import idatt2106.systemutvikling.sparesti.service.TransactionService;
 import idatt2106.systemutvikling.sparesti.service.TransactionServiceInterface;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -37,7 +29,7 @@ public class BankTransactionService implements TransactionServiceInterface {
 
   /**
    * Fetches the latest transactions for the specified account. For the sake of testing the method
-   * will return all transactions for the specified account not based of any date.
+   * will trick the system to think that the date is 30th of March 2024.
    *
    * @param accountNumber The account number of the specified account.
    * @param dateLimit Transactions older than this date will not be fetched.
@@ -50,7 +42,10 @@ public class BankTransactionService implements TransactionServiceInterface {
 
     List<TransactionDAO> fetchedTransactions;
     if (mockProperties.isEnabled()) {
-      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNr(accountNumber);
+      // Use fixed date of 30th March 2024 and subtract 30 days
+      LocalDate fixedDate = LocalDate.of(2024, 3, 30);
+      Date date30DaysAgo = Date.from(fixedDate.minusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant());
+      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfter(accountNumber, date30DaysAgo);
     } else {
       fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfter(accountNumber, dateLimit);
     }
