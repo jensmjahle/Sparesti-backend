@@ -1,15 +1,13 @@
 package idatt2106.systemutvikling.sparesti.repository;
 
+import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
 import idatt2106.systemutvikling.sparesti.enums.RecurringInterval;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import idatt2106.systemutvikling.sparesti.dao.ChallengeDAO;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Repository for the ChallengeDAO entity.
@@ -44,7 +42,8 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
 
   List<ChallengeDAO> findChallengeDAOSByUserDAO_Username(String username);
 
-  Page<ChallengeDAO> findChallengeDAOSByUserDAO_UsernameAndActive(String username, boolean active, Pageable pageable);
+  Page<ChallengeDAO> findChallengeDAOSByUserDAO_UsernameAndActive(String username, boolean active,
+      Pageable pageable);
 
   /**
    * Method to find all challenges that have a start date after the given start date and an
@@ -116,9 +115,7 @@ public interface ChallengeRepository extends JpaRepository<ChallengeDAO, Long> {
   List<ChallengeDAO> findChallengeDAOByActiveAndUserDAO_Username(boolean active, String username);
 
 
-
   void deleteAllByUserDAO_Username(String username);
-
 
 
   ChallengeDAO findByChallengeIdAndUserDAO_Username(Long id, String username);

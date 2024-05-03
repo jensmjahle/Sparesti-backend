@@ -1,15 +1,12 @@
 package idatt2106.systemutvikling.sparesti.repository;
 
-import idatt2106.systemutvikling.sparesti.dao.ChallengeLogDAO;
 import idatt2106.systemutvikling.sparesti.dao.MilestoneDAO;
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Repository for the MilestoneDAO entity.
@@ -46,13 +43,15 @@ public interface MilestoneRepository extends JpaRepository<MilestoneDAO, Long> {
 
 
   /**
-   * Method to find all milestones that have a start date after the given start date and a deadline date before the given deadline date
+   * Method to find all milestones that have a start date after the given start date and a deadline
+   * date before the given deadline date
    *
    * @param startDate    the start date
    * @param deadlineDate the deadline date
    * @return a list of milestones that have a start date after the given date
    */
-  List<MilestoneDAO> findMilestoneDAOSByStartDateAfterAndDeadlineDateBefore(LocalDateTime startDate, LocalDateTime deadlineDate);
+  List<MilestoneDAO> findMilestoneDAOSByStartDateAfterAndDeadlineDateBefore(LocalDateTime startDate,
+      LocalDateTime deadlineDate);
 
   /**
    * Method to find all milestones that have a start date after the given start date

@@ -28,6 +28,7 @@ public interface UserRepository extends JpaRepository<UserDAO, String> {
 
   /**
    * Deletes the user identified by the specified username.
+   *
    * @param username The username identifying the user to be deleted.
    */
   void deleteByUsername(String username);
