@@ -3,17 +3,19 @@ package idatt2106.systemutvikling.sparesti.controller;
 import idatt2106.systemutvikling.sparesti.dto.UserCredentialsDTO;
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.service.UserService;
-
-import java.util.logging.Logger;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for handling user credentials.
@@ -32,25 +34,25 @@ public class UserCredentialsController {
   }
 
   @Operation(
-          summary = "Create user",
-          description = "Create a new user"
+      summary = "Create user",
+      description = "Create a new user"
   )
   @ApiResponse(
-          responseCode = "200",
-          description = "User created",
-          content = {
-                  @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = UserDTO.class))
-          }
+      responseCode = "200",
+      description = "User created",
+      content = {
+          @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserDTO.class))
+      }
   )
   @Parameter(
-          name = "user",
-          description = "The user to create",
-          content = {
-                  @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = UserCredentialsDTO.class)
-                  )
-          }
+      name = "user",
+      description = "The user to create",
+      content = {
+          @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserCredentialsDTO.class)
+          )
+      }
   )
   @RequestMapping("/create")
   public ResponseEntity<UserDTO> createUser(@RequestBody UserCredentialsDTO user) {
@@ -59,31 +61,32 @@ public class UserCredentialsController {
   }
 
   @Operation(
-          summary = "Update password",
-          description = "Update the password for a user"
+      summary = "Update password",
+      description = "Update the password for a user"
   )
   @ApiResponse(
-          responseCode = "200",
-          description = "Password updated",
-          content = {
-                  @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = String.class)
-                  )
-          }
+      responseCode = "200",
+      description = "Password updated",
+      content = {
+          @Content(mediaType = "application/json",
+              schema = @Schema(implementation = String.class)
+          )
+      }
   )
   @Parameter(
-          name = "userCredentialsDTO",
-          description = "The user credentials to update",
-          content = {
-                  @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = UserCredentialsDTO.class)
-                  )
-          }
+      name = "userCredentialsDTO",
+      description = "The user credentials to update",
+      content = {
+          @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserCredentialsDTO.class)
+          )
+      }
   )
   @PutMapping("/updatePassword")
   public ResponseEntity<String> updatePassword(@RequestBody UserCredentialsDTO userCredentialsDTO) {
     logger.info(
-            "Received request to update password for user with username: " + userCredentialsDTO.getUsername() + ".");
+        "Received request to update password for user with username: "
+            + userCredentialsDTO.getUsername() + ".");
     return ResponseEntity.ok(userService.updatePassword(userCredentialsDTO));
   }
 

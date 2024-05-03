@@ -1,21 +1,26 @@
 package idatt2106.systemutvikling.sparesti.controller;
 
 import idatt2106.systemutvikling.sparesti.dto.UserDTO;
-
-import java.util.logging.Logger;
-
+import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
+import idatt2106.systemutvikling.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.transaction.Transactional;
-import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import idatt2106.systemutvikling.sparesti.service.UserService;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for handling user information.
@@ -59,7 +64,9 @@ public class UserController {
     logger.info("Received request to get total savings for all users.");
     Long savings = userService.getTotalAmountSavedByAllUsers();
 
-    if (savings == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    if (savings == null) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
     return ResponseEntity.ok(savings);
   }
 
@@ -89,7 +96,9 @@ public class UserController {
     logger.info("Received request to get user total savings.");
     Long savings = userService.getTotalAmountSavedByUser(CurrentUserService.getCurrentUsername());
 
-    if (savings == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    if (savings == null) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
     return ResponseEntity.ok(savings);
   }
 
@@ -141,14 +150,14 @@ public class UserController {
     boolean deleted = userService.deleteCurrentUser();
 
     return deleted ?
-            ResponseEntity.ok().body("User deleted successfully") :
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found");
+        ResponseEntity.ok().body("User deleted successfully") :
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found");
   }
 
   /**
    * Method for updating user information.
    *
-   * @param token the token
+   * @param token          the token
    * @param updatedUserDTO the updated user information
    * @return response entity
    */
