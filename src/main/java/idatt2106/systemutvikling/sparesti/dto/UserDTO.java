@@ -1,12 +1,11 @@
 package idatt2106.systemutvikling.sparesti.dto;
 
+import java.time.LocalDate;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
-
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Data transfer object for User
@@ -15,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class UserDTO {
+
   private String username;
   @Nullable
   private String email;

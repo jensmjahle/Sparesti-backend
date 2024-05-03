@@ -3,18 +3,18 @@ package idatt2106.systemutvikling.sparesti.mockBank.service;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.dao.CustomerDAO;
 import idatt2106.systemutvikling.sparesti.mockBank.repository.AccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import idatt2106.systemutvikling.sparesti.service.AccountServiceInterface;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Service class for the Account entity.
  */
 @Service
-public class AccountService implements AccountServiceInterface{
+public class AccountService implements AccountServiceInterface {
+
   private final AccountRepository accountRepository;
   private final CustomerService customerService;
 
@@ -31,8 +31,10 @@ public class AccountService implements AccountServiceInterface{
    * @return the account entity as AccountDAO
    */
   public AccountDAO findAccountByAccountNr(Long accountNumber) {
-    Optional<AccountDAO> accountDAOOptional = accountRepository.findAccountDAOByAccountNr(accountNumber);
-    return accountDAOOptional.orElseThrow(() -> new RuntimeException(accountNumber+" was not found"));
+    Optional<AccountDAO> accountDAOOptional = accountRepository.findAccountDAOByAccountNr(
+        accountNumber);
+    return accountDAOOptional.orElseThrow(
+        () -> new RuntimeException(accountNumber + " was not found"));
   }
 
   /**

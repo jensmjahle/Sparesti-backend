@@ -14,15 +14,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BankAccount {
 
-    private Long accountNr;
+  private Long accountNr;
 
-    private String username;
+  private String username;
 
-    private Long balance;
+  private Long balance;
 
-    private String name;
+  private String name;
 
-    private String type;
+  private String type;
 
-    private String currency;
+  private String currency;
 }

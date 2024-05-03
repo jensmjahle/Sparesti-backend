@@ -14,18 +14,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecretsConfig {
 
-    /**
-     * The secret that is used to sign the JWT token.
-     */
-    private String jwt = "DefaultJWTSecret";
+  /**
+   * The secret that is used to sign the JWT token.
+   */
+  private String jwt = "DefaultJWTSecret";
 
-    /**
-     * The secret that is used to salt the password before hashing it.
-     */
-    private String salt = "DefaultSALT";
+  /**
+   * The secret that is used to salt the password before hashing it.
+   */
+  private String salt = "DefaultSALT";
 
-    /**
-     * The algorithm that is used to hash the password.
-     */
-    private String messageDigestAlgorithm = "SHA-256";
+  /**
+   * The algorithm that is used to hash the password.
+   */
+  private String messageDigestAlgorithm = "SHA-256";
 }

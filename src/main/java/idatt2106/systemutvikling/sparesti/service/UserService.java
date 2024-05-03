@@ -10,7 +10,15 @@ import idatt2106.systemutvikling.sparesti.exceptions.InvalidCredentialsException
 import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mapper.Base64Mapper;
 import idatt2106.systemutvikling.sparesti.mapper.UserMapper;
-import idatt2106.systemutvikling.sparesti.repository.*;
+import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
+import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
+import idatt2106.systemutvikling.sparesti.repository.ManualSavingRepository;
+import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
+import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
+import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
@@ -18,16 +26,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
-
 /**
  * Service class for the services related to the User entity.
  */
 @Service
 @AllArgsConstructor
 public class UserService {
+
   private PasswordEncoder passwordEncoder;
   private final CustomerServiceInterface customerService;
   private final AccountServiceInterface accountService;
@@ -82,10 +87,11 @@ public class UserService {
   }
 
   /**
-   * Calculates the total amount saved by all users in the system by summing up the savings
-   * of each individual user.
+   * Calculates the total amount saved by all users in the system by summing up the savings of each
+   * individual user.
    *
-   * @return The total amount saved by all users, or {@code null} if an error occurs during calculation.
+   * @return The total amount saved by all users, or {@code null} if an error occurs during
+   * calculation.
    */
   public Long getTotalAmountSavedByAllUsers() {
     Long result = 0L;
@@ -149,7 +155,8 @@ public class UserService {
     }
 
     if (Objects.nonNull(updatedUserDTO.getProfilePictureBase64())) {
-      existingUser.setProfilePicture(Base64Mapper.toByteArray(updatedUserDTO.getProfilePictureBase64()));
+      existingUser.setProfilePicture(
+          Base64Mapper.toByteArray(updatedUserDTO.getProfilePictureBase64()));
     }
 
     if (Objects.nonNull(updatedUserDTO.getCurrentAccount())) {
@@ -238,7 +245,7 @@ public class UserService {
   public String updatePassword(UserCredentialsDTO userCredentialsDTO) {
     UserDAO userDAO = userRepository.findByUsername(CurrentUserService.getCurrentUsername());
     if (!passwordEncoder.matches(userCredentialsDTO.getPassword(), userDAO.getPassword())
-            || userCredentialsDTO.getNewPassword() == null) {
+        || userCredentialsDTO.getNewPassword() == null) {
       throw new InvalidCredentialsException("Invalid password");
     }
     if (userCredentialsDTO.getNewPassword().length() <= 8) {
@@ -259,8 +266,9 @@ public class UserService {
   public boolean deleteCurrentUser() {
     String username = CurrentUserService.getCurrentUsername();
 
-    if (username == null)
+    if (username == null) {
       return false;
+    }
 
     return deleteUserByUsername(username);
   }
@@ -268,8 +276,9 @@ public class UserService {
   public boolean deleteUserByUsername(@NonNull String username) {
 
     // Check whether user exists
-    if (userRepository.findByUsername(username) == null)
+    if (userRepository.findByUsername(username) == null) {
       return false;
+    }
 
     // Delete manual savings
     dbSaving.deleteAllByUser_Username(username);

@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ManualSavingDTO {
 
-    private Long milestoneId;
+  private Long milestoneId;
 
-    private Long amount;
+  private Long amount;
 }

@@ -5,8 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Configuration class for the mock data. This class is used to configure the mock data and
- * is determined by the application.properties file.
+ * Configuration class for the mock data. This class is used to configure the mock data and is
+ * determined by the application.properties file.
  */
 @Component
 @ConfigurationProperties(prefix = "mock.data")

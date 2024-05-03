@@ -7,23 +7,24 @@ import idatt2106.systemutvikling.sparesti.mockBank.repository.AccountRepository;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
 import idatt2106.systemutvikling.sparesti.model.PSUConsent;
 import idatt2106.systemutvikling.sparesti.service.BankAccountServiceInterface;
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Service class for the BankAccount entity.
  */
 @Service
 public class MockBankAccountService implements BankAccountServiceInterface {
+
   private final AccountRepository accountRepository;
   private final CustomerService customerService;
 
   @Autowired
-  public MockBankAccountService(AccountRepository accountRepository, CustomerService customerService) {
+  public MockBankAccountService(AccountRepository accountRepository,
+      CustomerService customerService) {
     this.accountRepository = accountRepository;
     this.customerService = customerService;
   }
@@ -35,8 +36,10 @@ public class MockBankAccountService implements BankAccountServiceInterface {
    * @return the account entity as AccountDAO
    */
   public AccountDAO findAccountByAccountNr(Long accountNumber) {
-    Optional<AccountDAO> accountDAOOptional = accountRepository.findAccountDAOByAccountNr(accountNumber);
-    return accountDAOOptional.orElseThrow(() -> new RuntimeException(accountNumber+" was not found"));
+    Optional<AccountDAO> accountDAOOptional = accountRepository.findAccountDAOByAccountNr(
+        accountNumber);
+    return accountDAOOptional.orElseThrow(
+        () -> new RuntimeException(accountNumber + " was not found"));
   }
 
   /**
@@ -57,13 +60,17 @@ public class MockBankAccountService implements BankAccountServiceInterface {
    * @return a list of account numbers
    */
   public List<AccountDAO> findOtherAccountsOwnedBySameUser(@NonNull Long accountNumber) {
-    AccountDAO originalAccount = accountRepository.findAccountDAOByAccountNr(accountNumber).orElse(null);
-    if (originalAccount == null)
+    AccountDAO originalAccount = accountRepository.findAccountDAOByAccountNr(accountNumber)
+        .orElse(null);
+    if (originalAccount == null) {
       return null;
+    }
 
-    CustomerDAO c = customerService.findCustomerByUsername(originalAccount.getCustomerDAO().getUsername());
-    if (c == null)
+    CustomerDAO c = customerService.findCustomerByUsername(
+        originalAccount.getCustomerDAO().getUsername());
+    if (c == null) {
       return null;
+    }
 
     return accountRepository.findAccountDAOSByCustomerDAO(c);
   }
@@ -78,11 +85,12 @@ public class MockBankAccountService implements BankAccountServiceInterface {
     String username = consent.getPsuId();
 
     List<AccountDAO> daos = accountRepository.findByCustomerDAO_Username(username);
-    if (daos == null || daos.isEmpty())
+    if (daos == null || daos.isEmpty()) {
       return null;
+    }
 
     return daos.stream()
-            .map(MockBankAccountMapper::toModel)
-            .toList();
+        .map(MockBankAccountMapper::toModel)
+        .toList();
   }
 }

@@ -1,11 +1,11 @@
 package idatt2106.systemutvikling.sparesti.service;
 
+import idatt2106.systemutvikling.sparesti.dao.UserDAO;
+import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import idatt2106.systemutvikling.sparesti.dao.UserDAO;
-import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 
 /**
  * Service class for security operations.
@@ -25,6 +25,7 @@ public class PasswordService {
 
   /**
    * Method to check if the password is correct for a given username with salt and hash.
+   *
    * @param username the username of the user
    * @param password the password to check from frontend unhashed
    * @return true if the password is correct, false otherwise

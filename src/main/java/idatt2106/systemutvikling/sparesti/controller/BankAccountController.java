@@ -3,21 +3,19 @@ package idatt2106.systemutvikling.sparesti.controller;
 import idatt2106.systemutvikling.sparesti.dto.BankAccountDTO;
 import idatt2106.systemutvikling.sparesti.exceptions.NotFoundInDatabaseException;
 import idatt2106.systemutvikling.sparesti.mapper.BankAccountMapper;
-import idatt2106.systemutvikling.sparesti.service.BankAccountService;
 import idatt2106.systemutvikling.sparesti.model.BankAccount;
-import java.util.logging.Logger;
-
+import idatt2106.systemutvikling.sparesti.service.BankAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.List;
+import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * Controller for handling bank accounts.
@@ -40,7 +38,7 @@ public class BankAccountController {
       description = "Bank accounts found",
       content = {
           @Content(mediaType = "application/json",
-          schema = @Schema(implementation = BankAccountDTO.class))
+              schema = @Schema(implementation = BankAccountDTO.class))
       }
   )
   @GetMapping

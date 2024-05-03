@@ -18,7 +18,7 @@ public class InvalidCredentialsException extends RuntimeException {
    * Constructor for InvalidCredentialsException.
    *
    * @param message the message to be displayed
-   * @param cause the cause of the exception
+   * @param cause   the cause of the exception
    */
   public InvalidCredentialsException(String message, Throwable cause) {
     super(message, cause);

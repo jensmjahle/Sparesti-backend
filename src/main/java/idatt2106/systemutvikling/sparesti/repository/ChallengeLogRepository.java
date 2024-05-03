@@ -1,11 +1,10 @@
 package idatt2106.systemutvikling.sparesti.repository;
 
 import idatt2106.systemutvikling.sparesti.dao.ChallengeLogDAO;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repository for the ChallengeLogDAO entity.
@@ -75,7 +74,6 @@ public interface ChallengeLogRepository extends JpaRepository<ChallengeLogDAO, L
   List<ChallengeLogDAO> findChallengeLogDAOSByCompletionDateBefore(LocalDateTime completionDate);
 
   List<ChallengeLogDAO> findChallengeLogDAOByUserDAO_Username(String username);
-
 
 
   void deleteAllByUserDAO_Username(String username);

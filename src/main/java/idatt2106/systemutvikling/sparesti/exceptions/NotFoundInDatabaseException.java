@@ -18,7 +18,7 @@ public class NotFoundInDatabaseException extends RuntimeException {
    * Constructor for NotFoundInDatabaseException.
    *
    * @param message the message to be displayed
-   * @param cause the cause of the exception
+   * @param cause   the cause of the exception
    */
   public NotFoundInDatabaseException(String message, Throwable cause) {
     super(message, cause);

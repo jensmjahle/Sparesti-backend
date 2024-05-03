@@ -2,8 +2,11 @@ package idatt2106.systemutvikling.sparesti.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * A Data Transfer Object representing a challenge
@@ -12,8 +15,9 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 public class ChallengeDTO {
+
   @NotNull
   private Long challengeId;
 

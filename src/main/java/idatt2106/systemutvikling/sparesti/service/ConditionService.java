@@ -8,30 +8,32 @@ import idatt2106.systemutvikling.sparesti.enums.ConditionType;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
 
 /**
  * Service class for handling conditions.
  */
 @Service
 public class ConditionService {
+
   private final MilestoneLogRepository milestoneLogRepository;
   private final MilestoneRepository milestoneRepository;
   private final ChallengeLogRepository challengeLogRepository;
   private final Logger logger = Logger.getLogger(ConditionService.class.getName());
 
 
-  public ConditionService(MilestoneLogRepository milestoneLogRepository, MilestoneRepository milestoneRepository, ChallengeLogRepository challengeLogRepository) {
+  public ConditionService(MilestoneLogRepository milestoneLogRepository,
+      MilestoneRepository milestoneRepository, ChallengeLogRepository challengeLogRepository) {
     this.milestoneLogRepository = milestoneLogRepository;
     this.milestoneRepository = milestoneRepository;
     this.challengeLogRepository = challengeLogRepository;
   }
 
   /**
-   * Method to check if a condition is met. The method checks the condition type and calls the appropriate method.
+   * Method to check if a condition is met. The method checks the condition type and calls the
+   * appropriate method.
    *
    * @param condition the condition to check
    * @return true if the condition is met, false otherwise
@@ -54,23 +56,27 @@ public class ConditionService {
   }
 
   /**
-   * Method to check if the milestones condition is met. The method checks if the user has completed the required amount of milestones.
+   * Method to check if the milestones condition is met. The method checks if the user has completed
+   * the required amount of milestones.
    *
    * @param condition the condition to check
    * @return true if the condition is met, false otherwise
    */
   private boolean isMilestonesConditionMet(ConditionDAO condition) {
-    return condition.getQuantity() <= milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername()).size();
+    return condition.getQuantity() <= milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(
+        CurrentUserService.getCurrentUsername()).size();
   }
 
   /**
-   * Method to check if the challenges condition is met. The method checks if the user has completed the required amount of challenges.
+   * Method to check if the challenges condition is met. The method checks if the user has completed
+   * the required amount of challenges.
    *
    * @param condition the condition to check
    * @return true if the condition is met, false otherwise
    */
   private boolean isChallengesConditionMet(ConditionDAO condition) {
-    List<ChallengeLogDAO> challengeLogDAOS = challengeLogRepository.findChallengeLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
+    List<ChallengeLogDAO> challengeLogDAOS = challengeLogRepository.findChallengeLogDAOByUserDAO_Username(
+        CurrentUserService.getCurrentUsername());
     Long count = 0L;
     for (ChallengeLogDAO challengeLogDAO : challengeLogDAOS) {
       if (challengeLogDAO.getGoalSum() <= challengeLogDAO.getChallengeAchievedSum()) {
@@ -81,14 +87,17 @@ public class ConditionService {
   }
 
   /**
-   * Method to check if the savings condition is met. The method checks if the user has saved the required amount of money.
+   * Method to check if the savings condition is met. The method checks if the user has saved the
+   * required amount of money.
    *
    * @param condition the condition to check
    * @return true if the condition is met, false otherwise
    */
   private boolean isSavingsConditionMet(ConditionDAO condition) {
-    List<MilestoneLogDAO> milestoneLogDAOS = milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
-    List<MilestoneDAO> milestoneDAOS = milestoneRepository.findMilestoneDAOByUserDAO_Username(CurrentUserService.getCurrentUsername());
+    List<MilestoneLogDAO> milestoneLogDAOS = milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(
+        CurrentUserService.getCurrentUsername());
+    List<MilestoneDAO> milestoneDAOS = milestoneRepository.findMilestoneDAOByUserDAO_Username(
+        CurrentUserService.getCurrentUsername());
     Long total = 0L;
     for (MilestoneLogDAO milestoneLogDAO : milestoneLogDAOS) {
       total += milestoneLogDAO.getMilestoneAchievedSum();

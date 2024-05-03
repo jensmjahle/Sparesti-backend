@@ -1,10 +1,9 @@
 package idatt2106.systemutvikling.sparesti.mockBank.repository;
 
 import idatt2106.systemutvikling.sparesti.mockBank.dao.CustomerDAO;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 /**
  * Repository interface for the Customer entity.

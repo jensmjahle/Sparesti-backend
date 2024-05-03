@@ -19,7 +19,7 @@ public class UserNotFoundException extends RuntimeException {
    * Constructor for UserNotFoundException.
    *
    * @param message the message to be displayed
-   * @param cause the cause of the exception
+   * @param cause   the cause of the exception
    */
   public UserNotFoundException(String message, Throwable cause) {
     super(message, cause);

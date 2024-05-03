@@ -8,16 +8,13 @@ import idatt2106.systemutvikling.sparesti.exceptions.UserNotFoundException;
 import idatt2106.systemutvikling.sparesti.mapper.KeywordMapper;
 import idatt2106.systemutvikling.sparesti.model.Transaction;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Service class for handling transactions.

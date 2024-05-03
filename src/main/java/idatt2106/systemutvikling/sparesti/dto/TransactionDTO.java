@@ -1,16 +1,12 @@
 package idatt2106.systemutvikling.sparesti.dto;
 
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
-import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
 
 /**
  * Data transfer object for Transaction
@@ -20,24 +16,25 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionDTO {
-    private Long transactionId;
 
-    private String transactionTitle;
+  private Long transactionId;
 
-    private Date time;
+  private String transactionTitle;
 
-    @NotNull
-    private Long debtorAccount;
+  private Date time;
 
-    private String debtorName;
-    @NotNull
-    private Long creditorAccount;
+  @NotNull
+  private Long debtorAccount;
 
-    private String creditorName;
+  private String debtorName;
+  @NotNull
+  private Long creditorAccount;
 
-    private Long amount;
+  private String creditorName;
 
-    private String currency;
+  private Long amount;
 
-    private TransactionCategory transactionCategory;
+  private String currency;
+
+  private TransactionCategory transactionCategory;
 }

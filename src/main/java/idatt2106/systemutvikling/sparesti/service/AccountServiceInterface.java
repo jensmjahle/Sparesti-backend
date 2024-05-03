@@ -1,8 +1,6 @@
 package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.mockBank.dao.AccountDAO;
-import idatt2106.systemutvikling.sparesti.mockBank.dao.CustomerDAO;
-
 import java.util.List;
 
 /**
@@ -11,7 +9,8 @@ import java.util.List;
 public interface AccountServiceInterface {
 
   /**
-   * Method to find an account by the account number. The method finds the account based on the account number
+   * Method to find an account by the account number. The method finds the account based on the
+   * account number
    *
    * @param accountNr the account number of the account
    * @return the account with the account number
@@ -28,7 +27,8 @@ public interface AccountServiceInterface {
   List<AccountDAO> findAccountsByUsername(String username);
 
   /**
-   * Method to find an account by the account number. The method finds the account based on the account number
+   * Method to find an account by the account number. The method finds the account based on the
+   * account number
    *
    * @param username the username of the account
    * @return the account with the account number

@@ -1,18 +1,21 @@
 package idatt2106.systemutvikling.sparesti.service;
 
+import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
 import idatt2106.systemutvikling.sparesti.dto.MilestoneDTO;
+import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
-import idatt2106.systemutvikling.sparesti.dao.MilestoneLogDAO;
-import idatt2106.systemutvikling.sparesti.mapper.MilestoneMapper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 /**
  * Service class for handling MilestoneLogDAOs.
@@ -31,7 +34,8 @@ public class MilestoneLogService {
   Logger logger = Logger.getLogger(MilestoneLogService.class.getName());
 
   @Autowired
-  public MilestoneLogService(MilestoneRepository milestoneRepository, JWTService jwtService, UserRepository userRepository, MilestoneLogRepository milestoneLogRepository) {
+  public MilestoneLogService(MilestoneRepository milestoneRepository, JWTService jwtService,
+      UserRepository userRepository, MilestoneLogRepository milestoneLogRepository) {
     this.milestoneRepository = milestoneRepository;
     this.jwtService = jwtService;
     this.userRepository = userRepository;
@@ -42,7 +46,7 @@ public class MilestoneLogService {
    * Method to complete a milestone and save it to database.
    *
    * @param milestoneLogDAO the milestone log to save
-    */
+   */
   public void completeMilestone(MilestoneLogDAO milestoneLogDAO) {
     milestoneLogRepository.save(milestoneLogDAO);
   }
@@ -54,15 +58,16 @@ public class MilestoneLogService {
    * @param username The username of the user to get milestones for.
    * @return List of MilestoneLogDAOs.
    */
-  public Page<MilestoneDTO> getMilestoneLogsByUsernamePaginated(String username, Pageable pageable) {
+  public Page<MilestoneDTO> getMilestoneLogsByUsernamePaginated(String username,
+      Pageable pageable) {
     try {
       Pageable sortedPageable = PageRequest.of(
-              pageable.getPageNumber(),
-              pageable.getPageSize(),
-              Sort.by("completionDate").descending());
+          pageable.getPageNumber(),
+          pageable.getPageSize(),
+          Sort.by("completionDate").descending());
 
       Page<MilestoneLogDAO> milestoneLogDAOs =
-              milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username, sortedPageable);
+          milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username, sortedPageable);
 
       if (milestoneLogDAOs == null) {
         return Page.empty();
@@ -89,7 +94,7 @@ public class MilestoneLogService {
   public List<MilestoneDTO> getMilestoneLogsByUsername(String username) {
     try {
       List<MilestoneLogDAO> milestoneLogDAOs =
-              milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username);
+          milestoneLogRepository.findMilestoneLogDAOByUserDAO_Username(username);
 
       List<MilestoneDTO> milestoneDTOS = new ArrayList<>();
       for (MilestoneLogDAO milestoneDAO : milestoneLogDAOs) {
@@ -111,7 +116,8 @@ public class MilestoneLogService {
    */
   public MilestoneDTO getMilestoneLogById(long id) {
     try {
-      return MilestoneMapper.DAOLogToDTO(milestoneLogRepository.findMilestoneLogDAOByMilestoneId(id));
+      return MilestoneMapper.DAOLogToDTO(
+          milestoneLogRepository.findMilestoneLogDAOByMilestoneId(id));
     } catch (Exception e) {
       logger.severe("Error when getting milestone: " + e.getMessage());
       return null;

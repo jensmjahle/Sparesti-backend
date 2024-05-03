@@ -9,12 +9,10 @@ import idatt2106.systemutvikling.sparesti.mapper.AchievementMapper;
 import idatt2106.systemutvikling.sparesti.repository.AchievementRepository;
 import idatt2106.systemutvikling.sparesti.repository.ConditionRepository;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
 
 /**
  * Service class for managing achievements.
@@ -96,9 +94,12 @@ public class AchievementService {
     boolean achievementUnlocked;
     for (AchievementDAO achievement : lockedAchievement) {
       conditions = conditionRepository.findAllByAchievementDAO_AchievementId(
-              achievement.getAchievementId());
-      if (!conditions.isEmpty()) achievementUnlocked = true;
-      else break;
+          achievement.getAchievementId());
+      if (!conditions.isEmpty()) {
+        achievementUnlocked = true;
+      } else {
+        break;
+      }
       for (ConditionDAO condition : conditions) {
         if (!conditionService.isConditionMet(condition)) {
           achievementUnlocked = false;

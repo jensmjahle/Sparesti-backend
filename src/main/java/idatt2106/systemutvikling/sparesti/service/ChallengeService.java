@@ -9,18 +9,19 @@ import idatt2106.systemutvikling.sparesti.exceptions.NotFoundInDatabaseException
 import idatt2106.systemutvikling.sparesti.mapper.ChallengeMapper;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeLogRepository;
 import idatt2106.systemutvikling.sparesti.repository.ChallengeRepository;
-
-import java.util.logging.Logger;
-
 import idatt2106.systemutvikling.sparesti.repository.MilestoneRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 /**
  * Service class for handling challenges.
@@ -222,18 +223,22 @@ public class ChallengeService {
     final String username = CurrentUserService.getCurrentUsername();
 
     // Fetch data
-    ChallengeDAO challenge = challengeRepository.findByChallengeIdAndUserDAO_Username(challengeId, username);
-    MilestoneDAO milestone = dbMilestone.findMilestoneDAOByMilestoneIdAndUserDAO_Username(milestoneId, username);
+    ChallengeDAO challenge = challengeRepository.findByChallengeIdAndUserDAO_Username(challengeId,
+        username);
+    MilestoneDAO milestone = dbMilestone.findMilestoneDAOByMilestoneIdAndUserDAO_Username(
+        milestoneId, username);
 
     // Verify existence of the requested challenge
-    if (challenge == null)
-      throw new NotFoundInDatabaseException("No challenge found with the requested ID for the user");
+    if (challenge == null) {
+      throw new NotFoundInDatabaseException(
+          "No challenge found with the requested ID for the user");
+    }
 
     // Verify existence of the requested milestone
-    if (milestone == null)
-      throw new NotFoundInDatabaseException("No milestone found with the requested ID for the user");
-
-
+    if (milestone == null) {
+      throw new NotFoundInDatabaseException(
+          "No milestone found with the requested ID for the user");
+    }
 
     // Define transfer amount as the difference between the goal and the current sum
     long transferAmount = challenge.getGoalSum();
@@ -242,23 +247,23 @@ public class ChallengeService {
     boolean success = transactionService.createSavingsTransferForCurrentUser(transferAmount);
 
     // Verify transaction success
-    if (!success)
+    if (!success) {
       throw new BankConnectionErrorException("Failed to transfer funds to savings");
-
+    }
 
     // Transfer achieved currency to milestone
-    MilestoneDAO savedEntry = milestoneService.increaseMilestonesCurrentSum(milestoneId, challenge.getGoalSum());
-
+    MilestoneDAO savedEntry = milestoneService.increaseMilestonesCurrentSum(milestoneId,
+        challenge.getGoalSum());
 
     // Archive challenge
     archiveActiveChallenge(challenge.getChallengeId());
   }
 
   /**
-   * Performs the changes - local to the challenge repository - needed for a challenge to be considered as 'completed'.
-   * This function creates a log entry from the selected challenge (specified by the id-parameter)
-   * and stores it in the database. The challenge is deleted from the table of active challenges,
-   * but the log entry persists.
+   * Performs the changes - local to the challenge repository - needed for a challenge to be
+   * considered as 'completed'. This function creates a log entry from the selected challenge
+   * (specified by the id-parameter) and stores it in the database. The challenge is deleted from
+   * the table of active challenges, but the log entry persists.
    *
    * @param challengeId the id of the challenge to complete
    * @return The log entry that is persisted by this function.
@@ -268,8 +273,9 @@ public class ChallengeService {
     ChallengeDAO challengeDAO = challengeRepository.findChallengeDAOByChallengeId(challengeId);
 
     // Verify existence of the active challenge
-    if (challengeDAO == null)
+    if (challengeDAO == null) {
       return null;
+    }
 
     // Create log entry from the active challenge
     ChallengeLogDAO challengeLogDAO = createChallengeLog(challengeDAO);
