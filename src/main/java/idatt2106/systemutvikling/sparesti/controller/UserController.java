@@ -4,6 +4,7 @@ import idatt2106.systemutvikling.sparesti.dto.UserDTO;
 import idatt2106.systemutvikling.sparesti.service.CurrentUserService;
 import idatt2106.systemutvikling.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -154,13 +155,28 @@ public class UserController {
         ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found");
   }
 
-  /**
-   * Method for updating user information.
-   *
-   * @param token          the token
-   * @param updatedUserDTO the updated user information
-   * @return response entity
-   */
+
+  @Operation(
+      summary = "Update user information",
+      description = "Update the information of the current user"
+  )
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "User information updated",
+              content = @Content
+          )
+      }
+  )
+  @Parameter(
+      name = "UserDTO",
+      description = "The updated user information",
+      content = {
+          @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserDTO.class))
+      }
+  )
   @PutMapping("/update")
   public ResponseEntity<String> updateUserDTO(@RequestHeader("Authorization") String token,
       @RequestBody UserDTO updatedUserDTO) {
