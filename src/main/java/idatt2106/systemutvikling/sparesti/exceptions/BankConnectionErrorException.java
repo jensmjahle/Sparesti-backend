@@ -25,7 +25,7 @@ public class BankConnectionErrorException extends RuntimeException {
    * Constructor for BankConnectionErrorException.
    *
    * @param message the message to be displayed
-   * @param cause the cause of the exception
+   * @param cause   the cause of the exception
    */
   public BankConnectionErrorException(String message, Throwable cause) {
     super(message, cause);

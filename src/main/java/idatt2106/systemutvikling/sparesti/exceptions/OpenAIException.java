@@ -19,7 +19,7 @@ public class OpenAIException extends RuntimeException {
    * Constructor for OpenAIException.
    *
    * @param message the message to be displayed
-   * @param cause the cause of the exception
+   * @param cause   the cause of the exception
    */
   public OpenAIException(String message, Throwable cause) {
     super(message, cause);

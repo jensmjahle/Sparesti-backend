@@ -18,7 +18,7 @@ public class ConflictException extends RuntimeException {
    * Constructor for ConflictException.
    *
    * @param message the message to be displayed
-   * @param cause the cause of the exception
+   * @param cause   the cause of the exception
    */
   public ConflictException(String message, Throwable cause) {
     super(message, cause);
