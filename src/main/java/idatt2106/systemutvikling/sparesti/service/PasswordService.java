@@ -2,6 +2,8 @@ package idatt2106.systemutvikling.sparesti.service;
 
 import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
+
+import java.util.Objects;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,9 @@ public class PasswordService {
   public boolean correctPassword(String username, String password) {
     try {
       UserDAO user = userRepository.findByUsername(username);
+      if(!Objects.equals(user.getUsername(), username)){
+        throw new IllegalArgumentException("No user with username " + username + " found: ");
+      }
       logger.info(passwordEncoder.encode(password));
       return passwordEncoder.matches(password, user.getPassword());
     } catch (Exception e) {
