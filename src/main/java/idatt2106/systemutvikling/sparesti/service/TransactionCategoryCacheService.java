@@ -3,7 +3,6 @@ package idatt2106.systemutvikling.sparesti.service;
 import idatt2106.systemutvikling.sparesti.dao.TransactionCategoryDAO;
 import idatt2106.systemutvikling.sparesti.enums.TransactionCategory;
 import idatt2106.systemutvikling.sparesti.repository.TransactionCategoryCacheRepository;
-import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +20,8 @@ public class TransactionCategoryCacheService {
    * Method to set a category in the cache.
    *
    * @param transactionId the id of the transaction
-   * @param category the category to set
-   * @param createdAt the time the category was set
+   * @param category      the category to set
+   * @param createdAt     the time the category was set
    * @return the saved TransactionCategoryDAO
    */
   public TransactionCategoryDAO setCategoryCache(Long transactionId, TransactionCategory category,

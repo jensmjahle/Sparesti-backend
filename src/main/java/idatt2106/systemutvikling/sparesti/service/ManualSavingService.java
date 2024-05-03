@@ -5,11 +5,10 @@ import idatt2106.systemutvikling.sparesti.dao.UserDAO;
 import idatt2106.systemutvikling.sparesti.repository.ManualSavingRepository;
 import idatt2106.systemutvikling.sparesti.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * Service class for handling manual saving entries.
@@ -21,16 +20,17 @@ public class ManualSavingService {
   private final UserRepository dbUser;
   private final ManualSavingRepository dbManualSaving;
 
-    /**
-     * Registers a new manual saving entry in the database. The entry is saved with the current time.
-     *
-     * @param milestoneId the milestone id to save the manual saving entry to
-     * @param amount the amount to save
-     * @param username the username of the user to save the manual saving entry for
-     * @return the saved ManualSavingDAO
-     */
-    public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount, String username) {
-        ManualSavingDAO dao = new ManualSavingDAO();
+  /**
+   * Registers a new manual saving entry in the database. The entry is saved with the current time.
+   *
+   * @param milestoneId the milestone id to save the manual saving entry to
+   * @param amount      the amount to save
+   * @param username    the username of the user to save the manual saving entry for
+   * @return the saved ManualSavingDAO
+   */
+  public ManualSavingDAO registerNewManualSavingDAO(Long milestoneId, Long amount,
+      String username) {
+    ManualSavingDAO dao = new ManualSavingDAO();
 
     if (username == null) {
       return null;
