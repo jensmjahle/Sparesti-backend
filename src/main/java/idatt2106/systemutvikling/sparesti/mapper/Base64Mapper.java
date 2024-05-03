@@ -7,6 +7,7 @@ import java.util.logging.Logger;
  * Mapper class for converting images to base64 strings and vice versa.
  */
 public class Base64Mapper {
+
   static Logger logger = Logger.getLogger(Base64Mapper.class.getName());
 
   /**
@@ -37,16 +38,16 @@ public class Base64Mapper {
     if (base64String != null) {
       // Check if the base64 string starts with "data:image/"
       if (base64String.startsWith("data:image/")) {
-       // Find the index of the comma separating the image type and the base64 string
+        // Find the index of the comma separating the image type and the base64 string
         int commaIndex = base64String.indexOf(",");
         if (commaIndex != -1) {
           // Extract the image type from the base64 string
           String imageType = base64String.substring("data:image/".length(), commaIndex);
           logger.info("Image type: " + imageType);
-         // Remove the image type from the base64 string
+          // Remove the image type from the base64 string
           base64String = base64String.substring(commaIndex + 1);
           logger.info("Converting base64 string to image");
-        return Base64.getDecoder().decode(base64String);
+          return Base64.getDecoder().decode(base64String);
         }
       } else {
         return Base64.getDecoder().decode(base64String);

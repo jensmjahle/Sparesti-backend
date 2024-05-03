@@ -9,6 +9,7 @@ import idatt2106.systemutvikling.sparesti.enums.RecurringInterval;
  * Mapper class for ChallengeDAO and ChallengeDAO
  */
 public class ChallengeMapper {
+
   /**
    * Maps ChallengeDTO to ChallengeDAO
    *
@@ -41,13 +42,14 @@ public class ChallengeMapper {
   private static RecurringInterval mapRecurringInterval(int recurring) {
     return switch (recurring) {
       case 0 -> RecurringInterval.NONE;
-      case 24*60*60 -> RecurringInterval.DAILY;
-      case 60*60*24*7 -> RecurringInterval.WEEKLY;
-      case 60*60*24*30 -> RecurringInterval.MONTHLY;
+      case 24 * 60 * 60 -> RecurringInterval.DAILY;
+      case 60 * 60 * 24 * 7 -> RecurringInterval.WEEKLY;
+      case 60 * 60 * 24 * 30 -> RecurringInterval.MONTHLY;
       default ->
           throw new IllegalArgumentException("Invalid recurring interval value: " + recurring);
     };
   }
+
   /**
    * Maps ChallengeDTO to ChallengeDAO
    *
