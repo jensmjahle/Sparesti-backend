@@ -236,7 +236,7 @@ public class ChallengeService {
 
 
     // Define transfer amount as the difference between the goal and the current sum
-    long transferAmount = challenge.getGoalSum() - challenge.getCurrentSum();
+    long transferAmount = challenge.getGoalSum();
 
     // Perform savings transaction
     boolean success = transactionService.createSavingsTransferForCurrentUser(transferAmount);
