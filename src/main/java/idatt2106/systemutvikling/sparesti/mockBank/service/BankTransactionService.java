@@ -46,10 +46,10 @@ public class BankTransactionService implements TransactionServiceInterface {
       LocalDate fixedDate = LocalDate.of(2024, 3, 30);
       Date date30DaysAgo = Date.from(
           fixedDate.minusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant());
-      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfter(
+      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfterOrderByTimeDesc(
           accountNumber, date30DaysAgo);
     } else {
-      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfter(
+      fetchedTransactions = transactionRepository.findByAccountDAO_AccountNrAndTimeAfterOrderByTimeDesc(
           accountNumber, dateLimit);
     }
 
